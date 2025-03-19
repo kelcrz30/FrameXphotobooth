@@ -1,0 +1,97 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head>     
+    <meta charset="UTF-8">     
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">     
+    <link rel="stylesheet" href="style.css">
+    <title>FRAMEX PHOTOBOOTH</title>
+    <style>
+
+    </style>
+</head> 
+<body>   
+    <!-- Floating frames for background animation -->
+    <div class="floating-frame" style="width: 100px; height: 150px; left: 5%; animation-duration: 8s;"></div>
+    <div class="floating-frame" style="width: 150px; height: 100px; left: 25%; animation-duration: 10s; animation-delay: 1s;"></div>
+    <div class="floating-frame" style="width: 120px; height: 120px; left: 65%; animation-duration: 9s; animation-delay: 3s;"></div>
+    <div class="floating-frame" style="width: 80px; height: 120px; left: 85%; animation-duration: 11s; animation-delay: 5s;"></div>
+    <div class="floating-frame" style="width: 180px; height: 120px; left: 45%; animation-duration: 12s; animation-delay: 8s;"></div>
+
+    <div class="toggle-switch">     
+        <label class="switch-label">       
+            <input type="checkbox" id="darkModeToggle" class="checkbox">       
+            <span class="slider"></span>     
+        </label>   
+    </div>     
+    
+    <div class="container">                
+        <div class="bookmark"></div>         
+        <div class="black-side"></div>                  
+        
+        <div class="content">             
+            <div class="title-container">                 
+                <div class="title">FRAMEX PHOTOBOOTH</div>                 
+                         
+            </div>             
+            
+            <div class="description">               
+                <p>"FRAMEX PHOTOBOOTH captures memories with ease and creativity. Designed for events and keepsakes, it ensures high-quality snapshots. More than a photobooth—it frames unforgettable moments."</p>                            
+            </div>
+            
+            <!-- New features section -->
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">📸</div>
+                    <div class="feature-title">HIGH QUALITY</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🖼️</div>
+                    <div class="feature-title">CUSTOM FRAMES</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📱</div>
+                    <div class="feature-title">INSTANT SHARING</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🎨</div>
+                    <div class="feature-title">CREATIVE FILTERS</div>
+                </div>
+            </div>
+            
+            <button>               
+                Sign up               
+                <div class="arrow-wrapper">                   
+                    <div class="arrow"></div>                          
+                </div>           
+            </button>         
+        </div>              
+    </div>          
+    
+    <script>
+const darkModeToggle = document.getElementById('darkModeToggle');
+const isDarkMode = localStorage.getItem('dark-mode') === 'enabled';
+
+if (isDarkMode) {
+    document.body.classList.add('dark-mode');
+    darkModeToggle.checked = true;
+}
+
+darkModeToggle.addEventListener('change', () => {
+    if (darkModeToggle.checked) {
+        document.body.classList.add('dark-mode');
+        localStorage.setItem('dark-mode', 'enabled');
+    } else {
+        document.body.classList.remove('dark-mode');
+        localStorage.setItem('dark-mode', 'disabled');
+    }
+});
+
+// Improved Floating Frames Random Positioning
+const frames = document.querySelectorAll('.floating-frame');
+frames.forEach(frame => {
+    frame.style.left = `${Math.random() * 80 + 10}%`;
+    frame.style.animationDuration = `${Math.random() * 5 + 6}s`; // Random speeds
+});
+    </script>
+</body> 
+</html>

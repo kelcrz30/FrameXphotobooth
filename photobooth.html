@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FRAMEX</title>
+    <link rel="stylesheet" href="styles1.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Koulen&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kreon:wght@300..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&display=swap" rel="stylesheet">
+ 
+</head>
+<body class="photobooth">
+    <div class="boot">
+        
+        <main class="content-container">
+            <div class="left-section">
+                <div class="video-container">
+                    <div id="countdownText"></div>  <!-- Move this inside video-container -->
+                    <label for="cameraSelect">Select Camera:</label>
+                    <select id="cameraSelect"></select>
+                    <video id="video" autoplay></video>
+  
+                </div>
+                <div class="controls">
+                    <button id="captureBtn">Capture Photo</button>
+                    <div class="checkbox-wrapper-12">
+                        <div class="cbx">
+                            <input checked="" type="checkbox" id="mirrorToggle">
+                            <label for="mirrorToggle">Mirror Camera</label> <!-- Added text here -->
+                            <svg fill="none" viewBox="0 0 15 14" height="14" width="15">
+                                <path d="M2 8.36364L6.23077 12L13 2"></path>
+                            </svg>
+                        </div>
+                        
+                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg">
+                          <defs>
+                            <filter id="goo-12">
+                              <feGaussianBlur result="blur" stdDeviation="4" in="SourceGraphic"></feGaussianBlur>
+                              <feColorMatrix result="goo-12" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -7" mode="matrix" in="blur"></feColorMatrix>
+                              <feBlend in2="goo-12" in="SourceGraphic"></feBlend>
+                            </filter>
+                          </defs>
+                        </svg>
+                      </div>
+                    <p id="counterText">Photos Taken: 0 / 4</p>
+                    <label for="filterSelect">Select Filter:</label>
+
+                    <select id="filterSelect">
+                        <option value="none">No Filter</option>
+                        <option value="grayscale(100%)">B&W</option>
+                        <option value="sepia(100%)">Sepia</option>
+                        <option value="contrast(1.4) brightness(0.9)">Vintage</option>
+                        <option value="blur(2px) brightness(1.2)">Soft</option>
+                        <option value="contrast(1.5) brightness(0.7)">Noir</option>
+                        <option value="saturate(2) brightness(1.1)">Vivid</option>
+                    </select>
+                  
+                </div>
+            </div>
+            
+            <div class="right-section">
+                <div class="photo-stack">
+                    <canvas id="canvas1"></canvas>
+                    <canvas id="canvas2"></canvas>
+                    <canvas id="canvas3"></canvas>
+                    <canvas id="canvas4"></canvas>
+                </div>
+            </div>
+
+        </main>
+        
+        <footer>
+            <h3 class="footer-text">
+                MADE WITH LOVE © 2025 BY NYKEL DAVE VILLEGGAS
+            </h3>
+        </footer>
+    </div>
+    
+    <script>
+        function toggleDarkMode() {
+            document.body.classList.toggle("dark-mode");
+        }
+    </script>
+</body>
+</html>
