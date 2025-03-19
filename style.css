@@ -12,11 +12,10 @@ html, body {
     padding: 0;
     box-sizing: border-box;
     overflow: hidden;
-    display: flex;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
     justify-content: center;
     align-items: center;
 }
-
 
 /* Floating frames animation */
 .floating-frame {
@@ -77,6 +76,9 @@ html, body {
     align-items: center;
     text-align: center; /* Ensure text is centered */
     margin: 0 auto; /* Center horizontally */
+    border: 1px solid red;
+    padding-bottom: 0;
+    margin-bottom: 0;
 }
 
 .content {
@@ -136,12 +138,12 @@ html, body {
 
 
 .description {
-    font-size: 12px;
+    font-size: 13px;
     line-height: 2;
     width: 100%;
-    max-width: 800px;
+    max-width: 600px;
     text-align: center;
-    margin: 0 auto 40px auto;
+    
     animation: fadeInUp 1.5s ease-in 0.5s both;
 }
 
@@ -210,27 +212,26 @@ html, body {
 
 .toggle-switch {
     position: absolute;
-    right: 20px; /* Position from right instead of left */
-    left: auto; /* Reset left position */
-    width: 100px;
-    height: 50px;
+    right: 10px; /* Adjusted for better positioning */
+    width: 60px; /* Reduced width */
+    height: 30px; /* Reduced height */
     --light: #d8dbe0;
     --dark: #28292c;
     --link: rgb(27, 129, 112);
     --link-hover: rgb(24, 94, 82);
     position: fixed;
-    top: 20px;
+    top: 10px;
     z-index: 1000;
 }
 
 .switch-label {
     position: absolute;
     width: 100%;
-    height: 50px;
+    height: 100%;
     background-color: var(--dark);
-    border-radius: 25px;
+    border-radius: 15px; /* Adjusted for smaller switch */
     cursor: pointer;
-    border: 3px solid var(--dark);
+    border: 2px solid var(--dark);
 }
 
 .checkbox {
@@ -242,8 +243,7 @@ html, body {
     position: absolute;
     width: 100%;
     height: 100%;
-    border-radius: 25px;
-    -webkit-transition: 0.3s;
+    border-radius: 15px; 
     transition: 0.3s;
 }
 
@@ -254,24 +254,19 @@ html, body {
 .slider::before {
     content: "";
     position: absolute;
-    top: 10px;
-    left: 10px;
-    width: 25px;
-    height: 25px;
+    top: 5px; /* Adjusted for new size */
+    left: 5px; /* Adjusted for new size */
+    width: 20px; /* Smaller switch circle */
+    height: 20px;
     border-radius: 50%;
-    -webkit-box-shadow: inset 12px -4px 0px 0px var(--light);
-    box-shadow: inset 12px -4px 0px 0px var(--light);
+    box-shadow: inset 8px -3px 0px 0px var(--light);
     background-color: var(--dark);
-    -webkit-transition: 0.3s;
     transition: 0.3s;
 }
 
 .checkbox:checked ~ .slider::before {
-    -webkit-transform: translateX(50px);
-    -ms-transform: translateX(50px);
-    transform: translateX(50px);
+    transform: translateX(30px); /* Adjusted for new size */
     background-color: var(--dark);
-    -webkit-box-shadow: none;
     box-shadow: none;
 }
 
@@ -427,6 +422,11 @@ button:hover .arrow:before {
 }
 
 @media screen and (max-width: 768px) {
+    body {
+        overflow: auto; /* Enable scrolling */
+        -webkit-overflow-scrolling: touch; /* Smooth scrolling for iOS */
+    }
+
     
     .title {
         font-size: calc(40px + 5vw); /* Use this font size value */
@@ -436,6 +436,8 @@ button:hover .arrow:before {
         overflow: visible; /* Show all text */
         margin-top: 15rem; /* Adjusted for better spacing */
         text-align: center;
+        margin-bottom: 0;
+        margin-top: -10px; /* Moves it up */
     }
     
     .content {
@@ -469,6 +471,7 @@ button:hover .arrow:before {
     .title {
         font-size: clamp(3rem, 4vw, 40px);
         margin-top: 10rem;
+        margin-bottom: 0;
         padding: 10px;
     }
     
@@ -490,7 +493,7 @@ button:hover .arrow:before {
     }
     
     button {
-        padding: 8px 14px;
+        padding: 15px 14px;
         font-size: 12px;
     }
     
@@ -498,6 +501,9 @@ button:hover .arrow:before {
         bottom: 60px; /* Less bottom spacing */
         left: 5px;
         width: calc(100% - 10px);
+    }
+    .description{
+        padding-top: 1px;
     }
 }
 
