@@ -1,0 +1,163 @@
+.editpage {
+    background-color: #f0f0f0;
+    font-family: 'League Spartan', sans-serif;
+}
+
+.edit-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 10px;
+    gap: 100px;
+}
+
+.edit-container h1 {
+    font-family: 'Koulen', sans-serif;
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+}
+
+.edit-layout {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.edit-canvas-container {
+    flex: 1;
+    min-width: 300px;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 100px;
+}
+
+#editCanvas {
+    max-width: 100%;
+    max-height: 70vh;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    gap: 100px;
+}
+
+.edit-controls {
+    flex: 1;
+    min-width: 300px;
+    max-width: 500px;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.edit-section {
+    margin-bottom: 25px;
+}
+
+.edit-section h2 {
+    font-family: 'Kreon', serif;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: #333;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
+
+.background-options, .color-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.bg-option, .color-option {
+    width: 80px;
+    cursor: pointer;
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+.bg-option:hover, .color-option:hover {
+    transform: scale(1.05);
+}
+
+.bg-option.selected, .color-option.selected {
+    outline: 3px solid #5271ff;
+    border-radius: 8px;
+}
+
+.bg-preview, .color-preview {
+    height: 60px;
+    margin-bottom: 5px;
+    border-radius: 8px;
+    background-size: cover;
+    background-position: center;
+    border: 1px solid #ddd;
+}
+
+.no-bg {
+    background-color: #f8f8f8;
+    position: relative;
+}
+
+.no-bg::after {
+    content: "✕";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    color: #999;
+}
+
+.edit-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.primary-btn, .secondary-btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-family: 'League Spartan', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex: 1;
+}
+
+.primary-btn {
+    background-color: #5271ff;
+    color: white;
+}
+
+.secondary-btn {
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+.primary-btn:hover {
+    background-color: #3f5ce0;
+}
+
+.secondary-btn:hover {
+    background-color: #d0d0d0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .edit-layout {
+        flex-direction: column;
+    }
+    
+    .edit-canvas-container, .edit-controls {
+        min-width: 100%;
+    }
+    
+    #editCanvas {
+        max-height: 50vh;
+    }
+}

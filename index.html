@@ -4,6 +4,7 @@
     <meta charset="UTF-8">     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">     
     <link rel="stylesheet" href="style.css">
+    
     <title>FRAMEX PHOTOBOOTH</title>
     <style>
 
@@ -57,20 +58,76 @@
                     <div class="feature-title">CREATIVE FILTERS</div>
                 </div>
             </div>
-            
-            <button>               
-                Sign up               
+    
+
+            <!-- Capture button (initially disabled) -->
+            <button id="myButton" >Ready?</button>
+               
                 <div class="arrow-wrapper">                   
                     <div class="arrow"></div>                          
-                </div>           
-            </button>         
+                </div>  
+                <div id="customAlert" class="alert-box">
+                    <p id="alertMessage">Hey there! Just a reminder that Framex is proud of you. Keep going!</p>
+                    <button id="alertOkButton">Okay</button>
+                </div>
+                
+                <!-- Add this to blur background when alert is open -->
+                <div id="overlay"></div>
         </div>              
     </div>          
     
     <script>
 const darkModeToggle = document.getElementById('darkModeToggle');
 const isDarkMode = localStorage.getItem('dark-mode') === 'enabled';
+const alertBox = document.getElementById("customAlert");
+const alertMessage = document.getElementById("alertMessage");
+const alertOkButton = document.getElementById("alertOkButton");
+const overlay = document.getElementById("overlay");
+const myButton = document.getElementById("myButton");
 
+
+let alertCount = 0;
+
+// Array of custom alert messages
+const messages = [
+    "Hey! Remember to smile today—Framex loves to see you shine! 😊",
+    "You look amazing! Strike a pose and let the camera do the magic! 📸",
+    "Your support means a lot! Please consider clicking the donation button to help my project. 😊"
+];
+
+// Show first alert when "Ready?" button is clicked
+myButton.addEventListener("click", function() {
+    if (alertCount === 0) { // Ensures the alert sequence starts only once
+        showCustomAlert();
+    }
+});
+
+// Function to show alerts one by one
+function showCustomAlert() {
+    if (alertCount < messages.length) {
+        alertMessage.innerText = messages[alertCount]; // Display the correct message
+        alertBox.style.display = "block"; // Show custom alert
+        overlay.style.display = "block"; // Show background overlay
+    } else {
+        // After all alerts, redirect to instruction.html
+        window.location.href = "instruction.html";
+    }
+}
+
+// Handle "OK" button click
+alertOkButton.addEventListener("click", function() {
+    alertBox.style.display = "none"; // Hide alert box
+    overlay.style.display = "none"; // Hide overlay
+
+    alertCount++; // Move to next alert
+
+    if (alertCount < messages.length) {
+        setTimeout(showCustomAlert, 200); // Show next alert after delay
+    } else {
+        // If all alerts are shown, allow navigation
+        window.location.href = "instruction.html";
+    }
+});
 if (isDarkMode) {
     document.body.classList.add('dark-mode');
     darkModeToggle.checked = true;

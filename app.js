@@ -9,8 +9,7 @@ const finalCanvas = document.getElementById("finalCanvas");
 const finalCtx = finalCanvas ? finalCanvas.getContext("2d") : null; // Only if exists
 const filterSelect = document.getElementById("filterSelect");
 const mirrorToggle = document.getElementById("mirrorToggle");
-
-
+const cameraSelect = document.getElementById("cameraSelect");
 
 
 // Get multiple canvas elements for stacking photos
@@ -33,21 +32,15 @@ if (canvasList.some(canvas => canvas === null)) {
 
 
 // 🎥 Start the camera
-async function startCamera() {
+async function startCamera(deviceId = null) {
     try {
         const constraints = {
-            video: {
-                facingMode: "user" // Prefer front-facing camera
-            }
+            video: deviceId ? { deviceId: { exact: deviceId } } : { facingMode: "user" }
         };
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
         video.srcObject = stream;
 
-        // Force non-mirrored view by default
-        video.style.transform = "scaleX(1)"; // Ensure the video is not mirrored
-        mirrorToggle.checked = false; // Ensure the toggle is unchecked
-
-        console.log("Camera started with non-mirrored view."); // Debugging
+        console.log("Camera started successfully!"); // Debugging
 
     } catch (error) {
         console.error("Error accessing the camera:", error);
@@ -241,8 +234,10 @@ function generatePhotoStrip() {
 
 // 🚀 Start camera when page loads
 window.addEventListener("load", () => {
-    if (video) {
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         startCamera();
+    } else {
+        console.error("Camera API not supported in this browser.");
     }
 });
 
@@ -290,3 +285,154 @@ cameraSelect.addEventListener("change", () => {
 
 
 
+// Add event listener to existing elements
+downloadBtn.addEventListener("click", () => {
+    // Navigate to editor page after photos are captured
+    showEditorPage();
+  });
+  
+  // New functions for the editor page
+  function showEditorPage() {
+    // Hide photobooth elements
+    document.getElementById("photobooth-container").style.display = "none";
+    
+    // Show editor elements
+    document.getElementById("editor-container").style.display = "block";
+    
+    // Generate the final photo strip for editing
+    generateFinalStripForEdit();
+  }
+  
+  function generateFinalStripForEdit() {
+    const editorCanvas = document.getElementById("editorCanvas");
+    const editorCtx = editorCanvas.getContext("2d");
+    
+    const width = canvasList[0].width;
+    const height = canvasList[0].height;
+    editorCanvas.width = width;
+    editorCanvas.height = height * maxPhotos;
+    
+    // First draw the selected background if any
+    const selectedBackground = document.querySelector(".bg-option.selected");
+    if (selectedBackground) {
+      const bgImage = new Image();
+      bgImage.src = selectedBackground.getAttribute("data-bg");
+      bgImage.onload = () => {
+        editorCtx.drawImage(bgImage, 0, 0, editorCanvas.width, editorCanvas.height);
+        
+        // Then draw the photos on top
+        drawPhotosOnEditor(editorCtx, width, height);
+      };
+    } else {
+      // No background, just draw the photos
+      drawPhotosOnEditor(editorCtx, width, height);
+    }
+  }
+  
+  function drawPhotosOnEditor(ctx, width, height) {
+    capturedPhotos.forEach((photo, index) => {
+      let img = new Image();
+      img.src = photo;
+      img.onload = () => {
+        ctx.drawImage(img, 0, index * height, width, height);
+      };
+    });
+  }
+  
+  // Background selection functionality
+  document.querySelectorAll(".bg-option").forEach(option => {
+    option.addEventListener("click", () => {
+      // Remove selected class from all options
+      document.querySelectorAll(".bg-option").forEach(item => {
+        item.classList.remove("selected");
+      });
+      
+      // Add selected class to clicked option
+      option.classList.add("selected");
+      
+      // Regenerate canvas with new background
+      generateFinalStripForEdit();
+    });
+  });
+  
+  // Download button functionality for the editor page
+  document.getElementById("saveEditorBtn").addEventListener("click", () => {
+    const editorCanvas = document.getElementById("editorCanvas");
+    const link = document.createElement("a");
+    link.download = "photobooth-strip.png";
+    link.href = editorCanvas.toDataURL("image/png");
+    link.click();
+  });
+  
+  // Back to booth button
+  document.getElementById("backToBoothBtn").addEventListener("click", () => {
+    document.getElementById("editor-container").style.display = "none";
+    document.getElementById("photobooth-container").style.display = "block";
+  });
+  function storePhotosInSession() {
+    // Convert the captured photos array to JSON and store in session storage
+    sessionStorage.setItem('capturedPhotos', JSON.stringify(capturedPhotos));
+}
+
+// Modify the capturePhoto function to store photos after capturing
+function capturePhoto() {
+    if (capturedPhotos.length < maxPhotos) {
+        console.log("Capturing photo...");
+
+        if (!video || video.videoWidth === 0 || video.videoHeight === 0) {
+            console.error("Video feed not ready yet!");
+            return;
+        }
+
+        const videoWidth = video.videoWidth;
+        const videoHeight = video.videoHeight;
+
+        canvasList.forEach(canvas => {
+            if (canvas) {
+                canvas.width = videoWidth;
+                canvas.height = videoHeight;
+            }
+        });
+
+        const tempCanvas = document.createElement("canvas");
+        const ctx = tempCanvas.getContext("2d");
+
+        tempCanvas.width = videoWidth;
+        tempCanvas.height = videoHeight;
+
+        if (mirrorToggle.checked) {
+            ctx.translate(tempCanvas.width, 0);
+            ctx.scale(-1, 1);
+        }
+
+        ctx.filter = filterSelect.value;  // Apply filter to captured image
+        ctx.drawImage(video, 0, 0, videoWidth, videoHeight);
+
+        const photoData = tempCanvas.toDataURL("image/png");
+        capturedPhotos.push(photoData);
+
+        canvasList.forEach((canvas, index) => {
+            if (canvas && capturedPhotos[index]) {
+                const targetCtx = canvas.getContext("2d");
+                let img = new Image();
+                img.src = capturedPhotos[index];
+
+                img.onload = () => {
+                    applyFilter(targetCtx, canvas, img);
+                    canvas.style.display = "block";
+                };
+            }
+        });
+
+        counterText.textContent = `Photos Taken: ${capturedPhotos.length} / ${maxPhotos}`;
+        
+        // Store photos in session storage
+        storePhotosInSession();
+    }
+}
+
+// Add event listener for the Next Page button
+document.querySelector("a[href='edit.html']").addEventListener("click", function(e) {
+    // Make sure photos are stored before navigating
+    storePhotosInSession();
+});
