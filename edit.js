@@ -23,7 +23,7 @@ let offsetX, offsetY;
 function initCanvas() {
     // Set canvas dimensions based on the device's screen size
     const canvasWidth = Math.min(window.innerWidth * 0.9, 500); // Adjust width dynamically
-    const canvasHeight = 1300; // Adjust height as needed
+    const canvasHeight = Math.min(window.innerHeight * 0.8, 1300); // Adjust height dynamically
 
     editCanvas.width = canvasWidth;
     editCanvas.height = canvasHeight;
@@ -98,25 +98,6 @@ function renderCanvas() {
     }
 }
 
-function setBackgroundImage(bgSrc) {
-    console.log("Setting background:", bgSrc); // Debugging line
-    currentBackground = bgSrc;
-    currentColor = null; // Reset color when using image
-
-    // Update UI
-    bgOptions.forEach(option => {
-        option.classList.remove('selected');
-        if (option.getAttribute('data-bg') === bgSrc) {
-            option.classList.add('selected');
-        }
-    });
-
-    colorOptions.forEach(option => {
-        option.classList.remove('selected');
-    });
-
-    renderCanvas();
-}
 // Draw photos on the canvas
 function drawPhotos() {
     if (photoData.length === 0) return;
@@ -183,8 +164,6 @@ function drawRoundedRect(ctx, x, y, width, height, radius) {
     ctx.quadraticCurveTo(x, y, x + radius, y);
     ctx.closePath();
 }
-
-
 
 // Draw stickers on the canvas
 function drawStickers() {
