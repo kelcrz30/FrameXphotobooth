@@ -37,33 +37,50 @@ if (canvasList.some(canvas => canvas === null)) {
 // 🎥 Start the camera
 async function startCamera(deviceId = null) {
     try {
-        // Clear any existing streams first
+        // Stop any existing streams
         if (video.srcObject) {
             video.srcObject.getTracks().forEach(track => track.stop());
         }
         
+        // Add necessary attributes for iOS
+        video.setAttribute('playsinline', true);
+        video.setAttribute('autoplay', true);
+        video.setAttribute('muted', true);
+        
+        // Define constraints with exact dimensions for iOS
         const constraints = {
-            video: deviceId 
-                ? { deviceId: { exact: deviceId } } 
-                : { facingMode: "user" },
-            audio: false // Explicitly disable audio to avoid iOS prompts
+            audio: false,
+            video: {
+                width: { ideal: 1280 },
+                height: { ideal: 720 },
+                facingMode: deviceId ? undefined : "user",
+                deviceId: deviceId ? { exact: deviceId } : undefined
+            }
         };
         
-        // Add playsinline attribute to video - critical for iOS
-        video.setAttribute('playsinline', 'true');
-        video.setAttribute('autoplay', 'true');
+        console.log("Requesting camera with constraints:", constraints);
         
+        // Get media stream
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        
+        // Assign stream to video element
         video.srcObject = stream;
         
-        // Ensure video plays on iOS
-        await video.play().catch(err => {
-            console.error("Video play error:", err);
-        });
+        // iOS Safari fix - force play
+        video.play().catch(e => console.error("Play error:", e));
         
-        console.log("Camera started successfully!", stream);
+        // Double-check that stream is active
+        setTimeout(() => {
+            if (video.paused) {
+                console.log("Video still paused after 500ms, trying to play again");
+                video.play().catch(e => console.error("Second play attempt error:", e));
+            }
+        }, 500);
+        
+        console.log("Camera started successfully with stream:", stream);
     } catch (error) {
         console.error("Error accessing the camera:", error);
+        alert("Camera access error: " + error.message);
     }
 }
 
@@ -251,7 +268,38 @@ function generatePhotoStrip() {
 
     finalCanvas.style.display = "block";
 }
-
+function fixIOSCamera() {
+    // iOS detection
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    
+    if (isIOS) {
+        console.log("iOS device detected, applying special fixes");
+        
+        // Force user interaction
+        document.body.addEventListener('click', function iosClickFix() {
+            if (video.paused) {
+                video.play().catch(e => console.log("iOS click fix play error:", e));
+            }
+            // Only need this once
+            document.body.removeEventListener('click', iosClickFix);
+        });
+        
+        // Handle orientation changes
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => {
+                // Restart camera after orientation change
+                if (video.srcObject) {
+                    const currentStream = video.srcObject;
+                    video.srcObject = null;
+                    setTimeout(() => {
+                        video.srcObject = currentStream;
+                        video.play().catch(e => console.log("Orientation change play error:", e));
+                    }, 300);
+                }
+            }, 500);
+        });
+    }
+}
 // 🚀 Start camera when page loads
 window.addEventListener("load", () => {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
