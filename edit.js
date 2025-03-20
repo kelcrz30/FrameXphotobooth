@@ -21,32 +21,45 @@ let offsetX, offsetY;
 
 // Initialize the canvas
 function initCanvas() {
-    // Set initial canvas size
-    editCanvas.width = 500;
-    editCanvas.height = 1300;
-    
+    // Set canvas dimensions based on the device's screen size
+    const canvasWidth = Math.min(window.innerWidth * 0.9, 500); // Adjust width dynamically
+    const canvasHeight = 1300; // Adjust height as needed
+
+    editCanvas.width = canvasWidth;
+    editCanvas.height = canvasHeight;
+
     // Clear canvas with white background
     editCtx.fillStyle = '#FFFFFF';
     editCtx.fillRect(0, 0, editCanvas.width, editCanvas.height);
-    
+
+    // Debugging: Log canvas dimensions
+    console.log("Canvas dimensions:", editCanvas.width, editCanvas.height);
+
     // Try to load photos from session storage
     loadPhotosFromStorage();
 }
 
 // Load photos from session storage
 function loadPhotosFromStorage() {
-    const storedPhotos = sessionStorage.getItem('capturedPhotos');
-    
-    if (storedPhotos) {
-        photoData = JSON.parse(storedPhotos);
-        renderCanvas();
-    } else {
-        // If no photos found, show a message on canvas
-        editCtx.fillStyle = '#333333';
-        editCtx.font = '24px "League Spartan", sans-serif';
-        editCtx.textAlign = 'center';
-        editCtx.fillText('No photos available. Please go back and take photos.', 
-            editCanvas.width / 2, editCanvas.height / 2);
+    try {
+        const storedPhotos = sessionStorage.getItem('capturedPhotos');
+        console.log("Stored photos from sessionStorage:", storedPhotos); // Debugging
+
+        if (storedPhotos) {
+            photoData = JSON.parse(storedPhotos);
+            console.log("Parsed photo data:", photoData); // Debugging
+            renderCanvas();
+        } else {
+            console.error("No photos found in sessionStorage.");
+            // Show a message on canvas
+            editCtx.fillStyle = '#333333';
+            editCtx.font = '24px "League Spartan", sans-serif';
+            editCtx.textAlign = 'center';
+            editCtx.fillText('No photos available. Please go back and take photos.', 
+                editCanvas.width / 2, editCanvas.height / 2);
+        }
+    } catch (error) {
+        console.error("Error loading photos from sessionStorage:", error);
     }
 }
 
@@ -115,31 +128,46 @@ function drawPhotos() {
     const photoHeight = availableHeight / photoData.length;
     const borderRadius = 8; // Change this for more or less rounding
 
-    photoData.forEach((photo, index) => {
-        const img = new Image();
-        img.src = photo;
+    // Create an array of promises for image loading
+    const imagePromises = photoData.map((photo, index) => {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.src = photo;
 
-        img.onload = function () {
-            const aspectRatio = img.width / img.height;
-            const photoWidth = editCanvas.width * 0.8; // Adjust width dynamically (80% of canvas width)
-            const xOffset = (editCanvas.width - photoWidth) / 2;
-            const yPosition = topPadding + index * (photoHeight + spacing);
+            img.onload = function () {
+                const aspectRatio = img.width / img.height;
+                const photoWidth = editCanvas.width * 0.8; // Adjust width dynamically (80% of canvas width)
+                const xOffset = (editCanvas.width - photoWidth) / 2;
+                const yPosition = topPadding + index * (photoHeight + spacing);
 
-            // Draw rounded rectangle
-            editCtx.save();
-            editCtx.beginPath();
-            drawRoundedRect(editCtx, xOffset, yPosition, photoWidth, photoHeight, borderRadius);
-            editCtx.clip(); // Clip the image to the rounded rectangle
+                // Draw rounded rectangle
+                editCtx.save();
+                editCtx.beginPath();
+                drawRoundedRect(editCtx, xOffset, yPosition, photoWidth, photoHeight, borderRadius);
+                editCtx.clip(); // Clip the image to the rounded rectangle
 
-            // Draw the image
-            editCtx.drawImage(img, xOffset, yPosition, photoWidth, photoHeight);
-            
-            editCtx.restore(); // Restore to avoid affecting other drawings
+                // Draw the image
+                editCtx.drawImage(img, xOffset, yPosition, photoWidth, photoHeight);
+                editCtx.restore(); // Restore to avoid affecting other drawings
 
-            // Draw stickers after photos are loaded
-            drawStickers();
-        };
+                resolve();
+            };
+
+            img.onerror = function () {
+                console.error("Failed to load photo:", photo);
+                reject();
+            };
+        });
     });
+
+    // Wait for all images to load before drawing stickers
+    Promise.all(imagePromises)
+        .then(() => {
+            drawStickers();
+        })
+        .catch((error) => {
+            console.error("Error loading photos:", error);
+        });
 }
 
 // Function to draw a rounded rectangle
