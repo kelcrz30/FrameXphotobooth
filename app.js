@@ -2,6 +2,9 @@ console.log("app.js is loaded!");
 
 // Get references to elements
 const video = document.getElementById("video");
+video.addEventListener('loadedmetadata', () => {
+    console.log('Video dimensions:', video.videoWidth, 'x', video.videoHeight);
+});
 const captureBtn = document.getElementById("captureBtn");
 const counterText = document.getElementById("counterText");
 const countdownText = document.getElementById("countdownText");
@@ -34,14 +37,31 @@ if (canvasList.some(canvas => canvas === null)) {
 // 🎥 Start the camera
 async function startCamera(deviceId = null) {
     try {
+        // Clear any existing streams first
+        if (video.srcObject) {
+            video.srcObject.getTracks().forEach(track => track.stop());
+        }
+        
         const constraints = {
-            video: deviceId ? { deviceId: { exact: deviceId } } : { facingMode: "user" }
+            video: deviceId 
+                ? { deviceId: { exact: deviceId } } 
+                : { facingMode: "user" },
+            audio: false // Explicitly disable audio to avoid iOS prompts
         };
+        
+        // Add playsinline attribute to video - critical for iOS
+        video.setAttribute('playsinline', 'true');
+        video.setAttribute('autoplay', 'true');
+        
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
         video.srcObject = stream;
-
-        console.log("Camera started successfully!"); // Debugging
-
+        
+        // Ensure video plays on iOS
+        await video.play().catch(err => {
+            console.error("Video play error:", err);
+        });
+        
+        console.log("Camera started successfully!", stream);
     } catch (error) {
         console.error("Error accessing the camera:", error);
     }
@@ -235,8 +255,22 @@ function generatePhotoStrip() {
 // 🚀 Start camera when page loads
 window.addEventListener("load", () => {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        // Call getCameras() instead of startCamera() directly
-        getCameras();
+        // On iOS, we need user interaction first
+        if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+            // Create a temporary button if needed
+            const startButton = document.createElement('button');
+            startButton.textContent = "Start Camera";
+            startButton.className = "start-camera-btn";
+            document.body.appendChild(startButton);
+            
+            startButton.addEventListener('click', () => {
+                getCameras();
+                startButton.remove(); // Remove the button after starting
+            });
+        } else {
+            // For non-iOS devices, start immediately
+            getCameras();
+        }
     } else {
         console.error("Camera API not supported in this browser.");
     }
