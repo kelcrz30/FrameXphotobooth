@@ -36,10 +36,10 @@
 }
 
 #editCanvas {
-    max-width: 100%;
-    max-height: 70vh;
+    max-width: 600%;
+    max-height: 100vh;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    gap: 100px;
+    gap: 5px;
 }
 
 .edit-controls {
@@ -161,3 +161,40 @@
         max-height: 50vh;
     }
 }
+.sticker-categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.sticker-category {
+    padding: 8px 15px;
+    background-color: #f5f5f5;
+    border: 2px solid #ddd;
+    border-radius: 30px;
+    cursor: pointer;
+    font-family: 'Koulen', sans-serif;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.sticker-category:hover {
+    background-color: #e0e0e0;
+}
+
+.sticker-category.selected {
+    background-color: #ff5757;
+    color: white;
+    border-color: #ff5757;
+}
+.photo-frame {
+    position: relative; /* Allows layering inside */
+    display: inline-block; /* Prevents extra spacing */
+}
+
+#photoCanvas {
+    position: relative; /* Stays below the frame */
+    z-index: 1; /* Lower than the frame */
+}
+

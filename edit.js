@@ -13,6 +13,12 @@ let photoData = [];
 let currentBackground = 'none';
 let currentColor = null;
 
+// Sticker variables
+let stickers = [];
+let activeSticker = null;
+let isDragging = false;
+let offsetX, offsetY;
+
 // Initialize the canvas
 function initCanvas() {
     // Set initial canvas size
@@ -55,57 +61,147 @@ function renderCanvas() {
         editCtx.fillRect(0, 0, editCanvas.width, editCanvas.height);
     }
 
-    // Draw other backgrounds (except City)
-    if (currentBackground && currentBackground !== '/city.png' && currentBackground !== 'none') {
+    // Draw background image if set
+    if (currentBackground && currentBackground !== 'none') {
         const bgImage = new Image();
         bgImage.src = currentBackground;
-        
+
         bgImage.onload = function () {
+            // Draw the background image
             editCtx.drawImage(bgImage, 0, 0, editCanvas.width, editCanvas.height);
-            drawPhotos(); // Draw photos on top
+
+            // Draw photos and stickers on top of the background
+            drawPhotos();
+            drawStickers();
         };
 
-        return; // Stop here to avoid drawing City too early
-    }
-
-    // Draw photos first (if no background is selected or City is selected)
-    drawPhotos();
-
-    // Now, apply "City" overlay on top
-    if (currentBackground === '/city.png') {
-        const cityOverlay = new Image();
-        cityOverlay.src = '/city.png'; // Ensure correct path
-
-        cityOverlay.onload = function () {
-            editCtx.drawImage(cityOverlay, 0, 0, editCanvas.width, editCanvas.height);
+        bgImage.onerror = function () {
+            console.error("Failed to load background image:", currentBackground);
         };
+    } else {
+        // If no background image, just draw photos and stickers
+        drawPhotos();
+        drawStickers();
     }
 }
 
+function setBackgroundImage(bgSrc) {
+    console.log("Setting background:", bgSrc); // Debugging line
+    currentBackground = bgSrc;
+    currentColor = null; // Reset color when using image
+
+    // Update UI
+    bgOptions.forEach(option => {
+        option.classList.remove('selected');
+        if (option.getAttribute('data-bg') === bgSrc) {
+            option.classList.add('selected');
+        }
+    });
+
+    colorOptions.forEach(option => {
+        option.classList.remove('selected');
+    });
+
+    renderCanvas();
+}
 // Draw photos on the canvas
 function drawPhotos() {
     if (photoData.length === 0) return;
-    
+
     const topPadding = 50; // Extra space on top
     const bottomPadding = 100; // Extra space for the date
-    const spacing = 20; 
+    const spacing = 25;
     const availableHeight = editCanvas.height - (topPadding + bottomPadding + spacing * (photoData.length - 1));
     const photoHeight = availableHeight / photoData.length;
-    
+    const borderRadius = 8; // Change this for more or less rounding
+
     photoData.forEach((photo, index) => {
         const img = new Image();
         img.src = photo;
-    
-        img.onload = function() {
+
+        img.onload = function () {
             const aspectRatio = img.width / img.height;
-            const photoWidth = photoHeight * aspectRatio;
+            const photoWidth = editCanvas.width * 0.8; // Adjust width dynamically (80% of canvas width)
             const xOffset = (editCanvas.width - photoWidth) / 2;
             const yPosition = topPadding + index * (photoHeight + spacing);
-    
+
+            // Draw rounded rectangle
+            editCtx.save();
+            editCtx.beginPath();
+            drawRoundedRect(editCtx, xOffset, yPosition, photoWidth, photoHeight, borderRadius);
+            editCtx.clip(); // Clip the image to the rounded rectangle
+
+            // Draw the image
             editCtx.drawImage(img, xOffset, yPosition, photoWidth, photoHeight);
+            
+            editCtx.restore(); // Restore to avoid affecting other drawings
+
+            // Draw stickers after photos are loaded
+            drawStickers();
         };
     });
-}   
+}
+
+// Function to draw a rounded rectangle
+function drawRoundedRect(ctx, x, y, width, height, radius) {
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + width - radius, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    ctx.lineTo(x + radius, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
+}
+
+
+
+// Draw stickers on the canvas
+function drawStickers() {
+    stickers.forEach(sticker => {
+        editCtx.drawImage(
+            sticker.image, 
+            sticker.x, 
+            sticker.y, 
+            sticker.width, 
+            sticker.height
+        );
+    });
+}
+
+// Handle sticker click to move to top
+function handleStickerClick(e) {
+    const rect = editCanvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    
+    // Check in reverse order to handle topmost stickers first
+    for (let i = stickers.length - 1; i >= 0; i--) {
+        const sticker = stickers[i];
+        
+        if (
+            mouseX >= sticker.x && 
+            mouseX <= sticker.x + sticker.width &&
+            mouseY >= sticker.y && 
+            mouseY <= sticker.y + sticker.height
+        ) {
+            // Found a sticker that was clicked
+            activeSticker = sticker;
+            
+            // Move sticker to top (y = 50)
+            sticker.y = 50;
+            
+            // Re-render the canvas
+            renderCanvas();
+            
+            // Stop checking once we've found a sticker
+            break;
+        }
+    }
+}
+
 // Set background image
 function setBackgroundImage(bgSrc) {
     currentBackground = bgSrc;
@@ -162,6 +258,106 @@ function goBack() {
     window.location.href = 'photobooth.html';
 }
 
+// Sticker preset configurations
+const stickerPresets = {
+    "girlypop": [
+        { src: "/", x: 50, y: 100, size: 70 },
+        { src: "/stickers/flower.png", x: 400, y: 200, size: 80 },
+        { src: "/stickers/star.png", x: 100, y: 700, size: 60 },
+        { src: "/stickers/butterfly.png", x: 350, y: 800, size: 75 },
+        { src: "/stickers/sparkle.png", x: 200, y: 400, size: 65 }
+    ],
+    "cute": [
+        { src: "/stickers/rabbit.png", x: 80, y: 150, size: 80 },
+        { src: "/stickers/bear.png", x: 380, y: 250, size: 90 },
+        { src: "/stickers/bow.png", x: 120, y: 650, size: 50 },
+        { src: "/stickers/icecream.png", x: 300, y: 850, size: 70 }
+    ],
+    "mofusand": [
+        { src: "/", x: 460, y: 150, size: 70 },
+        { src: "/stickers/cat.png", x: -50, y: 200, size: 200},
+        { src: "/stickers/cat2.png", x: 320, y: 500, size: 200 },
+        { src: "/stickers/cat5.png", x: 350, y: -30, size: 200 },
+        { src: "/stickers/penguin.png", x: 240, y: 480, size: 70 },
+        { src: "/stickers/shinchan2.png", x: 460, y: 500, size: 70 },
+        { src: "/stickers/shinchan3.png", x: 240, y: 550, size: 70 },
+        { src: "/stickers/hamster.png", x: 440, y: 680, size: 70 },
+        { src: "/stickers/paw.png", x: 240, y: 680, size: 40 },
+        { src: "/", x: -50, y: 350, size: 250 },
+        { src: "/stickers/cat3.png", x: 40  , y: 950, size: 450 }
+    ],
+    "shinchan": [
+        { src: "/stickers/shinchan1.png", x: 80, y: 150, size: 90 },
+        { src: "/stickers/shinchan2.png", x: 400, y: 300, size: 90 },
+        { src: "/stickers/shinchan3.png", x: 100, y: 500, size: 90 },
+        { src: "/stickers/shinchan4.png", x: 350, y: 700, size: 90 }
+    ],
+    "miffy": [
+        { src: "/stickers/miffy1.png", x: 50, y: 120, size: 80 },
+        { src: "/stickers/miffy2.png", x: 420, y: 250, size: 80 },
+        { src: "/stickers/miffy3.png", x: 100, y: 500, size: 80 },
+        { src: "/stickers/miffy4.png", x: 380, y: 650, size: 80 },
+        { src: "/stickers/miffy5.png", x: 150, y: 850, size: 80 }
+    ]
+};
+
+// Function to apply sticker preset
+function applyStickerPreset(presetName) {
+    // Clear existing stickers
+    stickers = [];
+    activeSticker = null;
+    
+    if (presetName === "none") {
+        renderCanvas();
+        return;
+    }
+    
+    const preset = stickerPresets[presetName];
+    if (!preset) {
+        console.error("Preset not found:", presetName);
+        return;
+    }
+    
+    // Load all stickers from the preset
+    let loadedCount = 0;
+    preset.forEach(stickerInfo => {
+        const sticker = new Image();
+        sticker.src = stickerInfo.src;
+        
+        sticker.onload = function() {
+            const aspectRatio = sticker.width / sticker.height;
+            const width = stickerInfo.size;
+            const height = width / aspectRatio;
+            
+            const newSticker = {
+                image: sticker,
+                x: stickerInfo.x,
+                y: stickerInfo.y,
+                width: width,
+                height: height
+            };
+            
+            stickers.push(newSticker);
+            loadedCount++;
+            
+            // Render when all stickers are loaded
+            if (loadedCount === preset.length) {
+                renderCanvas();
+            }
+        };
+        
+        sticker.onerror = function() {
+            console.error("Failed to load sticker:", stickerInfo.src);
+            loadedCount++;
+            
+            // Continue rendering even if some stickers fail
+            if (loadedCount === preset.length) {
+                renderCanvas();
+            }
+        };
+    });
+}
+
 // Event listeners
 downloadBtn.addEventListener('click', downloadPhoto);
 backBtn.addEventListener('click', goBack);
@@ -182,5 +378,29 @@ colorOptions.forEach(option => {
     });
 });
 
+// Add click event listener to the canvas for handling sticker clicks
+editCanvas.addEventListener('click', handleStickerClick);
+
 // Initialize when page loads
-window.addEventListener('load', initCanvas);
+window.addEventListener('load', function() {
+    initCanvas();
+    // Initialize empty stickers array
+    stickers = [];
+});
+
+// Add event listeners for sticker categories
+document.addEventListener('DOMContentLoaded', function() {
+    // Add sticker category event listeners
+    const stickerCategories = document.querySelectorAll('.sticker-category');
+    stickerCategories.forEach(category => {
+        category.addEventListener('click', function() {
+            // Update UI
+            stickerCategories.forEach(cat => cat.classList.remove('selected'));
+            this.classList.add('selected');
+            
+            // Apply the selected preset
+            const presetName = this.getAttribute('data-category');
+            applyStickerPreset(presetName);
+        });
+    });
+});

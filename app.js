@@ -235,7 +235,8 @@ function generatePhotoStrip() {
 // 🚀 Start camera when page loads
 window.addEventListener("load", () => {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        startCamera();
+        // Call getCameras() instead of startCamera() directly
+        getCameras();
     } else {
         console.error("Camera API not supported in this browser.");
     }
