@@ -14,7 +14,6 @@ const filterSelect = document.getElementById("filterSelect");
 const mirrorToggle = document.getElementById("mirrorToggle");
 const cameraSelect = document.getElementById("cameraSelect");
 
-
 // Get multiple canvas elements for stacking photos
 const canvasList = [
     document.getElementById("canvas1"),
@@ -33,8 +32,6 @@ if (canvasList.some(canvas => canvas === null)) {
     console.error("One or more photo stack canvases not found!");
 }
 
-
-// 🎥 Start the camera
 // 🎥 Start the camera
 async function startCamera(deviceId = null) {
     try {
@@ -191,13 +188,6 @@ function capturePhoto() {
         const videoWidth = video.videoWidth;
         const videoHeight = video.videoHeight;
 
-        canvasList.forEach(canvas => {
-            if (canvas) {
-                canvas.width = videoWidth;
-                canvas.height = videoHeight;
-            }
-        });
-
         const tempCanvas = document.createElement("canvas");
         const ctx = tempCanvas.getContext("2d");
 
@@ -209,12 +199,13 @@ function capturePhoto() {
             ctx.scale(-1, 1);
         }
 
-        ctx.filter = filterSelect.value;  // Apply filter to captured image
+        ctx.filter = filterSelect.value;  // Apply selected filter
         ctx.drawImage(video, 0, 0, videoWidth, videoHeight);
 
         const photoData = tempCanvas.toDataURL("image/png");
         capturedPhotos.push(photoData);
 
+        // Ensure all 4 photos are displayed
         canvasList.forEach((canvas, index) => {
             if (canvas && capturedPhotos[index]) {
                 const targetCtx = canvas.getContext("2d");
@@ -222,6 +213,7 @@ function capturePhoto() {
                 img.src = capturedPhotos[index];
 
                 img.onload = () => {
+                    targetCtx.clearRect(0, 0, canvas.width, canvas.height); // Clear before drawing
                     applyFilter(targetCtx, canvas, img);
                     canvas.style.display = "block";
                 };
@@ -229,6 +221,11 @@ function capturePhoto() {
         });
 
         counterText.textContent = `Photos Taken: ${capturedPhotos.length} / ${maxPhotos}`;
+
+        // Ensure all 4 images are stored
+        if (capturedPhotos.length === maxPhotos) {
+            storePhotosInSession();
+        }
     }
 }
 
@@ -247,9 +244,8 @@ filterSelect.addEventListener("change", () => {
     });
 });
 
-
 // 🎵 Sound and Countdown Setup
-const countdownInterval = 1000; // 1 second per tick
+const countdownInterval = 50000; // 1 second per tick
 let countdownTimer = null;
 
 // 🔥 Preload sounds to remove delay
@@ -269,8 +265,6 @@ function playSound(sound) {
 }
 
 // ⏳ Countdown and Auto-Capture
-
-
 function startAutoCapture() {
     capturedPhotos = [];
     counterText.textContent = `Photos Taken: 0 / ${maxPhotos}`;
@@ -286,31 +280,32 @@ function startAutoCapture() {
             beepSound.currentTime = 0;
             return;
         }
-
+    
         let countdown = 5;
         countdownText.textContent = countdown;
         countdownText.style.display = "block";
-
+    
         playSound(beepSound); // First beep instantly
-
-        countdownTimer = setInterval(() => {
+    
+        const countdownStep = () => {
             countdown--;
-
+    
             if (countdown > 0) {
                 countdownText.textContent = countdown;
                 if (count < maxPhotos) {
                     playSound(beepSound); // Only play if more photos are needed
                 }
+                requestAnimationFrame(countdownStep);
             } else {
                 clearInterval(countdownTimer);
                 countdownText.textContent = "";
                 countdownText.style.display = "none";
-
+    
                 setTimeout(() => {
                     playSound(shutterSound);
                     capturePhoto();
                     count++;
-
+    
                     if (count < maxPhotos) {
                         setTimeout(countdownAndCapture, 800);
                     } else {
@@ -324,12 +319,13 @@ function startAutoCapture() {
                     }
                 }, 100);
             }
-        }, countdownInterval);
+        };
+    
+        countdownStep();
     }
 
     countdownAndCapture();
 }
-
 
 // 📸 Generate Final Collage
 function generatePhotoStrip() {
@@ -350,71 +346,7 @@ function generatePhotoStrip() {
 
     finalCanvas.style.display = "block";
 }
-function fixIOSCamera() {
-    // iOS detection
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    
-    if (isIOS) {
-        console.log("iOS device detected, applying special fixes");
-        
-        // Force user interaction - Safari requires user gesture
-        document.body.addEventListener('click', function iosClickFix() {
-            if (video.paused) {
-                video.play().catch(e => console.log("iOS click fix play error:", e));
-            }
-            // Only need this once
-            document.body.removeEventListener('click', iosClickFix);
-        });
-        
-        // Handle orientation changes
-        window.addEventListener('orientationchange', () => {
-            console.log("iOS orientation change detected");
-            setTimeout(() => {
-                // Restart camera after orientation change
-                if (video.srcObject) {
-                    const currentStream = video.srcObject;
-                    const tracks = currentStream.getTracks();
-                    
-                    // Store current camera ID if available
-                    let currentCameraId = null;
-                    if (tracks.length > 0 && tracks[0].getSettings) {
-                        currentCameraId = tracks[0].getSettings().deviceId;
-                    }
-                    
-                    // Stop current tracks
-                    tracks.forEach(track => track.stop());
-                    video.srcObject = null;
-                    
-                    // Restart with brief delay
-                    setTimeout(() => {
-                        startCamera(currentCameraId).catch(e => {
-                            console.error("Failed to restart camera after orientation change:", e);
-                            // Fallback to any camera
-                            startCamera();
-                        });
-                    }, 500);
-                }
-            }, 500);
-        });
-        
-        // iOS Safari fullscreen fix
-        document.addEventListener('fullscreenchange', () => {
-            setTimeout(() => {
-                if (video.paused && video.srcObject) {
-                    video.play().catch(e => console.log("iOS fullscreen change play error:", e));
-                }
-            }, 300);
-        });
-        
-        // Additional fix for Safari suspending video when tab is inactive
-        document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'visible' && video.paused && video.srcObject) {
-                console.log("Tab became visible, restarting video");
-                video.play().catch(e => console.log("Visibility change play error:", e));
-            }
-        });
-    }
-}
+
 // 🚀 Start camera when page loads
 window.addEventListener("load", () => {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -444,12 +376,13 @@ if (captureBtn) {
 } else {
     console.error("Capture button not found!");
 }
+
 mirrorToggle.addEventListener("change", () => {
     const isChecked = mirrorToggle.checked;
     video.style.transform = isChecked ? "scaleX(-1)" : "scaleX(1)"; // Toggle mirroring
-
     console.log("Mirror state toggled:", isChecked); // Debugging
 });
+
 // 🎥 Populate Camera Selection Dropdown
 async function getCameras() {
     try {
@@ -473,24 +406,19 @@ async function getCameras() {
     }
 }
 
-// 🎥 Start Camera with Selected Device
-
-
 // 🎛️ Change Camera When User Selects a Different One
 cameraSelect.addEventListener("change", () => {
     startCamera(cameraSelect.value);
 });
 
-
-
 // Add event listener to existing elements
 downloadBtn.addEventListener("click", () => {
     // Navigate to editor page after photos are captured
     showEditorPage();
-  });
-  
-  // New functions for the editor page
-  function showEditorPage() {
+});
+
+// New functions for the editor page
+function showEditorPage() {
     // Hide photobooth elements
     document.getElementById("photobooth-container").style.display = "none";
     
@@ -499,9 +427,9 @@ downloadBtn.addEventListener("click", () => {
     
     // Generate the final photo strip for editing
     generateFinalStripForEdit();
-  }
-  
-  function generateFinalStripForEdit() {
+}
+
+function generateFinalStripForEdit() {
     const editorCanvas = document.getElementById("editorCanvas");
     const editorCtx = editorCanvas.getContext("2d");
     
@@ -513,120 +441,64 @@ downloadBtn.addEventListener("click", () => {
     // First draw the selected background if any
     const selectedBackground = document.querySelector(".bg-option.selected");
     if (selectedBackground) {
-      const bgImage = new Image();
-      bgImage.src = selectedBackground.getAttribute("data-bg");
-      bgImage.onload = () => {
-        editorCtx.drawImage(bgImage, 0, 0, editorCanvas.width, editorCanvas.height);
-        
-        // Then draw the photos on top
-        drawPhotosOnEditor(editorCtx, width, height);
-      };
+        const bgImage = new Image();
+        bgImage.src = selectedBackground.getAttribute("data-bg");
+        bgImage.onload = () => {
+            editorCtx.drawImage(bgImage, 0, 0, editorCanvas.width, editorCanvas.height);
+            
+            // Then draw the photos on top
+            drawPhotosOnEditor(editorCtx, width, height);
+        };
     } else {
-      // No background, just draw the photos
-      drawPhotosOnEditor(editorCtx, width, height);
+        // No background, just draw the photos
+        drawPhotosOnEditor(editorCtx, width, height);
     }
-  }
-  
-  function drawPhotosOnEditor(ctx, width, height) {
+}
+
+function drawPhotosOnEditor(ctx, width, height) {
     capturedPhotos.forEach((photo, index) => {
-      let img = new Image();
-      img.src = photo;
-      img.onload = () => {
-        ctx.drawImage(img, 0, index * height, width, height);
-      };
+        let img = new Image();
+        img.src = photo;
+        img.onload = () => {
+            ctx.drawImage(img, 0, index * height, width, height);
+        };
     });
-  }
-  
-  // Background selection functionality
-  document.querySelectorAll(".bg-option").forEach(option => {
+}
+
+// Background selection functionality
+document.querySelectorAll(".bg-option").forEach(option => {
     option.addEventListener("click", () => {
-      // Remove selected class from all options
-      document.querySelectorAll(".bg-option").forEach(item => {
-        item.classList.remove("selected");
-      });
-      
-      // Add selected class to clicked option
-      option.classList.add("selected");
-      
-      // Regenerate canvas with new background
-      generateFinalStripForEdit();
+        // Remove selected class from all options
+        document.querySelectorAll(".bg-option").forEach(item => {
+            item.classList.remove("selected");
+        });
+        
+        // Add selected class to clicked option
+        option.classList.add("selected");
+        
+        // Regenerate canvas with new background
+        generateFinalStripForEdit();
     });
-  });
-  
-  // Download button functionality for the editor page
-  document.getElementById("saveEditorBtn").addEventListener("click", () => {
+});
+
+// Download button functionality for the editor page
+document.getElementById("saveEditorBtn").addEventListener("click", () => {
     const editorCanvas = document.getElementById("editorCanvas");
     const link = document.createElement("a");
     link.download = "photobooth-strip.png";
     link.href = editorCanvas.toDataURL("image/png");
     link.click();
-  });
-  
-  // Back to booth button
-  document.getElementById("backToBoothBtn").addEventListener("click", () => {
+});
+
+// Back to booth button
+document.getElementById("backToBoothBtn").addEventListener("click", () => {
     document.getElementById("editor-container").style.display = "none";
     document.getElementById("photobooth-container").style.display = "block";
-  });
-  function storePhotosInSession() {
+});
+
+function storePhotosInSession() {
     // Convert the captured photos array to JSON and store in session storage
     sessionStorage.setItem('capturedPhotos', JSON.stringify(capturedPhotos));
-}
-
-// Modify the capturePhoto function to store photos after capturing
-function capturePhoto() {
-    if (capturedPhotos.length < maxPhotos) {
-        console.log("Capturing photo...");
-
-        if (!video || video.videoWidth === 0 || video.videoHeight === 0) {
-            console.error("Video feed not ready yet!");
-            return;
-        }
-
-        const videoWidth = video.videoWidth;
-        const videoHeight = video.videoHeight;
-
-        canvasList.forEach(canvas => {
-            if (canvas) {
-                canvas.width = videoWidth;
-                canvas.height = videoHeight;
-            }
-        });
-
-        const tempCanvas = document.createElement("canvas");
-        const ctx = tempCanvas.getContext("2d");
-
-        tempCanvas.width = videoWidth;
-        tempCanvas.height = videoHeight;
-
-        if (mirrorToggle.checked) {
-            ctx.translate(tempCanvas.width, 0);
-            ctx.scale(-1, 1);
-        }
-
-        ctx.filter = filterSelect.value;  // Apply filter to captured image
-        ctx.drawImage(video, 0, 0, videoWidth, videoHeight);
-
-        const photoData = tempCanvas.toDataURL("image/png");
-        capturedPhotos.push(photoData);
-
-        canvasList.forEach((canvas, index) => {
-            if (canvas && capturedPhotos[index]) {
-                const targetCtx = canvas.getContext("2d");
-                let img = new Image();
-                img.src = capturedPhotos[index];
-
-                img.onload = () => {
-                    applyFilter(targetCtx, canvas, img);
-                    canvas.style.display = "block";
-                };
-            }
-        });
-
-        counterText.textContent = `Photos Taken: ${capturedPhotos.length} / ${maxPhotos}`;
-        
-        // Store photos in session storage
-        storePhotosInSession();
-    }
 }
 
 // Add event listener for the Next Page button
@@ -634,19 +506,20 @@ document.querySelector("a[href='edit.html']").addEventListener("click", function
     // Make sure photos are stored before navigating
     storePhotosInSession();
 });
+
 function showIOSPrompt() {
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     if (isIOS) {
-      const prompt = document.getElementById("ios-prompt");
-      if (prompt) {
-        prompt.style.display = "block";
-        prompt.addEventListener("click", function() {
-          startCamera();
-          prompt.style.display = "none";
-        });
-      }
+        const prompt = document.getElementById("ios-prompt");
+        if (prompt) {
+            prompt.style.display = "block";
+            prompt.addEventListener("click", function() {
+                startCamera();
+                prompt.style.display = "none";
+            });
+        }
     }
-  }
-  
-  // Call this after page load
-  window.addEventListener("load", showIOSPrompt);
+}
+
+// Call this after page load
+window.addEventListener("load", showIOSPrompt);

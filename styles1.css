@@ -253,7 +253,19 @@
             font-size: 0.8rem;
             font-weight: 300;
         }
-        
+        .start-camera-btn {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #ff4081;
+            color: white;
+            padding: 12px 20px;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
         /* Responsive design */
         @media (max-width: 768px) {
             .content-container {
