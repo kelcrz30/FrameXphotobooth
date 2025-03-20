@@ -45,21 +45,23 @@ function loadPhotosFromStorage() {
         const storedPhotos = sessionStorage.getItem('capturedPhotos');
         console.log("Stored photos from sessionStorage:", storedPhotos); // Debugging
 
-        if (storedPhotos) {
-            photoData = JSON.parse(storedPhotos);
-            console.log("Parsed photo data:", photoData); // Debugging
-            renderCanvas();
+        if (!storedPhotos || storedPhotos === "[]") { 
+            console.warn("No photos found! Trying localStorage as fallback.");
+            // Try localStorage instead
+            const backupPhotos = localStorage.getItem('capturedPhotos');
+            if (backupPhotos) {
+                sessionStorage.setItem('capturedPhotos', backupPhotos);
+                photoData = JSON.parse(backupPhotos);
+            } else {
+                console.error("No photos found in storage.");
+                return;
+            }
         } else {
-            console.error("No photos found in sessionStorage.");
-            // Show a message on canvas
-            editCtx.fillStyle = '#333333';
-            editCtx.font = '24px "League Spartan", sans-serif';
-            editCtx.textAlign = 'center';
-            editCtx.fillText('No photos available. Please go back and take photos.', 
-                editCanvas.width / 2, editCanvas.height / 2);
+            photoData = JSON.parse(storedPhotos);
         }
+        renderCanvas();
     } catch (error) {
-        console.error("Error loading photos from sessionStorage:", error);
+        console.error("Error loading photos:", error);
     }
 }
 
