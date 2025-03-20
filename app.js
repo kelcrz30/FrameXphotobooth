@@ -35,8 +35,14 @@ if (canvasList.some(canvas => canvas === null)) {
 
 
 // 🎥 Start the camera
+// 🎥 Start the camera
 async function startCamera(deviceId = null) {
     try {
+        // Debug browser info
+        console.log("Browser info:", navigator.userAgent);
+        console.log("MediaDevices support:", !!navigator.mediaDevices);
+        console.log("getUserMedia support:", !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia));
+        
         // Stop any existing streams
         if (video.srcObject) {
             video.srcObject.getTracks().forEach(track => track.stop());
@@ -47,8 +53,8 @@ async function startCamera(deviceId = null) {
         video.setAttribute('autoplay', true);
         video.setAttribute('muted', true);
         
-        // Define constraints with exact dimensions for iOS
-        const constraints = {
+        // Define constraints with iOS-specific handling
+        let constraints = {
             audio: false,
             video: {
                 width: { ideal: 1280 },
@@ -58,6 +64,19 @@ async function startCamera(deviceId = null) {
             }
         };
         
+        // iOS-specific constraints adjustments
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        if (isIOS) {
+            console.log("iOS device detected, applying special video constraints");
+            // On iOS, simplify constraints and prioritize facingMode over deviceId
+            // as deviceId might not work consistently
+            constraints.video = {
+                facingMode: "user", // or use "environment" for back camera
+                width: { ideal: 1280 },
+                height: { ideal: 720 }
+            };
+        }
+        
         console.log("Requesting camera with constraints:", constraints);
         
         // Get media stream
@@ -66,7 +85,28 @@ async function startCamera(deviceId = null) {
         // Assign stream to video element
         video.srcObject = stream;
         
-        // iOS Safari fix - force play
+        // iOS Safari specific setup
+        if (isIOS) {
+            // Set explicit dimensions
+            video.width = constraints.video.width.ideal;
+            video.height = constraints.video.height.ideal;
+            
+            // iOS needs a short delay before playing
+            setTimeout(() => {
+                video.play().catch(e => console.error("iOS delayed play error:", e));
+            }, 100);
+            
+            // iOS workaround for orientation changes
+            window.addEventListener('resize', () => {
+                setTimeout(() => {
+                    if (video.srcObject) {
+                        video.play().catch(e => console.error("iOS resize play error:", e));
+                    }
+                }, 300);
+            });
+        }
+        
+        // Force play for all browsers
         video.play().catch(e => console.error("Play error:", e));
         
         // Double-check that stream is active
@@ -75,12 +115,54 @@ async function startCamera(deviceId = null) {
                 console.log("Video still paused after 500ms, trying to play again");
                 video.play().catch(e => console.error("Second play attempt error:", e));
             }
+            
+            // Log video stream state
+            console.log("Video stream active:", !video.paused);
+            console.log("Video dimensions:", video.videoWidth, "x", video.videoHeight);
+            
+            if (video.videoWidth === 0 || video.videoHeight === 0) {
+                console.warn("Video dimensions are zero - stream might not be properly initialized");
+                // Add one more retry with explicit user interaction on iOS
+                if (isIOS) {
+                    const retryButton = document.createElement('button');
+                    retryButton.textContent = "Tap to activate camera";
+                    retryButton.style.position = "absolute";
+                    retryButton.style.zIndex = "999";
+                    retryButton.style.top = "50%";
+                    retryButton.style.left = "50%";
+                    retryButton.style.transform = "translate(-50%, -50%)";
+                    retryButton.style.padding = "15px";
+                    document.body.appendChild(retryButton);
+                    
+                    retryButton.addEventListener('click', () => {
+                        video.play().catch(e => console.error("Retry button play error:", e));
+                        retryButton.remove();
+                    });
+                }
+            }
         }, 500);
         
         console.log("Camera started successfully with stream:", stream);
     } catch (error) {
         console.error("Error accessing the camera:", error);
-        alert("Camera access error: " + error.message);
+        
+        // Detailed iOS error handling
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        if (isIOS) {
+            console.error("iOS specific camera error:", error.name, error.message);
+            
+            if (error.name === "NotAllowedError") {
+                alert("Camera access denied. Please enable camera access in iOS Settings > Safari > Camera.");
+            } else if (error.name === "NotFoundError") {
+                alert("No camera found on this iOS device or camera is in use by another application.");
+            } else if (error.name === "NotReadableError") {
+                alert("iOS camera is already in use or not available.");
+            } else {
+                alert("iOS camera error: " + error.name + ". Please check Safari settings and permissions.");
+            }
+        } else {
+            alert("Camera access error: " + error.message);
+        }
     }
 }
 
@@ -275,7 +357,7 @@ function fixIOSCamera() {
     if (isIOS) {
         console.log("iOS device detected, applying special fixes");
         
-        // Force user interaction
+        // Force user interaction - Safari requires user gesture
         document.body.addEventListener('click', function iosClickFix() {
             if (video.paused) {
                 video.play().catch(e => console.log("iOS click fix play error:", e));
@@ -286,17 +368,50 @@ function fixIOSCamera() {
         
         // Handle orientation changes
         window.addEventListener('orientationchange', () => {
+            console.log("iOS orientation change detected");
             setTimeout(() => {
                 // Restart camera after orientation change
                 if (video.srcObject) {
                     const currentStream = video.srcObject;
+                    const tracks = currentStream.getTracks();
+                    
+                    // Store current camera ID if available
+                    let currentCameraId = null;
+                    if (tracks.length > 0 && tracks[0].getSettings) {
+                        currentCameraId = tracks[0].getSettings().deviceId;
+                    }
+                    
+                    // Stop current tracks
+                    tracks.forEach(track => track.stop());
                     video.srcObject = null;
+                    
+                    // Restart with brief delay
                     setTimeout(() => {
-                        video.srcObject = currentStream;
-                        video.play().catch(e => console.log("Orientation change play error:", e));
-                    }, 300);
+                        startCamera(currentCameraId).catch(e => {
+                            console.error("Failed to restart camera after orientation change:", e);
+                            // Fallback to any camera
+                            startCamera();
+                        });
+                    }, 500);
                 }
             }, 500);
+        });
+        
+        // iOS Safari fullscreen fix
+        document.addEventListener('fullscreenchange', () => {
+            setTimeout(() => {
+                if (video.paused && video.srcObject) {
+                    video.play().catch(e => console.log("iOS fullscreen change play error:", e));
+                }
+            }, 300);
+        });
+        
+        // Additional fix for Safari suspending video when tab is inactive
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible' && video.paused && video.srcObject) {
+                console.log("Tab became visible, restarting video");
+                video.play().catch(e => console.log("Visibility change play error:", e));
+            }
         });
     }
 }
@@ -519,3 +634,19 @@ document.querySelector("a[href='edit.html']").addEventListener("click", function
     // Make sure photos are stored before navigating
     storePhotosInSession();
 });
+function showIOSPrompt() {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    if (isIOS) {
+      const prompt = document.getElementById("ios-prompt");
+      if (prompt) {
+        prompt.style.display = "block";
+        prompt.addEventListener("click", function() {
+          startCamera();
+          prompt.style.display = "none";
+        });
+      }
+    }
+  }
+  
+  // Call this after page load
+  window.addEventListener("load", showIOSPrompt);
