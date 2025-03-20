@@ -36,11 +36,10 @@
 }
 
 #editCanvas {
-    width: 100%;  /* Make it responsive */
-    max-width: 500px;  /* Prevent extreme stretching */
-    height: auto;  /* Maintain aspect ratio */
-    display: block;  /* Ensure it is visible */
+    max-width: 600%;
+    max-height: 100vh;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    gap: 5px;
 }
 
 .edit-controls {
