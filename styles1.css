@@ -209,10 +209,10 @@
             height: auto;
             aspect-ratio: 4/3;
             border-radius: 8px;
-            background-color: white;
-            border: 1px solid #ddd;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
             z-index: 1;
+            object-fit: contain; /* This helps maintain image quality */
+            image-rendering: high-quality; /* Modern browsers */
+            image-rendering: -webkit-optimize-contrast; /* For Safari */
         }
         @media (max-width: 500px) {
             #video, .photo-stack canvas {

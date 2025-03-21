@@ -252,7 +252,7 @@ html, body {
 
 .toggle-switch {
     position: absolute;
-    right: 10px; /* Adjusted for better positioning */
+    right: 50px; /* Adjusted for better positioning */
     width: 60px; /* Reduced width */
     height: 30px; /* Reduced height */
     --light: #d8dbe0;
@@ -272,6 +272,7 @@ html, body {
     border-radius: 15px; /* Adjusted for smaller switch */
     cursor: pointer;
     border: 2px solid var(--dark);
+    
 }
 
 .checkbox {
@@ -313,7 +314,7 @@ html, body {
 button {
     --primary-color: #000;
     --secondary-color: #fff;
-    --hover-color: #222;
+    --hover-color: #302e2e;
     --arrow-width: 10px;
     --arrow-stroke: 2px;
     box-sizing: border-box;
@@ -348,7 +349,13 @@ button {
 }
 /* Alert Background Blur */
 
+.cssbuttons-io-button{
+    position: relative;
+    top: 0;
+    border: solid 5px red;
+    
 
+}
 .dark-mode button {
     background-color: #1e1e1e;
     color: #ffffff;
@@ -481,6 +488,9 @@ button:hover .arrow:before {
         margin-bottom: 0;
         margin-top: -10px; /* Moves it up */
     }
+    .toggle-switch{
+        right: 10px;
+    }
     
     .content {
         bottom: 80px; /* Reduced bottom margin */
@@ -511,6 +521,47 @@ button:hover .arrow:before {
 
 
 @media screen and (max-width: 480px) {
+    .title {
+        font-size: clamp(3rem, 4vw, 40px);
+        margin-top: 10rem;
+        margin-bottom: 0;
+        padding: 10px;
+    }
+    
+    .features {
+        grid-template-columns: 1fr; /* One item per row */
+        max-width: 280px;
+        width: 80%; /* Slightly wider */
+        font-size: 12px; /* Reduce font size */
+        padding: 10px;
+        overflow: hidden;
+        margin: 0 auto;
+    }
+    
+    .feature {
+        width: 100%;
+        max-width: 280px;
+        padding: 8px;
+        text-align: center;
+    }
+    
+    button {
+        padding: 15px 14px;
+        font-size: 12px;
+    }
+    
+    .content {
+        bottom: 60px; /* Less bottom spacing */
+        left: 5px;
+        width: calc(100% - 10px);
+    }
+    .description{
+        padding-top: 1px;
+    }
+}
+
+
+@media screen and (max-width: 375px) {
     .title {
         font-size: clamp(3rem, 4vw, 40px);
         margin-top: 10rem;
@@ -631,55 +682,101 @@ button:hover .arrow:before {
 
 
 /* Instruction Page */
+/* Instruction Page */
+.element-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 2rem;
+}
 
-.instruction-text{
+.instruction-text {
     font-family: sans-serif;
     font-weight: 400;
     display: flex;
-    flex-direction: column; /* Stack items in a column */
-    justify-content: center; /* Center content vertically */
-    align-items: center; /* Center content horizontally */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     text-align: center;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 40%;
-    height: 40%;
-    gap: 20px; /* Adjust the spacing between items */
-    background: rgba( 0, 0, 0, 0.05 );
+    width: 90%;
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    padding-top: 10px;
+    gap: 1.5rem;
+    background: rgba(0, 0, 0, 0.05);
     box-shadow: 0 8px 32px 0 rgba(160, 160, 160, 0.37);
-    backdrop-filter: blur( 7.5px );
-    -webkit-backdrop-filter: blur( 20px );
+    backdrop-filter: blur(7.5px);
+    -webkit-backdrop-filter: blur(20px);
     border-radius: 13px;
-    border: 2px solid rgba( 255, 255, 255, 0.18 );
-    padding-bottom: 80px;
-
+    border: 2px solid rgba(255, 255, 255, 0.18);
+    position: relative;
 }
-.instruction-text h1{
+
+.instruction-text h1 {
     font-weight: 800;
     font-family: sans-serif;
-   padding-bottom: 30px;
-   font-size: 25px;
+    font-size: clamp(1.5rem, 5vw, 2rem);
+    margin-bottom: 1rem;
 }
 
-#new{
-    padding-top: 5px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, 100px);
-}
+.btn1 {
+    margin-top: auto;
 
-
-
-/* Instruction Page end */
-.container1{
+    width: 100%;
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
 }
 
-  
+#new {
+    position: relative;
+    transform: none;
+    top: auto;
+    left: auto;
+    margin-top: 2rem;
+}
 
+/* Responsive Breakpoints */
+@media screen and (min-width: 768px) {
+    .instruction-text {
+        width: 80%;
+        padding: 3rem;
+        gap: 2rem;
+    }
+    
+    .instruction-text h1 {
+        font-size: 2rem;
+    }
+}
 
+@media screen and (max-width: 480px) {
+    .instruction-text {
+        width: 95%;
+        padding: 1.5rem;
+        gap: 1rem;
+        margin: 1rem auto;
+    }
+    
+    .btn1 {
+        padding: 1rem 0;
+    }
+    
+    .instruction-text p {
+        font-size: 0.9rem;
+    }
+}
+
+/* Mobile Landscape */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+    .element-text {
+        min-height: auto;
+        padding: 1rem;
+    }
+    
+    .instruction-text {
+        margin: 1rem auto;
+        padding: 1.5rem;
+    }
 }

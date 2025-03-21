@@ -197,8 +197,11 @@ function capturePhoto() {
             ctx.translate(tempCanvas.width, 0);
             ctx.scale(-1, 1);
         }
+            // Set high quality smoothing
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
 
-        ctx.filter = filterSelect.value;  // Apply selected filter
+        ctx.filter = filterSelect.value;
         ctx.drawImage(video, 0, 0, videoWidth, videoHeight);
 
         const photoData = tempCanvas.toDataURL("image/png");
@@ -211,11 +214,20 @@ function capturePhoto() {
         canvasList.forEach((canvas, index) => {
             if (canvas && capturedPhotos[index]) {
                 const targetCtx = canvas.getContext("2d");
+                
+                // Add these high quality settings
+                targetCtx.imageSmoothingEnabled = true;
+                targetCtx.imageSmoothingQuality = 'high';
+                
                 let img = new Image();
                 img.src = capturedPhotos[index];
-
+        
                 img.onload = () => {
-                    targetCtx.clearRect(0, 0, canvas.width, canvas.height); // Clear before drawing
+                    // Set canvas dimensions to match the image's aspect ratio
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    
+                    targetCtx.clearRect(0, 0, canvas.width, canvas.height);
                     applyFilter(targetCtx, canvas, img);
                     canvas.style.display = "block";
                 };
@@ -259,8 +271,8 @@ let countdownTimer = null;
 const beepSound = new Audio("countdown.mp3");
 const shutterSound = new Audio("shutter.mp3");
 
-beepSound.volume = 1.0;
-shutterSound.volume = 1.0;
+beepSound.volume = 0.5; // Reduced volume
+shutterSound.volume = 0.5; // Reduced volume
 beepSound.load();
 shutterSound.load();
 
@@ -271,70 +283,65 @@ function playSound(sound) {
     sound.play().catch(err => console.log(`Sound error: ${err}`));
 }
 
-// ⏳ Countdown and Auto-Capture
+// ⏳ Final Countdown and Auto-Capture with Sound Cleanup
 function startAutoCapture() {
     capturedPhotos = [];
     counterText.textContent = `Photos Taken: 0 / ${maxPhotos}`;
     captureBtn.disabled = true;
 
     let count = 0;
+    const COUNTDOWN_START = 5;
+    let countdownTimer = null;
 
     function countdownAndCapture() {
         if (count >= maxPhotos) {
             captureBtn.disabled = false;
             countdownText.style.display = "none";
-            beepSound.pause();  // Stop any remaining beeps
-            beepSound.currentTime = 0;
             return;
         }
-    
-        let countdown = 5;
+
+        let countdown = COUNTDOWN_START;
         countdownText.textContent = countdown;
         countdownText.style.display = "block";
-    
-        playSound(beepSound); // First beep instantly
-    
-        const countdownStep = () => {
+
+        playSound(beepSound);
+
+        countdownTimer = setInterval(() => {
             countdown--;
-    
+            countdownText.textContent = countdown;
+
             if (countdown > 0) {
-                countdownText.textContent = countdown;
-                if (count < maxPhotos) {
-                    playSound(beepSound); // Only play if more photos are needed
-                }
-                requestAnimationFrame(countdownStep);
+                playSound(beepSound);
             } else {
                 clearInterval(countdownTimer);
-                countdownText.textContent = "";
                 countdownText.style.display = "none";
-    
+                
                 setTimeout(() => {
+                    // Always play shutter sound before capture
                     playSound(shutterSound);
                     capturePhoto();
                     count++;
-    
+
                     if (count < maxPhotos) {
-                        setTimeout(countdownAndCapture, 800);
+                        setTimeout(countdownAndCapture, 350);
                     } else {
+                        // Add slight delay before cleanup
                         setTimeout(() => {
-                            countdownText.textContent = "";  // Ensure it's cleared
-                            countdownText.style.display = "none";  // Hide it
                             captureBtn.disabled = false;
-                            beepSound.pause();  // Stop any remaining beeps
-                            beepSound.currentTime = 0;
-                        }, 700);
+                            beepSound.pause();
+                            shutterSound.pause();
+                        }, 200); // Wait for shutter sound to finish
                     }
-                }, 100);
+                }, 500);
             }
-        };
-    
-        countdownStep();
+        }, 1000);
     }
 
+    if (countdownTimer) clearInterval(countdownTimer);
     countdownAndCapture();
 }
 
-// 📸 Generate Final Collage
+// 📸 Generate Final Collage (Complete Version)
 function generatePhotoStrip() {
     if (!finalCanvas) return;
 
@@ -343,15 +350,30 @@ function generatePhotoStrip() {
     finalCanvas.width = width;
     finalCanvas.height = height * maxPhotos;
 
+    // Clear previous content
+    finalCtx.clearRect(0, 0, finalCanvas.width, finalCanvas.height);
+
+    // Draw all photos
     capturedPhotos.forEach((photo, index) => {
         let img = new Image();
         img.src = photo;
         img.onload = () => {
-            finalCtx.drawImage(img, 0, index * height, width, height);
+            // Apply mirror effect if needed
+            if (mirrorToggle.checked) {
+                finalCtx.save();
+                finalCtx.translate(width, 0);
+                finalCtx.scale(-1, 1);
+                finalCtx.drawImage(img, 0, index * height, width, height);
+                finalCtx.restore();
+            } else {
+                finalCtx.drawImage(img, 0, index * height, width, height);
+            }
         };
     });
 
+    // Add final touches
     finalCanvas.style.display = "block";
+    finalCanvas.scrollIntoView({ behavior: 'smooth' });
 }
 
 // 🚀 Start camera when page loads
@@ -512,14 +534,15 @@ function compressImage(photoData, callback) {
         let canvas = document.createElement("canvas");
         let ctx = canvas.getContext("2d");
 
-        // Reduce the image size by 50% (adjust as needed)
-        canvas.width = img.width / 2;
-        canvas.height = img.height / 2;
+        // Use original dimensions for better quality
+        canvas.width = img.width;
+        canvas.height = img.height;
 
+        // Draw at full size
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-        // Convert to JPEG with 70% quality to reduce size
-        let compressedData = canvas.toDataURL("image/jpeg", 0.7);
+        // Convert to JPEG with 90% quality for better results
+        let compressedData = canvas.toDataURL("image/jpeg", 0.9);
 
         callback(compressedData);
     };

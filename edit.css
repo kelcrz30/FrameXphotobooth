@@ -1,6 +1,7 @@
 .editpage {
     background-color: #f0f0f0;
     font-family: 'League Spartan', sans-serif;
+    
 }
 
 .edit-container {
@@ -39,7 +40,8 @@
     max-width: 100%;
     max-height: 100vh;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    gap: 5px;
+    gap: 10px;
+    
 }
 
 .edit-controls {
@@ -51,6 +53,7 @@
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
 
 .edit-section {
     margin-bottom: 25px;
@@ -197,7 +200,3 @@
     position: relative; /* Stays below the frame */
     z-index: 1; /* Lower than the frame */
 }
-footer img {
-    display: none;
-}
-

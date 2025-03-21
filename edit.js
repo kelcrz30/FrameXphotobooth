@@ -47,8 +47,8 @@ function initCanvas() {
         return;
     }
     
-    editCanvas.width = 350;
-    editCanvas.height = 1000;
+    editCanvas.width = 450;
+    editCanvas.height = 1080;
     editCanvas.style.display = 'block';
     editCanvas.style.border = '1px solid #ccc';
     
@@ -63,7 +63,12 @@ function initCanvas() {
     }
     
 }
-function drawSimplePhotos() {
+
+
+async function drawSimplePhotos() {
+    // Clear previous interval if exists
+    if (footerInterval) clearInterval(footerInterval);
+    
     if (!photoData || photoData.length === 0) {
         console.log("No photo data to draw");
         return;
@@ -74,18 +79,29 @@ function drawSimplePhotos() {
     const spacing = 10;
     const photoHeight = (editCanvas.height - (spacing * (photoData.length + 1))) / photoData.length;
     const photoWidth = editCanvas.width - (spacing * 2);
+
+    // Clear canvas
+    editCtx.clearRect(0, 0, editCanvas.width, editCanvas.height);
+
+    // Load and draw images
+    const imagePromises = photoData.map((photoSrc, index) => {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => resolve({ img, index });
+            img.onerror = () => resolve({ img: null, index });
+            img.src = photoSrc;
+        });
+    });
+
+    const results = await Promise.all(imagePromises);
     
-    photoData.forEach((photoSrc, index) => {
-        const img = new Image();
-        img.onload = function() {
-            const y = spacing + (photoHeight + spacing) * index;
+    // Draw images/error placeholders
+    results.forEach(({ img, index }) => {
+        const y = spacing + (photoHeight + spacing) * index;
+        
+        if (img) {
             editCtx.drawImage(img, spacing, y, photoWidth, photoHeight);
-        };
-        img.onerror = function() {
-            console.error("Failed to load photo at index", index);
-            
-            // Draw an error placeholder
-            const y = spacing + (photoHeight + spacing) * index;
+        } else {
             editCtx.fillStyle = '#FFDDDD';
             editCtx.fillRect(spacing, y, photoWidth, photoHeight);
             editCtx.fillStyle = '#FF0000';
@@ -93,10 +109,16 @@ function drawSimplePhotos() {
             editCtx.textAlign = 'center';
             editCtx.fillText('Failed to load photo', 
                 spacing + photoWidth/2, y + photoHeight/2);
-        };
-        img.src = photoSrc;
+        }
     });
+
+
 }
+
+
+
+
+
 function showNoPhotosMessage() {
     console.log("Showing no photos message");
     
@@ -344,11 +366,16 @@ function drawPhotos() {
 
         img.onload = function () {
             const aspectRatio = img.width / img.height;
-            const photoWidth = editCanvas.width * 0.8; // Adjust width dynamically (80% of canvas width)
+            const photoWidth = editCanvas.width * 0.80; // Slightly larger
+            const photoHeight = photoWidth / aspectRatio;
             const xOffset = (editCanvas.width - photoWidth) / 2;
             const yPosition = topPadding + index * (photoHeight + spacing);
+            
 
             // Draw rounded rectangle
+            editCtx.imageSmoothingEnabled = true;
+            editCtx.imageSmoothingQuality = 'high';
+
             editCtx.save();
             editCtx.beginPath();
             drawRoundedRect(editCtx, xOffset, yPosition, photoWidth, photoHeight, borderRadius);
@@ -474,9 +501,10 @@ function setBackgroundColor(color) {
 function downloadPhoto() {
     if (!editCanvas) return;
     
+    // Use PNG for highest quality
     const link = document.createElement('a');
     link.download = 'framex-photobooth.png';
-    link.href = editCanvas.toDataURL('image/png');
+    link.href = editCanvas.toDataURL('image/png', 1.0);
     link.click();
 }
 
