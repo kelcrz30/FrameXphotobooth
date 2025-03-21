@@ -191,7 +191,7 @@
         /* Right section - Photo stack */
         .right-section {
             flex: 1;
-            min-width: 300px;
+            min-width: 100px;
             display: flex;
             flex-direction: column;
             gap: 1rem;

@@ -175,7 +175,6 @@ function applyFilter(ctx, canvas, img) {
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 }
 
-// 📸 Capture photo and assign to canvas
 function capturePhoto() {
     if (capturedPhotos.length < maxPhotos) {
         console.log("Capturing photo...");
@@ -205,6 +204,9 @@ function capturePhoto() {
         const photoData = tempCanvas.toDataURL("image/png");
         capturedPhotos.push(photoData);
 
+        // ✅ Debugging: Check if the photo is stored correctly
+        console.log("✅ Photo added to capturedPhotos:", capturedPhotos);
+
         // Ensure all 4 photos are displayed
         canvasList.forEach((canvas, index) => {
             if (canvas && capturedPhotos[index]) {
@@ -222,12 +224,17 @@ function capturePhoto() {
 
         counterText.textContent = `Photos Taken: ${capturedPhotos.length} / ${maxPhotos}`;
 
+        // ✅ Debugging: Log capturedPhotos before calling storePhotosInSession
+        console.log("📸 Sending to storePhotosInSession:", capturedPhotos);
+
         // Ensure all 4 images are stored
         if (capturedPhotos.length === maxPhotos) {
-            storePhotosInSession();
+            storePhotosInSession(capturedPhotos);  // ✅ Ensure we're passing the array
         }
     }
 }
+
+
 
 // 🎛 Update canvas filter when user changes filter
 filterSelect.addEventListener("change", () => {
@@ -496,15 +503,70 @@ document.getElementById("backToBoothBtn").addEventListener("click", () => {
     document.getElementById("photobooth-container").style.display = "block";
 });
 
-function storePhotosInSession() {
-    // Convert the captured photos array to JSON and store in session storage
-    sessionStorage.setItem('capturedPhotos', JSON.stringify(capturedPhotos));
+
+function compressImage(photoData, callback) {
+    let img = new Image();
+    img.src = photoData;
+
+    img.onload = function () {
+        let canvas = document.createElement("canvas");
+        let ctx = canvas.getContext("2d");
+
+        // Reduce the image size by 50% (adjust as needed)
+        canvas.width = img.width / 2;
+        canvas.height = img.height / 2;
+
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        // Convert to JPEG with 70% quality to reduce size
+        let compressedData = canvas.toDataURL("image/jpeg", 0.7);
+
+        callback(compressedData);
+    };
 }
 
-// Add event listener for the Next Page button
-document.querySelector("a[href='edit.html']").addEventListener("click", function(e) {
-    // Make sure photos are stored before navigating
-    storePhotosInSession();
+function storePhotosInSession(photos) {
+    if (!Array.isArray(photos) || photos.length === 0) {
+        console.error("❌ Invalid photos array provided to storePhotosInSession.");
+        return;
+    }
+
+    let compressedPhotos = [];
+    let processedCount = 0;
+
+    photos.forEach((photo, index) => {
+        compressImage(photo, (compressedData) => {
+            compressedPhotos[index] = compressedData;
+            processedCount++;
+
+            if (processedCount === photos.length) {
+                try {
+                    sessionStorage.setItem("photos", JSON.stringify(compressedPhotos));
+                    console.log("✅ Photos successfully stored in session storage.");
+                } catch (e) {
+                    console.error("❌ Failed to store photos: ", e);
+                }
+            }
+        });
+    });
+}
+
+document.getElementById("goToEditBtn").addEventListener("click", function(e) {
+    e.preventDefault();
+
+    if (capturedPhotos.length === 0) {
+        alert("Please take photos first!");
+        return;
+    }
+
+    storePhotosInSession(capturedPhotos);
+
+    // ✅ Debug: Confirm the photos before moving to edit.html
+    console.log("✅ Photos before navigating:", sessionStorage.getItem('photos'));
+
+    setTimeout(() => {
+        window.location.href = 'edit.html';
+    }, 500);
 });
 
 function showIOSPrompt() {
@@ -520,6 +582,3 @@ function showIOSPrompt() {
         }
     }
 }
-
-// Call this after page load
-window.addEventListener("load", showIOSPrompt);
