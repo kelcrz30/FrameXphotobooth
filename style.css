@@ -952,23 +952,31 @@ button:hover .arrow:before {
         .controls {
             background-color: white;
             border-radius: 8px;
-            padding: 1.5rem;
+            padding: 1rem;
             display: flex;
             flex-direction: column;
             gap: 1rem;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            align-items: center; /* Center content horizontally */
+            text-align: center; /* Center text inside */
         }
+        
         
         #captureBtn {
             background-color: #000000;
             color: white;
             border: none;
-            padding: 0.75rem;
+            padding: 25px;
+            text-align: center;
+            justify-content: center;
             border-radius: 8px;
             font-family: sans-serif;
-            font-size: 1.2rem;
+            font-size: 13px;
             cursor: pointer;
             transition: all 0.3s ease;
+            height: 10px;
+            width: 10rem;
+            margin-bottom: 1rem;
         }
         
         #captureBtn:hover {
@@ -984,17 +992,18 @@ button:hover .arrow:before {
         
         /* Mirror toggle */
         .checkbox-wrapper-12 {
-            position: relative;
             display: flex;
             align-items: center;
+            justify-content: center;
+            gap: 1rem; /* Space between checkbox and dropdown */
+            flex-wrap: wrap; /* Prevents overlap on smaller screens */
         }
         
         .cbx {
-            position: relative;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
         
         .cbx input {
             display: none;
@@ -1047,59 +1056,39 @@ button:hover .arrow:before {
         /* Right section - Photo stack */
         .right-section {
             flex: 1;
-            min-width: 100px;
+            min-width: 80px;
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            align-items:flex-end;
+            gap: 20px;
         }
         
         .photo-stack {
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 15px;
             height: 100%;
+            align-items:flex-end;
         }
         
         .photo-stack canvas {
             width: 60%;
             height: auto;
-            aspect-ratio: 4/3;
             border-radius: 8px;
             z-index: 1;
-            object-fit: contain; /* This helps maintain image quality */
-            image-rendering: high-quality; /* Modern browsers */
-            image-rendering: -webkit-optimize-contrast; /* For Safari */
+            object-fit: contain; 
+            image-rendering: high-quality;
+            image-rendering: -webkit-optimize-contrast; 
+            
         }
-        @media (max-width: 500px) {
-            #video, .photo-stack canvas {
-                width: 100%;
-                height: auto;
-            }
-        }
-        
+
         /* Navigation button */
-        .next-button {
-            display: block;
-            width: 100%;
-            padding: 0.75rem;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-family: 'League Spartan', sans-serif;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-            text-decoration: none;
-            margin-top: 1rem;
+
+        .nextbtn{
+            position: relative;
+            right: 100px;
+            
         }
-        
-        .next-button:hover {
-            background-color: #2980b9;
-        }
-        
         /* Footer */
         footer {
             background-color: #f5f5f5;
@@ -1115,27 +1104,171 @@ button:hover .arrow:before {
             font-size: 0.8rem;
             font-weight: 300;
         }
-        .start-camera-btn {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #ff4081;
-            color: white;
-            padding: 12px 20px;
-            font-size: 18px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-        }
         /* Responsive design */
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
+            .content-container {
+                padding: 1.5rem;
+                gap: 1.5rem;
+                max-height: calc(100vh - 3rem);
+            }
+            
+            #countdownText {
+                font-size: 5rem;
+            }
+        }
+        
+        @media (max-width: 765px) {
             .content-container {
                 flex-direction: column;
                 padding: 1rem;
+                gap: 1rem;
+                overflow-y: auto;
+                height: auto;
+                max-height: none;
             }
             
             .left-section, .right-section {
                 min-width: 100%;
+                width: 100%;
+                max-height: none;
+                overflow-y: visible;
+            }
+            
+            .photo-stack {
+                justify-content: center;
+                align-items: center;
+                flex-wrap: wrap;
+                justify-content: center;
+                overflow-y: visible;
+            }
+            
+            .photo-stack canvas {
+                width: 45%;
+                margin: 0.5rem;
+            }
+            #captureBtn {
+                font-size: 1rem;
+                padding: 20px;
+            }
+            .nextbtn{
+                position: relative;
+                right: 19rem;
+            }
+            #countdownText {
+                font-size: 4rem;
+            }
+            
+            #video {
+                
+                max-height: 100vh;
+             
+            }
+        }
+        
+        @media (max-width: 600px) {
+            body, html {
+                overflow-x: hidden;
+            }
+            
+            .content-container {
+                padding: 1.5rem;
+                gap: 1.5rem;
+                max-height: calc(100vh - 3rem);
+            }
+            
+            .left-section, .right-section {
+                gap: 1rem;
+            }
+            #video {
+                aspect-ratio: 4/3;
+                max-height: 50vh;
+                max-width: 100vh;
+            }
+            .controls {
+                display: flex;
+                flex-direction: center;
+                justify-content: center;
+                align-items: center;
+                gap: 0.8rem;
+            }
+            #countdownText {
+                font-size: 3.5rem;
+            }
+            
+            #captureBtn {
+                font-size: 1rem;
+                padding: 20px;
+            }
+            
+            .photo-stack {
+                padding-bottom: 5rem; /* Add space for fixed footer */
+            }
+            
+            footer {
+                position: fixed;
+                bottom: 0;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .photo-stack canvas {
+                width: 100%;
+                max-width: none;
+            }
+            
+            #countdownText {
+                font-size: 3rem;
+            }
+            
+            
+            .content-container {
+                gap: 1rem;
+            }
+            #captureBtn{
+                padding: 25px;
+            }
+            
+            .controls {
+                display: flex;
+                flex-direction: center;
+                justify-content: center;
+                align-items: center;
+                gap: 0.8rem;
+            }
+            .nextbtn{
+                position: relative;
+                align-items: center;
+                right: 10rem;
+            }
+            
+            #video {
+                aspect-ratio: 4/3;
+                max-height: 100vh;
+                max-width: 100vh;
+            }
+            
+            /* Make the app scrollable on small screens */
+            .boot {
+                overflow-y: auto;
+                min-height: 100vh;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            #countdownText {
+                font-size: 2.5rem;
+            }
+            
+            .controls, .video-container {
+                border-radius: 6px;
+            }
+            
+            .footer-text {
+                font-size: 0.7rem;
+            }
+            .nextbtn{
+                position: relative;
+                bottom: 50px;
+                right: 7rem;
             }
         }

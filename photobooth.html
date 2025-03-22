@@ -37,6 +37,17 @@
                                 <path d="M2 8.36364L6.23077 12L13 2"></path>
                             </svg>
                         </div>
+                        <label for="filterSelect">Select Filter:</label>
+
+                    <select id="filterSelect">
+                        <option value="none">No Filter</option>
+                        <option value="grayscale(100%)">B&W</option>
+                        <option value="sepia(100%)">Sepia</option>
+                        <option value="contrast(1.4) brightness(0.9)">Vintage</option>
+                        <option value="blur(2px) brightness(1.2)">Soft</option>
+                        <option value="contrast(1.5) brightness(0.7)">Noir</option>
+                        <option value="saturate(2) brightness(1.1)">Vivid</option>
+                    </select>
                         
                         <svg version="1.1" xmlns="http://www.w3.org/2000/svg">
                           <defs>
@@ -49,17 +60,6 @@
                         </svg>
                       </div>
                     <p id="counterText">Photos Taken: 0 / 4</p>
-                    <label for="filterSelect">Select Filter:</label>
-
-                    <select id="filterSelect">
-                        <option value="none">No Filter</option>
-                        <option value="grayscale(100%)">B&W</option>
-                        <option value="sepia(100%)">Sepia</option>
-                        <option value="contrast(1.4) brightness(0.9)">Vintage</option>
-                        <option value="blur(2px) brightness(1.2)">Soft</option>
-                        <option value="contrast(1.5) brightness(0.7)">Noir</option>
-                        <option value="saturate(2) brightness(1.1)">Vivid</option>
-                    </select>
                   
                 </div>
             </div>
@@ -71,10 +71,12 @@
                     <canvas id="canvas3"></canvas>
                     <canvas id="canvas4"></canvas>
                 </div>
+                <div class="nextbtn">
+                    <a href="edit.html">
+                        <button id="goToEditBtn">Next page</button>
+                    </a>
+                </div>
             </div>
-            <a href="edit.html">
-                <button id="goToEditBtn">Next page</button>
-            </a>
         </main>
         
         <footer>
