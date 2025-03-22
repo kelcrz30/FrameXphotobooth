@@ -323,43 +323,55 @@ function capturePhoto() {
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = 'high';
 
-        // Draw the base image without filters
+        // Draw the base image without filters first
         ctx.drawImage(video, 0, 0, fixedWidth, fixedHeight);
-
-        // Create an image from this capture
-        const photoData = tempCanvas.toDataURL("image/png");
-        capturedPhotos.push(photoData);
-
-        // Update all canvases with the new photo
-        canvasList.forEach((canvas, index) => {
-            if (canvas && capturedPhotos[index]) {
-                canvas.width = fixedWidth;
-                canvas.height = fixedHeight;
-                
-                // Apply the selected filter to the canvas
-                const targetCtx = canvas.getContext("2d");
-                targetCtx.imageSmoothingEnabled = true;
-                targetCtx.imageSmoothingQuality = 'high';
-                
-                let img = new Image();
-                img.src = capturedPhotos[index];
         
-                img.onload = () => {
-                    // This important line applies the filter
-                    applyFilter(targetCtx, canvas, img);
-                    canvas.style.display = "block";
-                };
+        // Create a temp image to apply the filter
+        const rawPhotoData = tempCanvas.toDataURL("image/png");
+        
+        // Now apply the selected filter to this image
+        const img = new Image();
+        img.src = rawPhotoData;
+        
+        img.onload = function() {
+            // Clear canvas before applying filter
+            ctx.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
+            
+            // Apply the current filter
+            applyFilter(ctx, tempCanvas, img);
+            
+            // Now get the filtered image data
+            const filteredPhotoData = tempCanvas.toDataURL("image/png");
+            capturedPhotos.push(filteredPhotoData);
+            
+            // Update all canvases with the new photo
+            canvasList.forEach((canvas, index) => {
+                if (canvas && capturedPhotos[index]) {
+                    canvas.width = fixedWidth;
+                    canvas.height = fixedHeight;
+                    
+                    const targetCtx = canvas.getContext("2d");
+                    targetCtx.imageSmoothingEnabled = true;
+                    targetCtx.imageSmoothingQuality = 'high';
+                    
+                    let displayImg = new Image();
+                    displayImg.src = capturedPhotos[index];
+            
+                    displayImg.onload = () => {
+                        targetCtx.drawImage(displayImg, 0, 0, canvas.width, canvas.height);
+                        canvas.style.display = "block";
+                    };
+                }
+            });
+
+            counterText.textContent = `Photos Taken: ${capturedPhotos.length} / ${maxPhotos}`;
+
+            if (capturedPhotos.length === maxPhotos) {
+                storePhotosInSession(capturedPhotos);
             }
-        });
-
-        counterText.textContent = `Photos Taken: ${capturedPhotos.length} / ${maxPhotos}`;
-
-        if (capturedPhotos.length === maxPhotos) {
-            storePhotosInSession(capturedPhotos);
-        }
+        };
     }
 }
-
 
 // 🎛 Update canvas filter when user changes filter
 filterSelect.addEventListener("change", () => {
