@@ -174,7 +174,6 @@ function applyFilter(ctx, canvas, img) {
     ctx.filter = filterSelect.value;  // Apply selected filter
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 }
-
 function capturePhoto() {
     if (capturedPhotos.length < maxPhotos) {
         console.log("Capturing photo...");
@@ -184,38 +183,38 @@ function capturePhoto() {
             return;
         }
 
-        const videoWidth = video.videoWidth;
-        const videoHeight = video.videoHeight;
+        // Define fixed dimensions for consistency
+        const fixedWidth = 640;  // You can adjust this value
+        const fixedHeight = 480; // You can adjust this value
 
         const tempCanvas = document.createElement("canvas");
         const ctx = tempCanvas.getContext("2d");
 
-        tempCanvas.width = videoWidth;
-        tempCanvas.height = videoHeight;
+        // Use fixed dimensions instead of video dimensions
+        tempCanvas.width = fixedWidth;
+        tempCanvas.height = fixedHeight;
 
         if (mirrorToggle.checked) {
             ctx.translate(tempCanvas.width, 0);
             ctx.scale(-1, 1);
         }
-            // Set high quality smoothing
+        
+        // Set high quality smoothing
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = 'high';
 
         ctx.filter = filterSelect.value;
-        ctx.drawImage(video, 0, 0, videoWidth, videoHeight);
+        ctx.drawImage(video, 0, 0, fixedWidth, fixedHeight);
 
         const photoData = tempCanvas.toDataURL("image/png");
         capturedPhotos.push(photoData);
 
-        // ✅ Debugging: Check if the photo is stored correctly
-        console.log("✅ Photo added to capturedPhotos:", capturedPhotos);
-
-        // Ensure all 4 photos are displayed
+        // Update all canvases with consistent dimensions
         canvasList.forEach((canvas, index) => {
             if (canvas && capturedPhotos[index]) {
                 const targetCtx = canvas.getContext("2d");
                 
-                // Add these high quality settings
+                // Add high quality settings
                 targetCtx.imageSmoothingEnabled = true;
                 targetCtx.imageSmoothingQuality = 'high';
                 
@@ -223,9 +222,9 @@ function capturePhoto() {
                 img.src = capturedPhotos[index];
         
                 img.onload = () => {
-                    // Set canvas dimensions to match the image's aspect ratio
-                    canvas.width = img.width;
-                    canvas.height = img.height;
+                    // Use consistent fixed dimensions for all canvases
+                    canvas.width = fixedWidth;
+                    canvas.height = fixedHeight;
                     
                     targetCtx.clearRect(0, 0, canvas.width, canvas.height);
                     applyFilter(targetCtx, canvas, img);
@@ -236,12 +235,8 @@ function capturePhoto() {
 
         counterText.textContent = `Photos Taken: ${capturedPhotos.length} / ${maxPhotos}`;
 
-        // ✅ Debugging: Log capturedPhotos before calling storePhotosInSession
-        console.log("📸 Sending to storePhotosInSession:", capturedPhotos);
-
-        // Ensure all 4 images are stored
         if (capturedPhotos.length === maxPhotos) {
-            storePhotosInSession(capturedPhotos);  // ✅ Ensure we're passing the array
+            storePhotosInSession(capturedPhotos);
         }
     }
 }

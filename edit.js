@@ -48,7 +48,7 @@ function initCanvas() {
     }
     
     editCanvas.width = 450;
-    editCanvas.height = 1080;
+    editCanvas.height = 1350;
     editCanvas.style.display = 'block';
     editCanvas.style.border = '1px solid #ccc';
     
