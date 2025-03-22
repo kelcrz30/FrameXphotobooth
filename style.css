@@ -1,3 +1,17 @@
+@font-face{
+    font-family: myFont;
+    src: url(Game.ttf);
+}
+@font-face{
+    font-family: newFont;
+    src: url(coaster.otf);
+}
+@font-face{
+    font-family: typewriter;
+    src: url(CaviarDreams.ttf);
+}
+
+
 * {
     margin: 0;
     padding: 0;
@@ -16,6 +30,66 @@ html, body {
     justify-content: center;
     align-items: center;
 }
+.about-container {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 50px; /* Default space between menu items */
+    text-align: center;
+    flex-wrap: wrap; /* Allows wrapping if needed */
+}
+
+.about-container a {
+    color: black;
+    text-decoration: none;
+    font-family: newFont;
+    font-size: 1.2rem;
+}
+
+/* Medium screens (Tablets & Small Laptops) */
+@media (max-width: 1024px) {
+    .about-container {
+        gap: 30px; /* Reduce gap for smaller screens */
+    }
+
+    .about-container a {
+        font-size: 1rem;
+    }
+}
+
+/* Small screens (Tablets & Large Phones) */
+@media (max-width: 768px) {
+    .about-container {
+        gap: 15px;
+        flex-wrap: wrap; /* Allows elements to move if space is tight */
+    }
+
+    .about-container a {
+        font-size: 1rem;
+    }
+}
+
+/* Extra small screens (Small Phones) */
+@media (max-width: 480px) {
+    .about-container {
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .about-container a {
+        font-size: 0.9rem;
+    }
+}
+
+/* Dark Mode Styles */
+.dark-mode .about-container a {
+    color: white;
+}
+
 
 /* Floating frames animation */
 .floating-frame {
@@ -92,6 +166,7 @@ html, body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    
 }
 
 @keyframes fadeIn {
@@ -103,10 +178,12 @@ html, body {
     display: flex;
     flex-direction: center;
     text-align: center;
-    margin-bottom: 40px;
+    margin-top: 5rem;
+    margin-bottom: 0;
     justify-content: center;
     align-items: center;
     animation: slideIn 1.2s ease-out;
+    font-family: myFont;
 }
 
 @keyframes slideIn {
@@ -136,11 +213,11 @@ html, body {
 
 
 .description {
-    font-size: 13px;
-    line-height: 2;
+    font-size: 15px;
     width: 100%;
-    max-width: 600px;
     text-align: center;
+    font-family: sans-serif;
+;
     
     animation: fadeInUp 1.5s ease-in 0.5s both;
 }
@@ -311,6 +388,18 @@ html, body {
     box-shadow: none;
 }
 
+.button-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+/* Ensure button adapts to screen sizes */
 button {
     --primary-color: #000;
     --secondary-color: #fff;
@@ -324,13 +413,35 @@ button {
     padding: 1em 1.8em;
     background: var(--primary-color);
     display: flex;
-    transition: 0.2s background;
+    transition: 0.2s;
     align-items: center;
     gap: 0.6em;
     font-weight: bold;
     cursor: pointer;
-    margin-top: 20px;
+
     animation: pulse 2s infinite;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+    button {
+        font-size: 1rem;
+        padding: 0.9em 1.5em;
+    }
+}
+
+@media (max-width: 768px) {
+    button {
+        font-size: 0.9rem;
+        padding: 0.8em 1.3em;
+    }
+}
+
+@media (max-width: 480px) {
+    button {
+        font-size: 0.8rem;
+        padding: 0.7em 1.2em;
+    }
 }
 
 @keyframes pulse {
@@ -359,7 +470,7 @@ button {
 .dark-mode button {
     background-color: #1e1e1e;
     color: #ffffff;
-    border: 1px solid #333;
+    border: 1px solid #ffffff;
     box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
     transition: all 0.3s ease;
 }
@@ -406,45 +517,41 @@ button:hover .arrow:before {
     right: 0;
 }
 
-/* Features section (new) */
-.features {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Dynamic grid */
-    gap: 10px; /* Spacing between items */
+.carousel-container {
     width: 100%;
-    max-width: 500px; /* Prevents stretching too much */
-    margin: 0 auto; /* Center the whole container */
-    justify-items: center; /* Center individual grid items */
+    overflow: hidden;
+    position: relative;
+    margin: 0;
+    padding-bottom: 0;
+    height: 300px; /* Adjust height as needed */
+  }
+ 
+  .carousel {
+    display: flex;
+    width: max-content; /* Allow auto-width */
+    animation: scroll 15s linear infinite; /* Adjust timing */
+  }
 
-}
-
-.feature {
-    background-color: rgba(26, 26, 26, 0.05);
-    padding: 15px;
-    border-radius: 4px;
-    width: 150px;
-    text-align: center;
-    transition: transform 0.3s ease, background-color 0.5s ease;
-}
-
-.dark-mode .feature {
-    background-color: rgba(255, 255, 255, 0.05);
-}
-
-.feature:hover {
-    transform: translateY(-5px);
-}
-
-.feature-icon {
-    font-size: 24px;
-    margin-bottom: 10px;
-}
-
-.feature-title {
-    font-size: 12px;
-    font-weight: bold;
-    margin-bottom: 5px;
-}
+  @keyframes scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%); /* Moves exactly half */
+    }
+  }
+  
+  .carousel-item {
+    flex: 0 0 auto;
+    padding-bottom: 0;
+    height: 200px;
+  }
+  
+  .carousel-item img {
+    height: 80%;
+    width: auto;
+    display: block;
+  }
 
 /* Mobile responsiveness */
 @media (max-width: 1024px) {
@@ -465,9 +572,7 @@ button:hover .arrow:before {
         bottom: 150px;
     }
     
-    .feature {
-        display: grid;
-    }
+
 }
 
 @media screen and (max-width: 768px) {
@@ -498,11 +603,6 @@ button:hover .arrow:before {
         width: calc(100% - 20px); /* Account for margins */
     }
     
-    .features {
-        grid-template-columns: repeat(2, 1fr); /* Two items per row */
-        max-width: 400px;
-        gap: 12px; /* Adjust spacing */
-    }
     
     .description {
         max-width: 90%;
@@ -528,22 +628,6 @@ button:hover .arrow:before {
         padding: 10px;
     }
     
-    .features {
-        grid-template-columns: 1fr; /* One item per row */
-        max-width: 280px;
-        width: 80%; /* Slightly wider */
-        font-size: 12px; /* Reduce font size */
-        padding: 10px;
-        overflow: hidden;
-        margin: 0 auto;
-    }
-    
-    .feature {
-        width: 100%;
-        max-width: 280px;
-        padding: 8px;
-        text-align: center;
-    }
     
     button {
         padding: 15px 14px;
@@ -569,22 +653,7 @@ button:hover .arrow:before {
         padding: 10px;
     }
     
-    .features {
-        grid-template-columns: 1fr; /* One item per row */
-        max-width: 280px;
-        width: 80%; /* Slightly wider */
-        font-size: 12px; /* Reduce font size */
-        padding: 10px;
-        overflow: hidden;
-        margin: 0 auto;
-    }
     
-    .feature {
-        width: 100%;
-        max-width: 280px;
-        padding: 8px;
-        text-align: center;
-    }
     
     button {
         padding: 15px 14px;
@@ -692,8 +761,7 @@ button:hover .arrow:before {
     padding: 2rem;
 }
 
-.instruction-text {
-    font-family: sans-serif;
+.instruction-text { 
     font-weight: 400;
     display: flex;
     flex-direction: column;
@@ -740,6 +808,9 @@ button:hover .arrow:before {
 
 /* Responsive Breakpoints */
 @media screen and (min-width: 768px) {
+    .about-container a{
+
+    }
     .instruction-text {
         width: 80%;
         padding: 3rem;
@@ -780,3 +851,291 @@ button:hover .arrow:before {
         padding: 1.5rem;
     }
 }
+
+
+/* PHOTOBOOTH PAGE*/
+    * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'League Spartan', sans-serif;
+            background-color: #f0f2f5;
+            color: #000000;
+            line-height: 1.6;
+        }
+
+        
+        .photobooth {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        .boot {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        
+        /* Main content styles */
+        .content-container {
+            display: flex;
+            padding: 2rem;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            flex-grow: 1;
+        }
+        
+        /* Left section - Camera and controls */
+        .left-section {
+            flex: 1;
+            min-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .video-container {
+            position: relative;
+            background-color: #222;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .camera-selection {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.5rem;
+            background-color: rgba(0,0,0,0.5);
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10;
+            width: 100%;
+        }
+        
+        #cameraSelect {
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: none;
+            background-color: #444;
+            color: white;
+            font-family: 'League Spartan', sans-serif;
+        }
+        
+        #video {
+            width: 100%;
+            aspect-ratio: 4/3;
+            object-fit: cover;
+            background-color: #222;
+        }
+        
+        #countdownText {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 6rem;
+            color: white;
+            text-shadow: 0 0 10px rgba(0,0,0,0.7);
+            font-family: 'Koulen', sans-serif;
+            z-index: 10;
+        }
+        
+        /* Controls section */
+        .controls {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        #captureBtn {
+            background-color: #000000;
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-family: sans-serif;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        #captureBtn:hover {
+            background-color: #616060;
+        }
+        
+        .control-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+        }
+        
+        /* Mirror toggle */
+        .checkbox-wrapper-12 {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        .cbx {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .cbx input {
+            display: none;
+        }
+        
+        .cbx label {
+            cursor: pointer;
+        }
+        
+        .cbx svg {
+            stroke: #666;
+            stroke-width: 2px;
+            height: 16px;
+            width: 16px;
+        }
+        
+        .cbx input:checked + label + svg {
+            stroke: #e74c3c;
+        }
+        
+        .cbx path {
+            fill: none;
+            stroke-dasharray: 20;
+            stroke-dashoffset: 20;
+            transition: all 0.3s;
+        }
+        
+        .cbx input:checked + label + svg path {
+            stroke-dashoffset: 0;
+        }
+        
+        /* Filter select */
+        #filterSelect {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            font-family: 'League Spartan', sans-serif;
+        }
+        
+        /* Counter text */
+        #counterText {
+            font-family: 'Kreon', serif;
+            font-weight: 500;
+            text-align: center;
+            padding: 0.5rem;
+            border-radius: 4px;
+            background-color: #f5f5f5;
+        }
+        
+        /* Right section - Photo stack */
+        .right-section {
+            flex: 1;
+            min-width: 100px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .photo-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            height: 100%;
+        }
+        
+        .photo-stack canvas {
+            width: 60%;
+            height: auto;
+            aspect-ratio: 4/3;
+            border-radius: 8px;
+            z-index: 1;
+            object-fit: contain; /* This helps maintain image quality */
+            image-rendering: high-quality; /* Modern browsers */
+            image-rendering: -webkit-optimize-contrast; /* For Safari */
+        }
+        @media (max-width: 500px) {
+            #video, .photo-stack canvas {
+                width: 100%;
+                height: auto;
+            }
+        }
+        
+        /* Navigation button */
+        .next-button {
+            display: block;
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-family: 'League Spartan', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+            margin-top: 1rem;
+        }
+        
+        .next-button:hover {
+            background-color: #2980b9;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #f5f5f5;
+            color: #777;
+            text-align: center;
+            padding: 1rem;
+            margin-top: auto;
+            border-top: 1px solid #eee;
+        }
+        
+        .footer-text {
+            font-family: 'League Spartan', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 300;
+        }
+        .start-camera-btn {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #ff4081;
+            color: white;
+            padding: 12px 20px;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .content-container {
+                flex-direction: column;
+                padding: 1rem;
+            }
+            
+            .left-section, .right-section {
+                min-width: 100%;
+            }
+        }

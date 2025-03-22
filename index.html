@@ -7,7 +7,6 @@
     
     <title>FRAMEX PHOTOBOOTH</title>
     <style>
-
     </style>
 </head> 
 <body>   
@@ -23,11 +22,16 @@
             <input type="checkbox" id="darkModeToggle" class="checkbox">       
             <span class="slider"></span>     
         </label>   
+ 
     </div>     
     
     <div class="container">                
         <div class="bookmark"></div>         
-        <div class="black-side"></div>                  
+        <div class="about-container">
+            <a href="">About</a>
+            <a href="">Social</a>
+            <a href="">Donate</a>
+           </div>               
         
         <div class="content">             
             <div class="title-container">                 
@@ -36,29 +40,34 @@
             </div>             
             
             <div class="description">               
-                <p>"FRAMEX PHOTOBOOTH captures memories with ease and creativity. Designed for events and keepsakes, it ensures high-quality snapshots. More than a photobooth—it frames unforgettable moments."</p>                            
+                <p>FrameX Photobooth | Kel</p>                            
             </div>
+            <div class="carousel-container">
+                <div class="carousel">
+                  <!-- First set of images -->
+                  <div class="carousel-item">
+                    <img src="filmstrip.png" alt="Photobooth sample 1">
+                  </div>
+                  <div class="carousel-item">
+                    <img src="filmstrip1.png" alt="Photobooth sample 2">
+                  </div>
+                  <!-- Duplicate set for seamless looping -->
+                  <div class="carousel-item">
+                    <img src="filmstrip.png" alt="Photobooth sample 1">
+                  </div>
+                  <div class="carousel-item">
+                    <img src="filmstrip1.png" alt="Photobooth sample 2">
+                  </div>
+                  
+                </div>
+                <div class="button-container">
+                    <button id="myButton" >Ready?</button>
+                </div> 
+              </div>
             
-            <!-- New features section -->
-            <div class="features">
-                <div class="feature">
-                    <div class="feature-icon">📸</div>
-                    <div class="feature-title">HIGH QUALITY</div>
-                </div>
-                <div class="feature">
-                    <div class="feature-icon">🖼️</div>
-                    <div class="feature-title">CUSTOM FRAMES</div>
-                </div>
-                <div class="feature">
-                    <div class="feature-icon">📱</div>
-                    <div class="feature-title">INSTANT SHARING</div>
-                </div>
-                <div class="feature">
-                    <div class="feature-icon">🎨</div>
-                    <div class="feature-title">CREATIVE FILTERS</div>
-                </div>
-            </div>
-            <button id="myButton" >Ready?</button>
+        </div>
+         
+          
                
                 <div class="arrow-wrapper">                   
                     <div class="arrow"></div>                          
@@ -70,10 +79,20 @@
                 
                 <!-- Add this to blur background when alert is open -->
                 <div id="overlay"></div>
-        </div>              
+                    
     </div>          
     
     <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const carousel = document.querySelector('.carousel');
+    const items = Array.from(carousel.children);
+
+    // Duplicate items to create seamless infinite scrolling effect
+    items.forEach(item => {
+        const clone = item.cloneNode(true);
+        carousel.appendChild(clone);
+    });
+});
 const darkModeToggle = document.getElementById('darkModeToggle');
 const isDarkMode = localStorage.getItem('dark-mode') === 'enabled';
 const alertBox = document.getElementById("customAlert");

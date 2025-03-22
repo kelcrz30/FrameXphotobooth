@@ -184,7 +184,7 @@ function capturePhoto() {
         }
 
         // Define fixed dimensions for consistency
-        const fixedWidth = 640;  // You can adjust this value
+        const fixedWidth = 850;  // You can adjust this value
         const fixedHeight = 480; // You can adjust this value
 
         const tempCanvas = document.createElement("canvas");
