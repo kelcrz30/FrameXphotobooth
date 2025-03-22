@@ -498,6 +498,16 @@ window.addEventListener("load", () => {
             const startButton = document.createElement('button');
             startButton.textContent = "Start Camera";
             startButton.className = "start-camera-btn";
+            
+            // Add styling to center the button
+            startButton.style.position = "fixed";
+            startButton.style.top = "50%";
+            startButton.style.left = "50%";
+            startButton.style.transform = "translate(-50%, -50%)";
+            startButton.style.padding = "12px 24px";
+            startButton.style.fontSize = "16px";
+            startButton.style.zIndex = "1000";
+            
             document.body.appendChild(startButton);
             
             startButton.addEventListener('click', () => {
