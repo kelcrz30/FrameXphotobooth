@@ -1107,6 +1107,20 @@ button:hover .arrow:before {
             font-size: 0.8rem;
             font-weight: 300;
         }
+        #ios-prompt {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 18px;
+            text-align: center;
+            z-index: 1000;
+            cursor: pointer;
+        }
         /* Responsive design */
         @media (max-width: 1024px) {
             .content-container {
