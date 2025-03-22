@@ -808,9 +808,7 @@ button:hover .arrow:before {
 
 /* Responsive Breakpoints */
 @media screen and (min-width: 768px) {
-    .about-container a{
 
-    }
     .instruction-text {
         width: 80%;
         padding: 3rem;

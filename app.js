@@ -587,4 +587,16 @@ document.getElementById("goToEditBtn").addEventListener("click", function(e) {
     }, 500);
 });
 
-
+function showIOSPrompt() {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    if (isIOS) {
+        const prompt = document.getElementById("ios-prompt");
+        if (prompt) {
+            prompt.style.display = "block";
+            prompt.addEventListener("click", function() {
+                startCamera();
+                prompt.style.display = "none";
+            });
+        }
+    }
+}
