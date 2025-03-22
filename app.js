@@ -491,36 +491,28 @@ function generatePhotoStrip() {
 
 // 🚀 Start camera when page loads
 window.addEventListener("load", () => {
-    // First fix layout issues
-    fixMobileLayout();
-    
-    // Detect iOS
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        // Setup iOS camera access helpers
-        setupIOSCameraAccess();
-        
-        // For iOS: Check if we're returning to the page
-        if (isIOS) {
-            // Always show the prompt on iOS, as permissions might be lost
-            const iosPrompt = document.getElementById('ios-prompt');
-            if (iosPrompt) {
-                iosPrompt.style.display = 'block';
-                // Add text explaining why permission is needed again
-                iosPrompt.textContent = "Tap to activate camera (iOS requires this each time)";
-            }
+        // On iOS, we need user interaction first
+        if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+            // Create a temporary button if needed
+            const startButton = document.createElement('button');
+            startButton.textContent = "Start Camera";
+            startButton.className = "start-camera-btn";
+            document.body.appendChild(startButton);
             
-            // Don't auto-start on iOS
-            console.log("iOS device detected, waiting for user interaction");
+            startButton.addEventListener('click', () => {
+                getCameras();
+                startButton.remove(); // Remove the button after starting
+            });
         } else {
-            // For non-iOS devices, auto-start
+            // For non-iOS devices, start immediately
             getCameras();
         }
     } else {
         console.error("Camera API not supported in this browser.");
     }
 });
+
 if (captureBtn) {
     captureBtn.addEventListener("click", startAutoCapture);
 } else {
