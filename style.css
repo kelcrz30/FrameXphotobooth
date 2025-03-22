@@ -899,10 +899,13 @@ button:hover .arrow:before {
         
         .video-container {
             position: relative;
+            max-width: 850px;
+            width: 100%;
             background-color: #222;
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin: 0 auto;
         }
         
         .camera-selection {
@@ -929,9 +932,11 @@ button:hover .arrow:before {
         
         #video {
             width: 100%;
-            aspect-ratio: 4/3;
+            height: auto;
+            background: #000;
+            display: block;
+            max-height: 70vh;
             object-fit: cover;
-            background-color: #222;
         }
         
         #countdownText {
