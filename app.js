@@ -11,7 +11,6 @@ const countdownText = document.getElementById("countdownText");
 const finalCanvas = document.getElementById("finalCanvas");
 const finalCtx = finalCanvas ? finalCanvas.getContext("2d") : null; // Only if exists
 const filterSelect = document.getElementById("filterSelect");
-const mirrorToggle = document.getElementById("mirrorToggle");
 const cameraSelect = document.getElementById("cameraSelect");
 let timerValue = parseInt(document.getElementById('timerSelect').value);
 let countdownDisplay = document.getElementById('countdownDisplay');
@@ -164,14 +163,23 @@ async function startCamera(deviceId = null) {
         }
     }
 }
+let isMirrored = false; // Track mirror state
+
+function toggleMirror() {
+    var video = document.getElementById("video"); // Make sure this is the correct ID of your video feed
+    isMirrored = !isMirrored;
+    video.style.transform = isMirrored ? "scaleX(-1)" : "scaleX(1)";
+}
 
 // 🎨 Apply Filter to Live Camera Feed
 filterSelect.addEventListener("change", () => {
     video.style.filter = filterSelect.value; // Apply selected filter to live video
 });
 
-// 🎭 Function to Apply Filter to Canvas
-// IMPROVED Function to Apply Filter to Canvas - Works on all mobile devices
+function toggleSlider(id) {
+    var slider = document.getElementById(id);
+    slider.style.display = (slider.style.display === "none" || slider.style.display === "") ? "block" : "none";
+}
 function applyFilter(ctx, canvas, img) {
     // Clear before drawing
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -312,67 +320,95 @@ brightnessSlider.addEventListener("input", updateFilters);
 contrastSlider.addEventListener("input", updateFilters);
 function capturePhoto() {
     if (capturedPhotos.length < maxPhotos) {
-        console.log("Capturing photo...");
-
-        if (!video || video.videoWidth === 0 || video.videoHeight === 0) {
-            console.error("Video feed not ready yet!");
-            return;
-        }
-
-        // Define fixed dimensions for consistency
-        const fixedWidth = 450;
-        const fixedHeight = 300;
+        // Get actual video dimensions for more accurate capture
+        const videoWidth = video.videoWidth;
+        const videoHeight = video.videoHeight;
 
         const tempCanvas = document.createElement("canvas");
         const ctx = tempCanvas.getContext("2d");
 
-        // Use fixed dimensions
-        tempCanvas.width = fixedWidth;
-        tempCanvas.height = fixedHeight;
+        // Use actual video dimensions instead of fixed size
+        tempCanvas.width = videoWidth;
+        tempCanvas.height = videoHeight;
 
-        if (mirrorToggle.checked) {
-            ctx.translate(tempCanvas.width, 0);
-            ctx.scale(-1, 1);
-        }
-        
-        // Set high quality
+        // Improved capture with high-quality settings
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = 'high';
 
-        // Draw the base image without filters first
-        ctx.drawImage(video, 0, 0, fixedWidth, fixedHeight);
-        
-        // Create a temp image to apply the filter
+        // Apply mirroring if needed
+        if (isMirrored) {
+            ctx.translate(tempCanvas.width, 0);
+            ctx.scale(-1, 1);
+        }
+
+        // Capture at full video resolution
+        ctx.drawImage(video, 0, 0, videoWidth, videoHeight);
+
+        // Reset transformation
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+        // Improved compression function
+        function compressImage(canvas, quality = 0.95, maxWidth = 1920) {
+            // Create a new canvas for potential resizing
+            const outputCanvas = document.createElement('canvas');
+            const ctx = outputCanvas.getContext('2d');
+
+            // Calculate scaled dimensions if needed
+            let scale = 1;
+            if (canvas.width > maxWidth) {
+                scale = maxWidth / canvas.width;
+            }
+
+            const scaledWidth = canvas.width * scale;
+            const scaledHeight = canvas.height * scale;
+
+            // Set new canvas dimensions
+            outputCanvas.width = scaledWidth;
+            outputCanvas.height = scaledHeight;
+
+            // High-quality scaling
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+
+            // Draw the image with high-quality scaling
+            ctx.drawImage(canvas, 0, 0, scaledWidth, scaledHeight);
+
+            // Convert to high-quality JPEG
+            return outputCanvas.toDataURL('image/jpeg', quality);
+        }
+
+        // Capture raw photo data
         const rawPhotoData = tempCanvas.toDataURL("image/png");
-        
-        // Now apply the selected filter to this image
+
+        // Create image to apply filter
         const img = new Image();
         img.src = rawPhotoData;
-        
-        img.onload = function() {
+
+        img.onload = function () {
             // Clear canvas before applying filter
             ctx.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
-            
+
             // Apply the current filter
             applyFilter(ctx, tempCanvas, img);
-            
-            // Now get the filtered image data
-            const filteredPhotoData = tempCanvas.toDataURL("image/png");
-            capturedPhotos.push(filteredPhotoData);
-            
-            // Update all canvases with the new photo
+
+            // Compress with higher quality and optional resizing
+            const compressedPhotoData = compressImage(tempCanvas);
+            capturedPhotos.push(compressedPhotoData);
+
+            // Update canvases with compressed photo
             canvasList.forEach((canvas, index) => {
                 if (canvas && capturedPhotos[index]) {
-                    canvas.width = fixedWidth;
-                    canvas.height = fixedHeight;
-                    
+                    // Use actual canvas dimensions
+                    canvas.width = tempCanvas.width;
+                    canvas.height = tempCanvas.height;
+
                     const targetCtx = canvas.getContext("2d");
                     targetCtx.imageSmoothingEnabled = true;
                     targetCtx.imageSmoothingQuality = 'high';
-                    
+
                     let displayImg = new Image();
                     displayImg.src = capturedPhotos[index];
-            
+
                     displayImg.onload = () => {
                         targetCtx.drawImage(displayImg, 0, 0, canvas.width, canvas.height);
                         canvas.style.display = "block";
@@ -380,6 +416,7 @@ function capturePhoto() {
                 }
             });
 
+            // Update photo counter
             counterText.textContent = `Photos Taken: ${capturedPhotos.length} / ${maxPhotos}`;
 
             if (capturedPhotos.length === maxPhotos) {
@@ -509,28 +546,39 @@ function generatePhotoStrip() {
     // Clear previous content
     finalCtx.clearRect(0, 0, finalCanvas.width, finalCanvas.height);
 
-    // Draw all photos
-    capturedPhotos.forEach((photo, index) => {
+    // Function to draw each photo correctly
+    function drawPhoto(index) {
+        if (index >= capturedPhotos.length) {
+            // All photos are drawn
+            finalCanvas.style.display = "block";
+            finalCanvas.scrollIntoView({ behavior: 'smooth' });
+            return;
+        }
+
         let img = new Image();
-        img.src = photo;
+        img.src = capturedPhotos[index];
+
         img.onload = () => {
-            // Apply mirror effect if needed
-            if (mirrorToggle.checked) {
-                finalCtx.save();
-                finalCtx.translate(width, 0);
+            finalCtx.save();
+            if (isMirrored) {
+                finalCtx.translate(width, (index * height));
                 finalCtx.scale(-1, 1);
-                finalCtx.drawImage(img, 0, index * height, width, height);
-                finalCtx.restore();
+                finalCtx.drawImage(img, 0, 0, width, height);
             } else {
                 finalCtx.drawImage(img, 0, index * height, width, height);
             }
-        };
-    });
+            finalCtx.restore();
 
-    // Add final touches
-    finalCanvas.style.display = "block";
-    finalCanvas.scrollIntoView({ behavior: 'smooth' });
+            // Draw the next photo **after** this one loads
+            drawPhoto(index + 1);
+        };
+    }
+
+    // Start drawing the first photo
+    drawPhoto(0);
 }
+
+
 
 // 🚀 Start camera when page loads
 window.addEventListener("load", () => {
@@ -714,31 +762,35 @@ function compressImage(photoData, callback) {
     };
 }
 
-function storePhotosInSession(photos) {
-    if (!Array.isArray(photos) || photos.length === 0) {
-        console.error("❌ Invalid photos array provided to storePhotosInSession.");
-        return;
-    }
+function compressImage(photoData, callback) {
+    let img = new Image();
+    img.src = photoData;
 
-    let compressedPhotos = [];
-    let processedCount = 0;
+    img.onload = function () {
+        let canvas = document.createElement("canvas");
+        let ctx = canvas.getContext("2d");
 
-    photos.forEach((photo, index) => {
-        compressImage(photo, (compressedData) => {
-            compressedPhotos[index] = compressedData;
-            processedCount++;
+        // Adjust compression based on image size
+        const maxWidth = 1920;
+        const scale = img.width > maxWidth ? maxWidth / img.width : 1;
 
-            if (processedCount === photos.length) {
-                try {
-                    sessionStorage.setItem("photos", JSON.stringify(compressedPhotos));
-                    console.log("✅ Photos successfully stored in session storage.");
-                } catch (e) {
-                    console.error("❌ Failed to store photos: ", e);
-                }
-            }
-        });
-    });
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+
+        // Draw scaled image
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        // Convert to JPEG with adaptive quality
+        const quality = img.width > 1920 ? 0.85 : 0.95;
+        let compressedData = canvas.toDataURL("image/jpeg", quality);
+
+        callback(compressedData);
+    };
 }
+
 
 document.getElementById("goToEditBtn").addEventListener("click", function(e) {
     e.preventDefault();
