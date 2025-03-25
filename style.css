@@ -1136,7 +1136,6 @@ button:hover .arrow:before {
         .photo-stack canvas {
             width: 100%;
             height: auto !important; /* Remove fixed heights */
-            aspect-ratio: 4/4 !important; /* Match camera aspect ratio */
             border-radius: 8px;
             z-index: 1;
             object-fit: cover; /* Better cropping than contain */ 
@@ -1310,7 +1309,7 @@ button:hover .arrow:before {
             
             .photo-stack canvas {
                 width: 100%;
-                margin: 0.5rem;
+               
             }
             #captureBtn {
                 font-size: 1rem;
@@ -1382,8 +1381,8 @@ button:hover .arrow:before {
             #canvas3, 
             #canvas4, 
             #editorCanvas {
-            height: 1200vh !important;  /* Adjust this value as needed */
-            max-height: 200px;        /* Optional: set a maximum height */
+            height: 40vh !important;  /* Adjust this value as needed */
+            max-height: 300px;        /* Optional: set a maximum height */
             object-fit: cover;
     }
             .photo-stack canvas {
