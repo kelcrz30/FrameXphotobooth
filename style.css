@@ -989,7 +989,7 @@ button:hover .arrow:before {
         
         .video-container {
             position: relative;
-            max-width: 850px;
+            max-width: 700px;
             width: 100%;
             background-color: #222;
             border-radius: 8px;
@@ -1024,7 +1024,7 @@ button:hover .arrow:before {
         
         #video {
             width: 100%; /* or a specific width that fits your layout */
-            max-width: 640px; /* Adjust as needed */
+            max-width: 500px; /* Adjust as needed */
             height: auto; /* Maintain aspect ratio */
             object-fit: contain; /* Prevents cropping */
         }
@@ -1135,7 +1135,7 @@ button:hover .arrow:before {
         
         .photo-stack canvas {
             width: auto !important;
-            max-width: 100%;
+            max-width: 70%;
             height: auto !important;
             image-rendering: crisp-edges;
             image-rendering: -moz-crisp-edges;
@@ -1143,7 +1143,7 @@ button:hover .arrow:before {
             
         }
         #canvas1, #canvas2, #canvas3, #canvas4 {
-            width: 70%; /* Match video width */
+            width: 100%; /* Match video width */
             height: auto; /* Maintain aspect ratio */
             object-fit: contain; /* Prevents cropping */
         }
