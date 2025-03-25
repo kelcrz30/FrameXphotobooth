@@ -55,8 +55,9 @@ async function startCamera(deviceId = null) {
         let constraints = {
             audio: false,
             video: {
-                width: { ideal: 1280 },
-                height: { ideal: 720 },
+                width: { ideal: 1920, max: 2560 },  // Wider width
+                height: { ideal: 1080, max: 1440 }, // Proportional height
+                aspectRatio: { ideal: 16/9 },       // Explicitly set aspect ratio
                 facingMode: deviceId ? undefined : "user",
                 deviceId: deviceId ? { exact: deviceId } : undefined
             }
@@ -315,38 +316,29 @@ function updateFilters() {
     video.style.filter = `brightness(${brightness}%) contrast(${contrast}%)`;
 }
 
-// Event listeners to update filters in real time
+
 brightnessSlider.addEventListener("input", updateFilters);
 contrastSlider.addEventListener("input", updateFilters);
 function capturePhoto() {
     if (capturedPhotos.length < maxPhotos) {
-        console.log("Capturing photo...");
-
-        if (!video || video.videoWidth === 0 || video.videoHeight === 0) {
-            console.error("Video feed not ready yet!");
-            return;
-        }
-
-        // Define fixed dimensions for consistency
+        const videoAspectRatio = video.videoWidth / video.videoHeight;
+        
+        // Dynamically calculate height based on a fixed width
         const fixedWidth = 450;
-        const fixedHeight = 300;
+        const fixedHeight = Math.round(fixedWidth / videoAspectRatio);
 
         const tempCanvas = document.createElement("canvas");
         const ctx = tempCanvas.getContext("2d");
 
-        // Use fixed dimensions
         tempCanvas.width = fixedWidth;
         tempCanvas.height = fixedHeight;
 
-        // Apply mirroring if needed
-        if (isMirrored) {
-            ctx.translate(tempCanvas.width, 0);
-            ctx.scale(-1, 1);
-        }
-
-        // Draw the video frame (Remove duplicate drawing)
-        ctx.drawImage(video, 0, 0, fixedWidth, fixedHeight);
-
+        // Draw the entire video frame, potentially showing more background
+        ctx.drawImage(
+            video, 
+            0, 0, video.videoWidth, video.videoHeight,  // Source rectangle
+            0, 0, fixedWidth, fixedHeight               // Destination rectangle
+        );
         // Reset transformation to avoid affecting future drawings
         ctx.setTransform(1, 0, 0, 1, 0, 0);
 
