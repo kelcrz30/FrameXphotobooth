@@ -48,6 +48,20 @@
                         <option value="contrast(1.5) brightness(0.7)">Noir</option>
                         <option value="saturate(2) brightness(1.1)">Vivid</option>
                     </select>
+                    <label for="timerSelect">Timer:</label>
+<select id="timerSelect">
+    <option value="0">No Timer</option>
+    <option value="3">3s</option>
+    <option value="5">5s</option>
+    <option value="10">10s</option>
+</select>
+<label for="brightness">Brightness:</label>
+<input type="range" id="brightness" min="50" max="200" value="100">
+
+<label for="contrast">Contrast:</label>
+<input type="range" id="contrast" min="50" max="200" value="100">
+
+<p id="countdownDisplay"></p>
                         
                         <svg version="1.1" xmlns="http://www.w3.org/2000/svg">
                           <defs>

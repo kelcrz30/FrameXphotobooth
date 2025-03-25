@@ -13,6 +13,8 @@ const finalCtx = finalCanvas ? finalCanvas.getContext("2d") : null; // Only if e
 const filterSelect = document.getElementById("filterSelect");
 const mirrorToggle = document.getElementById("mirrorToggle");
 const cameraSelect = document.getElementById("cameraSelect");
+let timerValue = parseInt(document.getElementById('timerSelect').value);
+let countdownDisplay = document.getElementById('countdownDisplay');
 
 // Get multiple canvas elements for stacking photos
 const canvasList = [
@@ -294,6 +296,20 @@ function applyFilter(ctx, canvas, img) {
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
     }
 }
+const brightnessSlider = document.getElementById("brightness");
+const contrastSlider = document.getElementById("contrast");
+
+
+// Function to update video filter
+function updateFilters() {
+    const brightness = brightnessSlider.value;
+    const contrast = contrastSlider.value;
+    video.style.filter = `brightness(${brightness}%) contrast(${contrast}%)`;
+}
+
+// Event listeners to update filters in real time
+brightnessSlider.addEventListener("input", updateFilters);
+contrastSlider.addEventListener("input", updateFilters);
 function capturePhoto() {
     if (capturedPhotos.length < maxPhotos) {
         console.log("Capturing photo...");
@@ -304,8 +320,8 @@ function capturePhoto() {
         }
 
         // Define fixed dimensions for consistency
-        const fixedWidth = 850;
-        const fixedHeight = 480;
+        const fixedWidth = 450;
+        const fixedHeight = 300;
 
         const tempCanvas = document.createElement("canvas");
         const ctx = tempCanvas.getContext("2d");
@@ -410,12 +426,16 @@ function playSound(sound) {
 
 // ⏳ Final Countdown and Auto-Capture with Sound Cleanup
 function startAutoCapture() {
+    // Get the selected timer value
+    timerValue = parseInt(timerSelect.value);
+    
     capturedPhotos = [];
     counterText.textContent = `Photos Taken: 0 / ${maxPhotos}`;
     captureBtn.disabled = true;
 
     let count = 0;
-    const COUNTDOWN_START = 5;
+    // Use the selected timer value, or default to 0 (no timer)
+    const COUNTDOWN_START = timerValue > 0 ? timerValue : 0;
     let countdownTimer = null;
 
     function countdownAndCapture() {
@@ -426,46 +446,57 @@ function startAutoCapture() {
         }
 
         let countdown = COUNTDOWN_START;
-        countdownText.textContent = countdown;
-        countdownText.style.display = "block";
-
-        playSound(beepSound);
-
-        countdownTimer = setInterval(() => {
-            countdown--;
+        
+        // Only show countdown text if there's an actual countdown
+        if (countdown > 0) {
             countdownText.textContent = countdown;
+            countdownText.style.display = "block";
+            playSound(beepSound);
 
-            if (countdown > 0) {
-                playSound(beepSound);
-            } else {
-                clearInterval(countdownTimer);
-                countdownText.style.display = "none";
-                
-                setTimeout(() => {
-                    // Always play shutter sound before capture
-                    playSound(shutterSound);
-                    capturePhoto();
-                    count++;
+            countdownTimer = setInterval(() => {
+                countdown--;
+                countdownText.textContent = countdown;
 
-                    if (count < maxPhotos) {
-                        setTimeout(countdownAndCapture, 350);
-                    } else {
-                        // Add slight delay before cleanup
-                        setTimeout(() => {
-                            captureBtn.disabled = false;
-                            beepSound.pause();
-                            shutterSound.pause();
-                        }, 200); // Wait for shutter sound to finish
-                    }
-                }, 500);
-            }
-        }, 1000);
+                if (countdown > 0) {
+                    playSound(beepSound);
+                } else {
+                    clearInterval(countdownTimer);
+                    countdownText.style.display = "none";
+                    capturePhotoSequence();
+                }
+            }, 1000);
+        } else {
+            // If no timer, capture immediately
+            capturePhotoSequence();
+        }
+
+        function capturePhotoSequence() {
+            setTimeout(() => {
+                // Always play shutter sound before capture
+                playSound(shutterSound);
+                capturePhoto();
+                count++;
+
+                if (count < maxPhotos) {
+                    setTimeout(countdownAndCapture, 350);
+                } else {
+                    // Add slight delay before cleanup
+                    setTimeout(() => {
+                        captureBtn.disabled = false;
+                        beepSound.pause();
+                        shutterSound.pause();
+                    }, 200); // Wait for shutter sound to finish
+                }
+            }, 500);
+        }
     }
 
     if (countdownTimer) clearInterval(countdownTimer);
     countdownAndCapture();
 }
-
+if (captureBtn) {
+    captureBtn.addEventListener("click", startAutoCapture);
+}
 // 📸 Generate Final Collage (Complete Version)
 function generatePhotoStrip() {
     if (!finalCanvas) return;

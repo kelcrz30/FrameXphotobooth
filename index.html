@@ -6,8 +6,9 @@
     <link rel="stylesheet" href="style.css">
     
     <title>FRAMEX PHOTOBOOTH</title>
-    <style>
-    </style>
+<style>
+    
+</style>
 </head> 
 <body>   
     <!-- Floating frames for background animation -->
@@ -17,55 +18,63 @@
     <div class="floating-frame" style="width: 80px; height: 120px; left: 85%; animation-duration: 11s; animation-delay: 5s;"></div>
     <div class="floating-frame" style="width: 180px; height: 120px; left: 45%; animation-duration: 12s; animation-delay: 8s;"></div>
 
-    <div class="toggle-switch">     
-        <label class="switch-label">       
-            <input type="checkbox" id="darkModeToggle" class="checkbox">       
-            <span class="slider"></span>     
-        </label>   
- 
-    </div>     
+
     
-    <div class="container">                
-        <div class="bookmark"></div>         
-        <div class="about-container">
-            <a href="">About</a>
-            <a href="">Social</a>
-            <a href="">Donate</a>
-           </div>               
-        
+   
+
+    <div class="container">   
+                     
+        <div class="logo">
+            <h3>FRAMEX</h3>
+        </div>         
+                  
         <div class="content">             
             <div class="title-container">                 
-                <div class="title">FRAMEX PHOTOBOOTH</div>                 
+                <div class="title">FRAMEX</div>                 
                          
-            </div>             
+            </div>     
+                
             
             <div class="description">               
                 <p>FrameX Photobooth | Kel</p>                            
             </div>
+            <div class="button-container">
+                <button id="myButton" >Ready?</button>
+            </div>
+            
             <div class="carousel-container">
                 <div class="carousel">
-                  <!-- First set of images -->
-                  <div class="carousel-item">
-                    <img src="filmstrip.png" alt="Photobooth sample 1">
-                  </div>
-                  <div class="carousel-item">
-                    <img src="filmstrip1.png" alt="Photobooth sample 2">
-                  </div>
-                  <!-- Duplicate set for seamless looping -->
-                  <div class="carousel-item">
-                    <img src="filmstrip.png" alt="Photobooth sample 1">
-                  </div>
-                  <div class="carousel-item">
-                    <img src="filmstrip1.png" alt="Photobooth sample 2">
-                  </div>
-                  
+                    <!-- First set of images -->
+                    <div class="carousel-item"><img src="filmstrip.png" alt="Photobooth sample 1"></div>
+                    <div class="carousel-item"><img src="filmstrip1.png" alt="Photobooth sample 2"></div>
+                    
+                    <!-- Duplicate set for seamless looping -->
+                    <div class="carousel-item"><img src="filmstrip.png" alt="Photobooth sample 1"></div>
+                    <div class="carousel-item"><img src="filmstrip1.png" alt="Photobooth sample 2"></div>
                 </div>
-                <div class="button-container">
-                    <button id="myButton" >Ready?</button>
-                </div> 
-              </div>
+            </div>
             
-        </div>        
+              
+             <div class="bottom-section">
+              <div class="btn-section">
+                <button class="theme__icon" id="darkModeToggle">
+                    <span></span>
+                    <span>
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                    </span>
+                    <span></span>
+                </button>
+            </div>
+           <div class="about-section"> 
+            <a href="about.html">About</a>    
+            <a href="">Made by kel</a>    
+        </div>
+    </div> 
+        </div>       
+         
                 <div class="arrow-wrapper">                   
                     <div class="arrow"></div>                          
                 </div>  
@@ -77,91 +86,106 @@
                 <!-- Add this to blur background when alert is open -->
                 <div id="overlay"></div>
                     
-    </div>          
+    </div> 
+    
     
     <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const carousel = document.querySelector('.carousel');
-    const items = Array.from(carousel.children);
+        document.addEventListener("DOMContentLoaded", function () {
+            // Get elements
+            const darkModeToggle = document.getElementById("darkModeToggle");
+            const isDarkMode = localStorage.getItem("dark-mode") === "enabled";
+            const alertBox = document.getElementById("customAlert");
+            const alertMessage = document.getElementById("alertMessage");
+            const alertOkButton = document.getElementById("alertOkButton");
+            const overlay = document.getElementById("overlay");
+            const myButton = document.getElementById("myButton");
+            const sections = document.querySelectorAll("section");
+            
+    
+            let alertCount = 0;
+    
+            // Array of custom alert messages
+            const messages = [
+                "Hey! Remember to smile today—Framex loves to see you shine! 😊",
+                "You look amazing! Strike a pose and let the camera do the magic! 📸",
+                "Your support means a lot! Please consider clicking the donation button to help my project. 😊"
+            ];
+            
+    
+            // Check if the "Ready?" button exists before adding the event listener
+            if (myButton) {
+                myButton.addEventListener("click", function () {
+                    if (alertCount === 0) { // Ensures the alert sequence starts only once
+                        showCustomAlert();
+                    }
+                });
+            }
+    
+            // Function to show alerts one by one
+            function showCustomAlert() {
+                if (alertCount < messages.length) {
+                    alertMessage.innerText = messages[alertCount]; // Display the correct message
+                    alertBox.style.display = "block"; // Show custom alert
+                    overlay.style.display = "block"; // Show background overlay
+                } else {
+                    // After all alerts, redirect to instruction.html
+                    window.location.href = "instruction.html";
+                }
+            }
+    
+            // Handle "OK" button click
+            if (alertOkButton) {
+                alertOkButton.addEventListener("click", function () {
+                    alertBox.style.display = "none"; // Hide alert box
+                    overlay.style.display = "none"; // Hide overlay
+    
+                    alertCount++; // Move to next alert
+    
+                    if (alertCount < messages.length) {
+                        setTimeout(showCustomAlert, 200); // Show next alert after delay
+                    } else {
+                        // If all alerts are shown, allow navigation
+                        window.location.href = "instruction.html";
+                    }
+                });
+            }
+    
+            // **DARK MODE TOGGLE BUTTON (Fully Fixed)**
+            if (darkModeToggle) {
+                // Apply dark mode on page load if it was previously enabled
+                if (isDarkMode) {
+                    document.body.classList.add("dark-mode");
+                }
+    
+                // Toggle dark mode on button click
+                darkModeToggle.addEventListener("click", function () {
+                    document.body.classList.toggle("dark-mode");
+    
+                    // Save the dark mode state in localStorage
+                    if (document.body.classList.contains("dark-mode")) {
+                        localStorage.setItem("dark-mode", "enabled");
+                    } else {
+                        localStorage.setItem("dark-mode", "disabled");
+                    }
+                });
+            }
+    
+            // **FLOATING FRAMES ANIMATION**
+            const frames = document.querySelectorAll(".floating-frame");
+            frames.forEach(frame => {
+                frame.style.left = `${Math.random() * 80 + 10}%`;
+                frame.style.animationDuration = `${Math.random() * 5 + 6}s`; // Random speeds
+            });
+    
+            // **SCROLL ANIMATION FOR SECTIONS**
 
-    // Duplicate items to create seamless infinite scrolling effect
-    items.forEach(item => {
-        const clone = item.cloneNode(true);
-        carousel.appendChild(clone);
-    });
 });
-const darkModeToggle = document.getElementById('darkModeToggle');
-const isDarkMode = localStorage.getItem('dark-mode') === 'enabled';
-const alertBox = document.getElementById("customAlert");
-const alertMessage = document.getElementById("alertMessage");
-const alertOkButton = document.getElementById("alertOkButton");
-const overlay = document.getElementById("overlay");
-const myButton = document.getElementById("myButton");
-
-
-let alertCount = 0;
-
-// Array of custom alert messages
-const messages = [
-    "Hey! Remember to smile today—Framex loves to see you shine! 😊",
-    "You look amazing! Strike a pose and let the camera do the magic! 📸",
-    "Your support means a lot! Please consider clicking the donation button to help my project. 😊"
-];
-
-// Show first alert when "Ready?" button is clicked
-myButton.addEventListener("click", function() {
-    if (alertCount === 0) { // Ensures the alert sequence starts only once
-        showCustomAlert();
-    }
-});
-
-// Function to show alerts one by one
-function showCustomAlert() {
-    if (alertCount < messages.length) {
-        alertMessage.innerText = messages[alertCount]; // Display the correct message
-        alertBox.style.display = "block"; // Show custom alert
-        overlay.style.display = "block"; // Show background overlay
-    } else {
-        // After all alerts, redirect to instruction.html
-        window.location.href = "instruction.html";
-    }
-}
-
-// Handle "OK" button click
-alertOkButton.addEventListener("click", function() {
-    alertBox.style.display = "none"; // Hide alert box
-    overlay.style.display = "none"; // Hide overlay
-
-    alertCount++; // Move to next alert
-
-    if (alertCount < messages.length) {
-        setTimeout(showCustomAlert, 200); // Show next alert after delay
-    } else {
-        // If all alerts are shown, allow navigation
-        window.location.href = "instruction.html";
-    }
-});
-if (isDarkMode) {
-    document.body.classList.add('dark-mode');
-    darkModeToggle.checked = true;
-}
-
-darkModeToggle.addEventListener('change', () => {
-    if (darkModeToggle.checked) {
-        document.body.classList.add('dark-mode');
-        localStorage.setItem('dark-mode', 'enabled');
-    } else {
-        document.body.classList.remove('dark-mode');
-        localStorage.setItem('dark-mode', 'disabled');
-    }
-});
-
-// Improved Floating Frames Random Positioning
-const frames = document.querySelectorAll('.floating-frame');
-frames.forEach(frame => {
-    frame.style.left = `${Math.random() * 80 + 10}%`;
-    frame.style.animationDuration = `${Math.random() * 5 + 6}s`; // Random speeds
+document.getElementById("burger").addEventListener("click", function() {
+    document.getElementById("menu").classList.toggle("active");
 });
     </script>
+    
+
+
 </body> 
 </html>

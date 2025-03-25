@@ -1,11 +1,10 @@
 .editpage {
     background-color: #f0f0f0;
     font-family: 'League Spartan', sans-serif;
-    
+    padding: 20px;
 }
-
 .edit-container {
-    max-width: 1200px;
+    max-width: 1000px;
     margin: 0 auto;
     padding: 10px;
     gap: 100px;
@@ -16,16 +15,20 @@
     text-align: center;
     margin-bottom: 30px;
     color: #333;
+    font-size: 2rem; /* Slightly larger heading */
 }
 
 .edit-layout {
     display: flex;
     flex-wrap: wrap;
+    gap: 20px; /* Added gap between flex items */
+    justify-content: center;
 }
 
 .edit-canvas-container {
     flex: 1;
     min-width: 300px;
+    max-width: 600px; /* Added max-width */
     background-color: #fff;
     border-radius: 10px;
     padding: 20px;
@@ -33,16 +36,16 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 100px;
 }
 
 #editCanvas {
     max-width: 100%;
-    max-height: 100vh;
+    max-height: 100vh; /* Increased height */
+    width: auto;
+    height: auto;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    gap: 10px;
-    
 }
+
 
 .edit-controls {
     flex: 1;
@@ -151,19 +154,7 @@
 }
 
 /* Responsive adjustments */
-@media (max-width: 768px) {
-    .edit-layout {
-        flex-direction: column;
-    }
-    
-    .edit-canvas-container, .edit-controls {
-        min-width: 100%;
-    }
-    
-    #editCanvas {
-        max-height: 50vh;
-    }
-}
+
 .sticker-categories {
     display: flex;
     flex-wrap: wrap;
@@ -199,4 +190,66 @@
 #photoCanvas {
     position: relative; /* Stays below the frame */
     z-index: 1; /* Lower than the frame */
+}
+@media (max-width: 1200px) {
+    .edit-layout {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .edit-canvas-container, 
+    .edit-controls {
+        max-width: 100%;
+        width: 100%;
+    }
+
+    #editCanvas {
+        max-height: 50vh;
+    }
+}
+
+@media (max-width: 768px) {
+    .editpage {
+        padding: 10px;
+    }
+
+    .edit-container {
+        padding: 10px;
+    }
+
+    .edit-container h1 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+    }
+
+    #editCanvas {
+        max-height: 40vh;
+    }
+
+    .background-options, 
+    .color-options {
+        justify-content: center;
+    }
+
+    .bg-option, 
+    .color-option {
+        width: 60px;
+    }
+}
+
+/* Additional responsive tweaks for smaller screens */
+@media (max-width: 480px) {
+    .edit-container h1 {
+        font-size: 1.3rem;
+    }
+
+    .bg-option, 
+    .color-option {
+        width: 50px;
+    }
+
+    .edit-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
 }

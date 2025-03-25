@@ -48,7 +48,7 @@ function initCanvas() {
     }
     
     editCanvas.width = 750;
-    editCanvas.height = 2050;
+    editCanvas.height = 1850;
     editCanvas.style.display = 'block';
     editCanvas.style.border = '1px solid #ccc';
     
@@ -352,8 +352,8 @@ function drawPhotos() {
     let loadedCount = 0;
     const totalPhotos = photoData.length;
     
-    const topPadding = 50; // Extra space on top
-    const bottomPadding = 100; // Extra space for the date
+    const topPadding = 70; // Extra space on top
+    const bottomPadding = 200; // Extra space for the date
     const spacing = 25;
     const availableHeight = editCanvas.height - (topPadding + bottomPadding + spacing * (totalPhotos - 1));
     const photoHeight = availableHeight / totalPhotos;
