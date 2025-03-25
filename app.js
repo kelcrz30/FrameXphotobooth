@@ -354,11 +354,7 @@ function capturePhoto() {
         const offsetY = (scaledHeight - fixedHeight) / 2;
 
         // Draw with cropping
-        ctx.drawImage(
-            video, 
-            offsetX, offsetY, video.videoWidth, video.videoHeight,  // Source rectangle
-            0, 0, fixedWidth, fixedHeight               // Destination rectangle
-        );
+        ctx.drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
 
         // Reset transformation to avoid affecting future drawings
         ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -744,7 +740,7 @@ function compressImage(photoData, callback) {
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
         // Convert to JPEG with 90% quality for better results
-        let compressedData = canvas.toDataURL("image/jpeg", 0.9);
+        let compressedData = canvas.toDataURL("image/png");
 
         callback(compressedData);
     };
