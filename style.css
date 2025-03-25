@@ -996,6 +996,8 @@ button:hover .arrow:before {
             overflow: hidden;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             margin: 0 auto;
+           
+            max-height: 70vh;
         }
         
         .camera-selection {
@@ -1133,10 +1135,12 @@ button:hover .arrow:before {
         
         .photo-stack canvas {
             width: 100%;
-            height: auto;
+            height: auto !important; /* Remove fixed heights */
+            aspect-ratio: 4/4 !important; /* Match camera aspect ratio */
             border-radius: 8px;
             z-index: 1;
-            object-fit: contain; 
+            object-fit: cover; /* Better cropping than contain */ 
+            height: auto !important; 
             image-rendering: high-quality;
             image-rendering: -webkit-optimize-contrast; 
             
@@ -1277,7 +1281,7 @@ button:hover .arrow:before {
             #canvas4, 
             #editorCanvas {
             height: 40vh !important;  /* Adjust this value as needed */
-            max-height: 300px;        /* Optional: set a maximum height */
+            max-height: 200px;        /* Optional: set a maximum height */
             object-fit: cover;
     }
             .content-container {
@@ -1378,10 +1382,10 @@ button:hover .arrow:before {
             #canvas3, 
             #canvas4, 
             #editorCanvas {
-            height: 35vh !important;  /* Adjust this value as needed */
-            max-height: 300px;        /* Optional: set a maximum height */
+            height: 1200vh !important;  /* Adjust this value as needed */
+            max-height: 200px;        /* Optional: set a maximum height */
             object-fit: cover;
-          }
+    }
             .photo-stack canvas {
                 width: 100%;
                 max-width: none;

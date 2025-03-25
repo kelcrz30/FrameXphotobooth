@@ -324,9 +324,17 @@ function capturePhoto() {
     if (capturedPhotos.length < maxPhotos) {
         const videoAspectRatio = video.videoWidth / video.videoHeight;
         
-        // Dynamically calculate height based on a fixed width
-        const fixedWidth = 300;  // Smaller width
-        const fixedHeight = Math.round(fixedWidth / videoAspectRatio);
+        // Mobile-first sizing
+        let fixedWidth = 300; // Base width
+        let maxHeight = 400; // Maximum height for mobile
+        if (/Mobi|Android|iPhone|iPad|iPod/.test(navigator.userAgent)) {
+            fixedWidth = Math.min(window.innerWidth * 0.8, 300); // 80% of screen width or 300px
+            maxHeight = Math.min(window.innerHeight * 0.5, 400); // 50% of screen height or 400px
+        }
+        let fixedHeight = Math.min(
+            Math.round(fixedWidth / videoAspectRatio),
+            maxHeight
+        );
 
         const tempCanvas = document.createElement("canvas");
         const ctx = tempCanvas.getContext("2d");
