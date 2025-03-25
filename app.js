@@ -4,6 +4,10 @@ console.log("app.js is loaded!");
 const video = document.getElementById("video");
 video.addEventListener('loadedmetadata', () => {
     console.log('Video dimensions:', video.videoWidth, 'x', video.videoHeight);
+    
+    // Force aspect ratio and object fit
+    video.style.aspectRatio = '3/4';
+    video.style.objectFit = 'cover';
 });
 const captureBtn = document.getElementById("captureBtn");
 const counterText = document.getElementById("counterText");
@@ -74,6 +78,7 @@ async function startCamera(deviceId = null) {
         video.style.objectFit = 'cover';  // This helps crop the video to fit
         video.style.width = '100%';       // Full width of container
         video.style.height = '100%';  
+        video.style.maxHeight = '480px';  // Add a max height limit
         
         
         // iOS Safari specific setup
