@@ -53,13 +53,11 @@ async function startCamera(deviceId = null) {
         
         // Define constraints with iOS-specific handling
         let constraints = {
-            audio: false,
             video: {
-                width: { ideal: 1920, max: 2560 },  // Wider width
-                height: { ideal: 1080, max: 1440 }, // Proportional height
-                aspectRatio: { ideal: 16/9 },       // Explicitly set aspect ratio
-                facingMode: deviceId ? undefined : "user",
-                deviceId: deviceId ? { exact: deviceId } : undefined
+                width: { ideal: 640, max: 1280 },  // Smaller ideal width
+                height: { ideal: 480, max: 720 },   // Smaller ideal height
+                aspectRatio: { ideal: 4/3 },        // More standard aspect ratio
+                facingMode: "user"
             }
         };
         
