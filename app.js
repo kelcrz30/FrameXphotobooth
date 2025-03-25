@@ -320,20 +320,23 @@ brightnessSlider.addEventListener("input", updateFilters);
 contrastSlider.addEventListener("input", updateFilters);
 function capturePhoto() {
     if (capturedPhotos.length < maxPhotos) {
-        // Get actual video dimensions for more accurate capture
-        const videoWidth = video.videoWidth;
-        const videoHeight = video.videoHeight;
+        console.log("Capturing photo...");
+
+        if (!video || video.videoWidth === 0 || video.videoHeight === 0) {
+            console.error("Video feed not ready yet!");
+            return;
+        }
+
+        // Define fixed dimensions for consistency
+        const fixedWidth = 450;
+        const fixedHeight = 300;
 
         const tempCanvas = document.createElement("canvas");
         const ctx = tempCanvas.getContext("2d");
 
-        // Use actual video dimensions instead of fixed size
-        tempCanvas.width = videoWidth;
-        tempCanvas.height = videoHeight;
-
-        // Improved capture with high-quality settings
-        ctx.imageSmoothingEnabled = true;
-        ctx.imageSmoothingQuality = 'high';
+        // Use fixed dimensions
+        tempCanvas.width = fixedWidth;
+        tempCanvas.height = fixedHeight;
 
         // Apply mirroring if needed
         if (isMirrored) {
@@ -341,46 +344,20 @@ function capturePhoto() {
             ctx.scale(-1, 1);
         }
 
-        // Capture at full video resolution
-        ctx.drawImage(video, 0, 0, videoWidth, videoHeight);
+        // Draw the video frame (Remove duplicate drawing)
+        ctx.drawImage(video, 0, 0, fixedWidth, fixedHeight);
 
-        // Reset transformation
+        // Reset transformation to avoid affecting future drawings
         ctx.setTransform(1, 0, 0, 1, 0, 0);
 
-        // Improved compression function
-        function compressImage(canvas, quality = 0.95, maxWidth = 1920) {
-            // Create a new canvas for potential resizing
-            const outputCanvas = document.createElement('canvas');
-            const ctx = outputCanvas.getContext('2d');
+        // Set high quality
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
 
-            // Calculate scaled dimensions if needed
-            let scale = 1;
-            if (canvas.width > maxWidth) {
-                scale = maxWidth / canvas.width;
-            }
-
-            const scaledWidth = canvas.width * scale;
-            const scaledHeight = canvas.height * scale;
-
-            // Set new canvas dimensions
-            outputCanvas.width = scaledWidth;
-            outputCanvas.height = scaledHeight;
-
-            // High-quality scaling
-            ctx.imageSmoothingEnabled = true;
-            ctx.imageSmoothingQuality = 'high';
-
-            // Draw the image with high-quality scaling
-            ctx.drawImage(canvas, 0, 0, scaledWidth, scaledHeight);
-
-            // Convert to high-quality JPEG
-            return outputCanvas.toDataURL('image/jpeg', quality);
-        }
-
-        // Capture raw photo data
+        // Create a temp image to apply the filter
         const rawPhotoData = tempCanvas.toDataURL("image/png");
 
-        // Create image to apply filter
+        // Now apply the selected filter to this image
         const img = new Image();
         img.src = rawPhotoData;
 
@@ -391,16 +368,15 @@ function capturePhoto() {
             // Apply the current filter
             applyFilter(ctx, tempCanvas, img);
 
-            // Compress with higher quality and optional resizing
-            const compressedPhotoData = compressImage(tempCanvas);
-            capturedPhotos.push(compressedPhotoData);
+            // Get the filtered image data
+            const filteredPhotoData = tempCanvas.toDataURL("image/png");
+            capturedPhotos.push(filteredPhotoData);
 
-            // Update canvases with compressed photo
+            // Update all canvases with the new photo
             canvasList.forEach((canvas, index) => {
                 if (canvas && capturedPhotos[index]) {
-                    // Use actual canvas dimensions
-                    canvas.width = tempCanvas.width;
-                    canvas.height = tempCanvas.height;
+                    canvas.width = fixedWidth;
+                    canvas.height = fixedHeight;
 
                     const targetCtx = canvas.getContext("2d");
                     targetCtx.imageSmoothingEnabled = true;
@@ -416,7 +392,6 @@ function capturePhoto() {
                 }
             });
 
-            // Update photo counter
             counterText.textContent = `Photos Taken: ${capturedPhotos.length} / ${maxPhotos}`;
 
             if (capturedPhotos.length === maxPhotos) {
