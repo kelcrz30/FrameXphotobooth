@@ -51,12 +51,12 @@ async function startCamera(deviceId = null) {
         video.setAttribute('autoplay', true);
         video.setAttribute('muted', true);
         
-        // Define constraints with iOS-specific handling
+        // Revised constraints for wider field of view
         let constraints = {
             video: {
-                width: { ideal: 640, max: 1280 },  // Smaller ideal width
-                height: { ideal: 480, max: 720 },   // Smaller ideal height
-                aspectRatio: { ideal: 4/3 },        // More standard aspect ratio
+                width: { ideal: 1280, max: 1920 },   // Wider max width
+                height: { ideal: 720, max: 1080 },   // Wider max height
+                aspectRatio: { ideal: 16/9 },        // Standard widescreen aspect ratio
                 facingMode: "user"
             }
         };
@@ -65,12 +65,11 @@ async function startCamera(deviceId = null) {
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         if (isIOS) {
             console.log("iOS device detected, applying special video constraints");
-            // On iOS, simplify constraints and prioritize facingMode over deviceId
-            // as deviceId might not work consistently
             constraints.video = {
-                facingMode: "user", // or use "environment" for back camera
-                width: { ideal: 1280 },
-                height: { ideal: 720 }
+                facingMode: "user", 
+                width: { ideal: 1280, max: 1920 },
+                height: { ideal: 720, max: 1080 },
+                aspectRatio: { ideal: 16/9 }
             };
         }
         
@@ -92,17 +91,21 @@ async function startCamera(deviceId = null) {
             setTimeout(() => {
                 video.play().catch(e => console.error("iOS delayed play error:", e));
             }, 100);
-            
-            // iOS workaround for orientation changes
-            window.addEventListener('resize', () => {
-                setTimeout(() => {
-                    if (video.srcObject) {
-                        video.play().catch(e => console.error("iOS resize play error:", e));
-                    }
-                }, 300);
-            });
         }
         
+        // Force play for all browsers
+        video.play().catch(e => console.error("Play error:", e));
+        
+        // Debugging and retry mechanism
+        setTimeout(() => {
+            console.log("Video dimensions:", video.videoWidth, "x", video.videoHeight);
+            
+            if (video.videoWidth === 0 || video.videoHeight === 0) {
+                console.warn("Video dimensions are zero - stream might not be properly initialized");
+            }
+        }, 500);
+        
+
         // Force play for all browsers
         video.play().catch(e => console.error("Play error:", e));
         

@@ -952,6 +952,7 @@ button:hover .arrow:before {
             background-color: #f0f2f5;
             color: #000000;
             line-height: 1.6;
+            overflow-y: scroll;
         }
 
         
@@ -1020,12 +1021,10 @@ button:hover .arrow:before {
         }
         
         #video {
-            width: 100%;
-            height: auto;
-            background: #000;
-            display: block;
-            max-height: 70vh;
-            object-fit: cover;
+            width: 100%; /* or a specific width that fits your layout */
+            max-width: 640px; /* Adjust as needed */
+            height: auto; /* Maintain aspect ratio */
+            object-fit: contain; /* Prevents cropping */
         }
         
         #countdownText {
@@ -1141,6 +1140,11 @@ button:hover .arrow:before {
             image-rendering: high-quality;
             image-rendering: -webkit-optimize-contrast; 
             
+        }
+        #canvas1, #canvas2, #canvas3, #canvas4 {
+            width: 100%; /* Match video width */
+            height: auto; /* Maintain aspect ratio */
+            object-fit: contain; /* Prevents cropping */
         }
 
         /* Navigation button */
