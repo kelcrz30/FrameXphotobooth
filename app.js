@@ -762,35 +762,31 @@ function compressImage(photoData, callback) {
     };
 }
 
-function compressImage(photoData, callback) {
-    let img = new Image();
-    img.src = photoData;
+function storePhotosInSession(photos) {
+    if (!Array.isArray(photos) || photos.length === 0) {
+        console.error("❌ Invalid photos array provided to storePhotosInSession.");
+        return;
+    }
 
-    img.onload = function () {
-        let canvas = document.createElement("canvas");
-        let ctx = canvas.getContext("2d");
+    let compressedPhotos = [];
+    let processedCount = 0;
 
-        // Adjust compression based on image size
-        const maxWidth = 1920;
-        const scale = img.width > maxWidth ? maxWidth / img.width : 1;
+    photos.forEach((photo, index) => {
+        compressImage(photo, (compressedData) => {
+            compressedPhotos[index] = compressedData;
+            processedCount++;
 
-        canvas.width = img.width * scale;
-        canvas.height = img.height * scale;
-
-        ctx.imageSmoothingEnabled = true;
-        ctx.imageSmoothingQuality = 'high';
-
-        // Draw scaled image
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-        // Convert to JPEG with adaptive quality
-        const quality = img.width > 1920 ? 0.85 : 0.95;
-        let compressedData = canvas.toDataURL("image/jpeg", quality);
-
-        callback(compressedData);
-    };
+            if (processedCount === photos.length) {
+                try {
+                    sessionStorage.setItem("photos", JSON.stringify(compressedPhotos));
+                    console.log("✅ Photos successfully stored in session storage.");
+                } catch (e) {
+                    console.error("❌ Failed to store photos: ", e);
+                }
+            }
+        });
+    });
 }
-
 
 document.getElementById("goToEditBtn").addEventListener("click", function(e) {
     e.preventDefault();
