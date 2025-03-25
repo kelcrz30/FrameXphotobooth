@@ -1271,6 +1271,15 @@ button:hover .arrow:before {
         }
         
         @media (max-width: 765px) {
+            #canvas1, 
+            #canvas2, 
+            #canvas3, 
+            #canvas4, 
+            #editorCanvas {
+            height: 40vh !important;  /* Adjust this value as needed */
+            max-height: 300px;        /* Optional: set a maximum height */
+            object-fit: cover;
+    }
             .content-container {
                 flex-direction: column;
                 padding: 1rem;
@@ -1364,6 +1373,15 @@ button:hover .arrow:before {
         }
         
         @media (max-width: 480px) {
+            #canvas1, 
+            #canvas2, 
+            #canvas3, 
+            #canvas4, 
+            #editorCanvas {
+            height: 35vh !important;  /* Adjust this value as needed */
+            max-height: 300px;        /* Optional: set a maximum height */
+            object-fit: cover;
+          }
             .photo-stack canvas {
                 width: 100%;
                 max-width: none;
@@ -1408,6 +1426,15 @@ button:hover .arrow:before {
         }
         
         @media (max-width: 360px) {
+            #canvas1, 
+            #canvas2, 
+            #canvas3, 
+            #canvas4, 
+            #editorCanvas {
+            height: 20vh !important;  /* Adjust this value as needed */
+            max-height: 300px;        /* Optional: set a maximum height */
+            object-fit: cover;
+    }
             #countdownText {
                 font-size: 2.5rem;
             }
