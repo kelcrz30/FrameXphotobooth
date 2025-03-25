@@ -36,27 +36,17 @@ if (canvasList.some(canvas => canvas === null)) {
 // 🎥 Start the camera
 async function startCamera(deviceId = null) {
     try {
-        // Debug browser info
-        console.log("Browser info:", navigator.userAgent);
-        console.log("MediaDevices support:", !!navigator.mediaDevices);
-        console.log("getUserMedia support:", !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia));
-        
         // Stop any existing streams
         if (video.srcObject) {
             video.srcObject.getTracks().forEach(track => track.stop());
         }
         
-        // Add necessary attributes for iOS
-        video.setAttribute('playsinline', true);
-        video.setAttribute('autoplay', true);
-        video.setAttribute('muted', true);
-        
-        // Revised constraints for wider field of view
+        // Revised constraints for tighter, less zoomed view
         let constraints = {
             video: {
-                width: { ideal: 1280, max: 1920 },   // Wider max width
-                height: { ideal: 720, max: 1080 },   // Wider max height
-                aspectRatio: { ideal: 16/9 },        // Standard widescreen aspect ratio
+                width: { ideal: 640, max: 800 },     // Reduced max width
+                height: { ideal: 480, max: 600 },    // Reduced max height
+                aspectRatio: { ideal: 3/4 },         // More portrait-like aspect ratio
                 facingMode: "user"
             }
         };
@@ -80,6 +70,11 @@ async function startCamera(deviceId = null) {
         
         // Assign stream to video element
         video.srcObject = stream;
+
+        video.style.objectFit = 'cover';  // This helps crop the video to fit
+        video.style.width = '100%';       // Full width of container
+        video.style.height = '100%';  
+        
         
         // iOS Safari specific setup
         if (isIOS) {
@@ -325,7 +320,7 @@ function capturePhoto() {
         const videoAspectRatio = video.videoWidth / video.videoHeight;
         
         // Dynamically calculate height based on a fixed width
-        const fixedWidth = 450;
+        const fixedWidth = 300;  // Smaller width
         const fixedHeight = Math.round(fixedWidth / videoAspectRatio);
 
         const tempCanvas = document.createElement("canvas");
@@ -334,12 +329,24 @@ function capturePhoto() {
         tempCanvas.width = fixedWidth;
         tempCanvas.height = fixedHeight;
 
-        // Draw the entire video frame, potentially showing more background
+        const scale = Math.max(
+            fixedWidth / video.videoWidth, 
+            fixedHeight / video.videoHeight
+        );
+
+        const scaledWidth = video.videoWidth * scale;
+        const scaledHeight = video.videoHeight * scale;
+
+        const offsetX = (scaledWidth - fixedWidth) / 2;
+        const offsetY = (scaledHeight - fixedHeight) / 2;
+
+        // Draw with cropping
         ctx.drawImage(
             video, 
-            0, 0, video.videoWidth, video.videoHeight,  // Source rectangle
+            offsetX, offsetY, video.videoWidth, video.videoHeight,  // Source rectangle
             0, 0, fixedWidth, fixedHeight               // Destination rectangle
         );
+
         // Reset transformation to avoid affecting future drawings
         ctx.setTransform(1, 0, 0, 1, 0, 0);
 
