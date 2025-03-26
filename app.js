@@ -342,8 +342,12 @@ function capturePhoto() {
             ctx.scale(-1, 1);
         }
 
-        // Capture at full video resolution
-        ctx.drawImage(video, 0, 0, videoWidth, videoHeight);
+        // Draw image scaled to fit entire canvas
+        ctx.drawImage(
+            video, 
+            0, 0, videoWidth, videoHeight,  // Source rectangle
+            0, 0, tempCanvas.width, tempCanvas.height  // Destination rectangle
+        );
 
         // Reset transformation
         ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -353,27 +357,27 @@ function capturePhoto() {
             // Create a new canvas for potential resizing
             const outputCanvas = document.createElement('canvas');
             const ctx = outputCanvas.getContext('2d');
-
+        
             // Calculate scaled dimensions if needed
             let scale = 1;
             if (canvas.width > maxWidth) {
                 scale = maxWidth / canvas.width;
             }
-
+        
             const scaledWidth = canvas.width * scale;
             const scaledHeight = canvas.height * scale;
-
+        
             // Set new canvas dimensions
             outputCanvas.width = scaledWidth;
             outputCanvas.height = scaledHeight;
-
+        
             // High-quality scaling
             ctx.imageSmoothingEnabled = true;
             ctx.imageSmoothingQuality = 'high';
-
+        
             // Draw the image with high-quality scaling
             ctx.drawImage(canvas, 0, 0, scaledWidth, scaledHeight);
-
+        
             // Convert to high-quality JPEG
             return outputCanvas.toDataURL('image/jpeg', quality);
         }
@@ -459,27 +463,42 @@ function storePhotosInSession(photos) {
         img.src = photoData;
 
         img.onload = function () {
-            let canvas = document.createElement("canvas");
-            let ctx = canvas.getContext("2d");
+            // Clear canvas before applying filter
+            ctx.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
 
-            // Adjust compression based on image size
-            const maxWidth = 1920;
-            const scale = img.width > maxWidth ? maxWidth / img.width : 1;
+            // Apply the current filter
+            applyFilter(ctx, tempCanvas, img);
 
-            canvas.width = img.width * scale;
-            canvas.height = img.height * scale;
+            // Compress the image
+            const compressedPhotoData = compressImage(tempCanvas);
+            capturedPhotos.push(compressedPhotoData);
 
-            ctx.imageSmoothingEnabled = true;
-            ctx.imageSmoothingQuality = 'high';
+            // Update canvases with compressed photo
+            canvasList.forEach((canvas, index) => {
+                if (canvas && capturedPhotos[index]) {
+                    canvas.width = tempCanvas.width;
+                    canvas.height = tempCanvas.height;
 
-            // Draw scaled image
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    const targetCtx = canvas.getContext("2d");
+                    targetCtx.imageSmoothingEnabled = true;
+                    targetCtx.imageSmoothingQuality = 'high';
 
-            // Convert to JPEG with adaptive quality
-            const quality = img.width > 1920 ? 0.85 : 0.95;
-            let compressedData = canvas.toDataURL("image/jpeg", quality);
+                    let displayImg = new Image();
+                    displayImg.src = capturedPhotos[index];
 
-            callback(compressedData);
+                    displayImg.onload = () => {
+                        targetCtx.drawImage(displayImg, 0, 0, canvas.width, canvas.height);
+                        canvas.style.display = "block";
+                    };
+                }
+            });
+
+            // Update photo counter
+            counterText.textContent = `Photos Taken: ${capturedPhotos.length} / ${maxPhotos}`;
+
+            if (capturedPhotos.length === maxPhotos) {
+                storePhotosInSession(capturedPhotos);
+            }
         };
     }
 }
