@@ -458,24 +458,25 @@ function goBack() {
 // Sticker preset configurations
 const stickerPresets = {
     "girlpop": [
-        { src: "stickers/heart.png", x: 50, y: 100, size: 70 },
+        { src: "", x: 50, y: 100, size: 500 },
         { src: "stickers/flower.png", x: 400, y: 200, size: 80 },
         { src: "stickers/star.png", x: 100, y: 700, size: 60 },
         { src: "stickers/butterfly.png", x: 350, y: 800, size: 75 },
         { src: "stickers/sparkle.png", x: 200, y: 400, size: 65 }
     ],
     "cute": [
-        { src: "stickers/rabbit.png", x: 80, y: 150, size: 80 },
-        { src: "stickers/bear.png", x: 380, y: 250, size: 90 },
-        { src: "stickers/bow.png", x: 120, y: 650, size: 50 },
-        { src: "stickers/icecream.png", x: 300, y: 850, size: 70 }
+        { src: "stickers/sanrio.png", x: 580, y: -30, size: 350 },
+        { src: "stickers/sanrio1.png", x: -50, y: 450, size: 350 },
+        { src: "stickers/sanrio2.png", x: 580, y: 1000, size: 350 },
+        { src: "stickers/sanrio3.png", x: -80, y: 1600, size: 350 },
+        { src: "stickers/sanrio4.png", x: 550, y: 2300, size: 350 }
     ],
     "mofusand": [
-        { src: "stickers/cat.png", x: 460, y: 150, size: 70 },
-        { src: "stickers/cat2.png", x: -50, y: 200, size: 200},
-        { src: "stickers/cat3.png", x: 320, y: 500, size: 200 },
-        { src: "/stickers/cat4.png", x: 350, y: -30, size: 200 },
-        { src: "stickers/penguin.png", x: 240, y: 480, size: 70 }
+        { src: "stickers/cat.png", x: 560, y: -110, size: 400 },
+        { src: "stickers/cat2.png", x: -80, y: 400, size: 400},
+        { src: "stickers/cat3.png", x: 230, y: 1620, size: 410 },
+        { src: "stickers/cat6.png", x: -150, y: 2220, size: 400 },
+        { src: "stickers/cat7.png", x: 580, y: 1000, size: 350 }
     ],
     "shinchan": [
         { src: "stickers/shinchan1.png", x: 80, y: 150, size: 90 },
