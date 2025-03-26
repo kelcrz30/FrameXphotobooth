@@ -1135,7 +1135,7 @@ button:hover .arrow:before {
         
         .photo-stack canvas {
             width: auto !important;
-            max-width: 30%;
+            max-width: 50%;
             height: auto !important;
             image-rendering: crisp-edges;
             image-rendering: -moz-crisp-edges;
