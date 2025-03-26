@@ -4,10 +4,6 @@ console.log("app.js is loaded!");
 const video = document.getElementById("video");
 video.addEventListener('loadedmetadata', () => {
     console.log('Video dimensions:', video.videoWidth, 'x', video.videoHeight);
-    
-    // Force aspect ratio and object fit
-    video.style.aspectRatio = '3/4';
-    video.style.objectFit = 'cover';
 });
 const captureBtn = document.getElementById("captureBtn");
 const counterText = document.getElementById("counterText");
@@ -40,18 +36,29 @@ if (canvasList.some(canvas => canvas === null)) {
 // 🎥 Start the camera
 async function startCamera(deviceId = null) {
     try {
+        // Debug browser info
+        console.log("Browser info:", navigator.userAgent);
+        console.log("MediaDevices support:", !!navigator.mediaDevices);
+        console.log("getUserMedia support:", !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia));
+        
         // Stop any existing streams
         if (video.srcObject) {
             video.srcObject.getTracks().forEach(track => track.stop());
         }
         
-        // Revised constraints for tighter, less zoomed view
+        // Add necessary attributes for iOS
+        video.setAttribute('playsinline', true);
+        video.setAttribute('autoplay', true);
+        video.setAttribute('muted', true);
+        
+        // Define constraints with iOS-specific handling
         let constraints = {
+            audio: false,
             video: {
-                width: { ideal: 640, max: 800 },     // Reduced max width
-                height: { ideal: 480, max: 600 },    // Reduced max height
-                aspectRatio: { ideal: 3/4 },         // More portrait-like aspect ratio
-                facingMode: "user"
+                width: { ideal: 1280 },
+                height: { ideal: 720 },
+                facingMode: deviceId ? undefined : "user",
+                deviceId: deviceId ? { exact: deviceId } : undefined
             }
         };
         
@@ -59,11 +66,12 @@ async function startCamera(deviceId = null) {
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         if (isIOS) {
             console.log("iOS device detected, applying special video constraints");
+            // On iOS, simplify constraints and prioritize facingMode over deviceId
+            // as deviceId might not work consistently
             constraints.video = {
-                facingMode: "user", 
-                width: { ideal: 1280, max: 1920 },
-                height: { ideal: 720, max: 1080 },
-                aspectRatio: { ideal: 16/9 }
+                facingMode: "user", // or use "environment" for back camera
+                width: { ideal: 1280 },
+                height: { ideal: 720 }
             };
         }
         
@@ -74,12 +82,6 @@ async function startCamera(deviceId = null) {
         
         // Assign stream to video element
         video.srcObject = stream;
-
-        video.style.objectFit = 'cover';  // This helps crop the video to fit
-        video.style.width = '100%';       // Full width of container
-        video.style.height = '100%';  
-        video.style.maxHeight = '480px';  // Add a max height limit
-        
         
         // iOS Safari specific setup
         if (isIOS) {
@@ -91,21 +93,17 @@ async function startCamera(deviceId = null) {
             setTimeout(() => {
                 video.play().catch(e => console.error("iOS delayed play error:", e));
             }, 100);
+            
+            // iOS workaround for orientation changes
+            window.addEventListener('resize', () => {
+                setTimeout(() => {
+                    if (video.srcObject) {
+                        video.play().catch(e => console.error("iOS resize play error:", e));
+                    }
+                }, 300);
+            });
         }
         
-        // Force play for all browsers
-        video.play().catch(e => console.error("Play error:", e));
-        
-        // Debugging and retry mechanism
-        setTimeout(() => {
-            console.log("Video dimensions:", video.videoWidth, "x", video.videoHeight);
-            
-            if (video.videoWidth === 0 || video.videoHeight === 0) {
-                console.warn("Video dimensions are zero - stream might not be properly initialized");
-            }
-        }, 500);
-        
-
         // Force play for all browsers
         video.play().catch(e => console.error("Play error:", e));
         
@@ -317,56 +315,72 @@ function updateFilters() {
     video.style.filter = `brightness(${brightness}%) contrast(${contrast}%)`;
 }
 
-
+// Event listeners to update filters in real time
 brightnessSlider.addEventListener("input", updateFilters);
 contrastSlider.addEventListener("input", updateFilters);
 function capturePhoto() {
     if (capturedPhotos.length < maxPhotos) {
-        const videoAspectRatio = video.videoWidth / video.videoHeight;
-        
-        // Mobile-first sizing
-        let fixedWidth = 300; // Base width
-        let maxHeight = 400; // Maximum height for mobile
-        if (/Mobi|Android|iPhone|iPad|iPod/.test(navigator.userAgent)) {
-            fixedWidth = Math.min(window.innerWidth * 0.8, 300); // 80% of screen width or 300px
-            maxHeight = Math.min(window.innerHeight * 0.5, 400); // 50% of screen height or 400px
-        }
-        let fixedHeight = Math.min(
-            Math.round(fixedWidth / videoAspectRatio),
-            maxHeight
-        );
+        // Get actual video dimensions for more accurate capture
+        const videoWidth = video.videoWidth;
+        const videoHeight = video.videoHeight;
 
         const tempCanvas = document.createElement("canvas");
         const ctx = tempCanvas.getContext("2d");
 
-        tempCanvas.width = fixedWidth;
-        tempCanvas.height = fixedHeight;
+        // Use actual video dimensions instead of fixed size
+        tempCanvas.width = videoWidth;
+        tempCanvas.height = videoHeight;
 
-        const scale = Math.max(
-            fixedWidth / video.videoWidth, 
-            fixedHeight / video.videoHeight
-        );
-
-        const scaledWidth = video.videoWidth * scale;
-        const scaledHeight = video.videoHeight * scale;
-
-        const offsetX = (scaledWidth - fixedWidth) / 2;
-        const offsetY = (scaledHeight - fixedHeight) / 2;
-
-        // Draw with cropping
-        ctx.drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
-
-        // Reset transformation to avoid affecting future drawings
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-
-        // Set high quality
+        // Improved capture with high-quality settings
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = 'high';
 
-        // Create a temp image to apply the filter
+        // Apply mirroring if needed
+        if (isMirrored) {
+            ctx.translate(tempCanvas.width, 0);
+            ctx.scale(-1, 1);
+        }
+
+        // Capture at full video resolution
+        ctx.drawImage(video, 0, 0, videoWidth, videoHeight);
+
+        // Reset transformation
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+        // Improved compression function
+        function compressImage(canvas, quality = 0.95, maxWidth = 1920) {
+            // Create a new canvas for potential resizing
+            const outputCanvas = document.createElement('canvas');
+            const ctx = outputCanvas.getContext('2d');
+
+            // Calculate scaled dimensions if needed
+            let scale = 1;
+            if (canvas.width > maxWidth) {
+                scale = maxWidth / canvas.width;
+            }
+
+            const scaledWidth = canvas.width * scale;
+            const scaledHeight = canvas.height * scale;
+
+            // Set new canvas dimensions
+            outputCanvas.width = scaledWidth;
+            outputCanvas.height = scaledHeight;
+
+            // High-quality scaling
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+
+            // Draw the image with high-quality scaling
+            ctx.drawImage(canvas, 0, 0, scaledWidth, scaledHeight);
+
+            // Convert to high-quality JPEG
+            return outputCanvas.toDataURL('image/jpeg', quality);
+        }
+
+        // Capture raw photo data
         const rawPhotoData = tempCanvas.toDataURL("image/png");
 
-        // Now apply the selected filter to this image
+        // Create image to apply filter
         const img = new Image();
         img.src = rawPhotoData;
 
@@ -377,15 +391,16 @@ function capturePhoto() {
             // Apply the current filter
             applyFilter(ctx, tempCanvas, img);
 
-            // Get the filtered image data
-            const filteredPhotoData = tempCanvas.toDataURL("image/png");
-            capturedPhotos.push(filteredPhotoData);
+            // Compress with higher quality and optional resizing
+            const compressedPhotoData = compressImage(tempCanvas);
+            capturedPhotos.push(compressedPhotoData);
 
-            // Update all canvases with the new photo
+            // Update canvases with compressed photo
             canvasList.forEach((canvas, index) => {
                 if (canvas && capturedPhotos[index]) {
-                    canvas.width = fixedWidth;
-                    canvas.height = fixedHeight;
+                    // Use actual canvas dimensions
+                    canvas.width = tempCanvas.width;
+                    canvas.height = tempCanvas.height;
 
                     const targetCtx = canvas.getContext("2d");
                     targetCtx.imageSmoothingEnabled = true;
@@ -401,11 +416,69 @@ function capturePhoto() {
                 }
             });
 
+            // Update photo counter
             counterText.textContent = `Photos Taken: ${capturedPhotos.length} / ${maxPhotos}`;
 
             if (capturedPhotos.length === maxPhotos) {
                 storePhotosInSession(capturedPhotos);
             }
+        };
+    }
+}
+
+// Updated storage function with detailed compression
+function storePhotosInSession(photos) {
+    if (!Array.isArray(photos) || photos.length === 0) {
+        console.error("❌ Invalid photos array provided to storePhotosInSession.");
+        return;
+    }
+
+    let compressedPhotos = [];
+    let processedCount = 0;
+
+    photos.forEach((photo, index) => {
+        compressImage(photo, (compressedData) => {
+            compressedPhotos[index] = compressedData;
+            processedCount++;
+
+            if (processedCount === photos.length) {
+                try {
+                    sessionStorage.setItem("photos", JSON.stringify(compressedPhotos));
+                    console.log("✅ Photos successfully stored in session storage.");
+                } catch (e) {
+                    console.error("❌ Failed to store photos: ", e);
+                }
+            }
+        });
+    });
+
+    // Additional helper function for compression
+    function compressImage(photoData, callback) {
+        let img = new Image();
+        img.src = photoData;
+
+        img.onload = function () {
+            let canvas = document.createElement("canvas");
+            let ctx = canvas.getContext("2d");
+
+            // Adjust compression based on image size
+            const maxWidth = 1920;
+            const scale = img.width > maxWidth ? maxWidth / img.width : 1;
+
+            canvas.width = img.width * scale;
+            canvas.height = img.height * scale;
+
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+
+            // Draw scaled image
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+            // Convert to JPEG with adaptive quality
+            const quality = img.width > 1920 ? 0.85 : 0.95;
+            let compressedData = canvas.toDataURL("image/jpeg", quality);
+
+            callback(compressedData);
         };
     }
 }
@@ -740,7 +813,7 @@ function compressImage(photoData, callback) {
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
         // Convert to JPEG with 90% quality for better results
-        let compressedData = canvas.toDataURL("image/png");
+        let compressedData = canvas.toDataURL("image/jpeg", 0.9);
 
         callback(compressedData);
     };
