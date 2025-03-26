@@ -329,8 +329,8 @@ function capturePhoto() {
         const ctx = tempCanvas.getContext("2d");
 
         // Use actual video dimensions instead of fixed size
-        tempCanvas.width = 1200;  // Increased from 1280
-        tempCanvas.height = 700; // Adjusted aspect ratio
+        tempCanvas.width = 1000;   // Good for most devices
+        tempCanvas.height = 800;  // Square aspect ratio
 
         // Improved capture with high-quality settings
         ctx.imageSmoothingEnabled = true;
@@ -834,6 +834,7 @@ function compressImage(photoData, callback) {
 
         // Convert to JPEG with 90% quality for better results
         let compressedData = canvas.toDataURL("image/jpeg", 0.98);
+        compressedImg.style.maxWidth = '800px';  // Wider
 
         callback(compressedData);
     };
