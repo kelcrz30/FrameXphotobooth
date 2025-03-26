@@ -33,14 +33,14 @@
 
 
 
-/* Enable scrolling */
+
 
 html, body {
     height: 100%;
     width: 100%;
     margin: 0;
     padding: 0;
-    overflow-y: hidden;
+    overflow-y: hidden !important;
     font-family: "Poppins", sans-serif;
     background: #f5f5f5; /* Light gray background */
 }
@@ -121,12 +121,12 @@ html, body {
 .logo {
     position: absolute;
     top: 0;
-    margin-top: 20px;
     left: 40px;
     width: 40px;
     height: 70px;
     transition: background-color 0.5s ease;
     font-family: almost;
+    margin-top: 2rem;
 }
 .bottom-section{
     display: flex;
@@ -134,7 +134,7 @@ html, body {
     align-items: center;
     gap: 1rem;
     margin-top: 10rem;
-    margin-bottom: 5rem;
+    margin-bottom: 4rem;
     position: relative;
     z-index: 10;
 }
@@ -213,9 +213,9 @@ html, body {
 }
 
 .content {
-    position: relative; /* Change from absolute */
-    bottom: auto; /* Remove bottom positioning */
-    left: auto; /* Remove left positioning */
+    position: relative; 
+    bottom: auto; 
+    left: auto; 
     width: 90%;
     max-width: 1200px;
     margin: 0 auto;
@@ -224,7 +224,7 @@ html, body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    
+    top: 2rem;
 }
 
 @keyframes fadeIn {
@@ -236,11 +236,12 @@ html, body {
     display: flex;
     flex-direction: center;
     text-align: center;
-    margin-top: 280px;
+    margin-top: 350px;
     justify-content: center;
     align-items: center;
     animation: slideIn 1.2s ease-out;
     font-family: Almost;
+    margin-bottom: 0;
 }
 
 @keyframes slideIn {
@@ -253,13 +254,14 @@ html, body {
     font-weight: bold;
     line-height: 1;
     letter-spacing: -2px;
-
     text-shadow: 1px 1px 1px rgba(0,0,0,0.05);
     width: 100%;
     max-width: 100%;
     overflow: hidden; 
     /* Replace animation */
     animation: fadeIn 1s ease-out;
+    position: fixed;
+    top: 300px;
 }
 
 /* Remove or replace the @keyframes typing animation with */
@@ -273,7 +275,9 @@ html, body {
     font-size: 15px;
     width: 100%;
     text-align: center;
-    font-family: almost
+    font-family: almost;
+    position: fixed;
+    top: 500px;
 ;
     
     animation: fadeInUp 1.5s ease-in 0.5s both;
@@ -492,7 +496,7 @@ button {
 
 .button-container {
     position: absolute;
-    top: 50%;
+    top: 60%;
     left: 50%;
     transform: translate(-50%, -50%);
     display: flex;
@@ -623,20 +627,24 @@ button:hover .arrow:before {
 /* Mobile responsiveness */
 @media (max-width: 1024px) {
     .title {
+        position: relative;
+        top: 150px;
         font-size: 130px;
         margin-top: 20rem;
     }
-    
-    .x-title {
-        font-size: 100px;
+    .description{
+        position: relative;
+        top: 150px;
     }
-    
-    .x-container {
-        left: 65%;
+    .logo{
+        margin-top: 2rem;
+    }
+    .bottom-section{
+    margin-bottom: 40rem; 
     }
     .button-container{
         position: relative;
-        top: 70px;
+        top: 250px;
     }
 
     
@@ -652,23 +660,39 @@ button:hover .arrow:before {
         overflow: auto; /* Enable scrolling */
         -webkit-overflow-scrolling: touch; /* Smooth scrolling for iOS */
     }
+    .logo{
+        margin-top: 1rem;
+        font-size: 15px;
+        left: 20px;
+    }
+    .bottom-section{
+        margin-bottom: 20rem;
+    }
 
-    
     .title {
-        font-size: calc(40px + 5vw); /* Use this font size value */
+        position: relative;
+        top: 140px;
+        font-size: calc(80px + 5vw); /* Use this font size value */
         letter-spacing: -0.5px; /* Less letter spacing on mobile */
         animation-duration: 2.5s; /* Slightly faster on mobile */
         white-space: normal; /* Allow text to wrap */
         overflow: visible; /* Show all text */
-        margin-top: 15rem; /* Adjusted for better spacing */
+        margin-top: 1rem; /* Adjusted for better spacing */
         text-align: center;
         margin-bottom: 0;
-        margin-top: -10px; /* Moves it up */
+    }
+    .description{
+        position: relative;
+        top: 140px;
     }
     .toggle-switch{
         right: 10px;
     }
-    
+    .button-container{
+        position: relative;
+        top: 250px;
+        border-radius: 20px;
+    }
     .content {
         bottom: 80px; /* Reduced bottom margin */
         left: 10px; /* Less left margin */
@@ -693,11 +717,25 @@ button:hover .arrow:before {
 
 
 @media screen and (max-width: 480px) {
+    .logo{
+        margin-top: 2rem;
+        font-size: 15px;
+        left: 20px;
+    }
+    .bottom-section{
+        margin-bottom: 30rem;
+    }
     .title {
-        font-size: clamp(3rem, 4vw, 40px);
-        margin-top: 10rem;
+        position: relative;
+        top: 150x;
+        font-size: clamp(5rem, 4vw, 40px);
+        margin-top: 13rem;
         margin-bottom: 0;
         padding: 10px;
+    }
+    .description{
+        position: relative ;
+        top: 150px;
     }
     .toggle-switch{
         right: 60px;
@@ -710,7 +748,7 @@ button:hover .arrow:before {
     }
     
     .content {
-        bottom: 60px; /* Less bottom spacing */
+        bottom: 10px; /* Less bottom spacing */
         left: 5px;
         width: calc(100% - 10px);
     }
@@ -721,8 +759,16 @@ button:hover .arrow:before {
 
 
 @media screen and (max-width: 375px) {
+    .logo{
+        margin-top: 2rem;
+        font-size: 15px;
+        left: 20px;
+    }
+    .bottom-section{
+        margin-bottom: 25rem;
+    }
     .title {
-        font-size: clamp(3rem, 4vw, 40px);
+        font-size: clamp(4rem, 4vw, 40px);
         margin-top: 10rem;
         margin-bottom: 0;
         padding: 10px;
