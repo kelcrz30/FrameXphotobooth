@@ -47,8 +47,8 @@ function initCanvas() {
         return;
     }
     
-    editCanvas.width = 750;
-    editCanvas.height = 2050;
+    editCanvas.width = 700;  // Match photobooth width
+editCanvas.height = 1600; // Allow more vertical space
     editCanvas.style.display = 'block';
     editCanvas.style.border = '1px solid #ccc';
     
@@ -200,85 +200,27 @@ window.addEventListener('load', function() {
     // Rest of your initialization code...
 });
 // Load photos from session storage
+// Replace the existing loadPhotosFromStorage() with:
 function loadPhotosFromStorage() {
     console.log("Loading photos from session storage...");
-    console.log("All session storage keys:", Object.keys(sessionStorage));
-
     try {
-        let storedData = sessionStorage.getItem('photos');
-        if (!storedData) {
-            storedData = sessionStorage.getItem('capturedPhotos');
-            console.log("Trying alternative key 'capturedPhotos':", !!storedData);
-        }
-
-        if (!storedData) {
-            storedData = sessionStorage.getItem('photoboothImages');
-            console.log("Trying alternative key 'photoboothImages':", !!storedData);
-        }
-
+        const storedData = sessionStorage.getItem('photos');
         if (!storedData) {
             console.error("No photos found in session storage.");
             return false;
         }
 
-        console.log("Found stored photo data:", storedData.length, "characters");
-        console.log("First 50 chars of data:", storedData.substring(0, 50));
-
-        try {
-            photoData = JSON.parse(storedData);
-        } catch (parseError) {
-            console.log("Data is not in JSON format:", parseError);
-            if (typeof storedData === 'string' && storedData.startsWith('data:image')) {
-                console.log("Found single image string, creating array");
-                photoData = [storedData];
-            } else {
-                const parts = storedData.split(',');
-                if (parts.length > 1 && parts[0].startsWith('data:image')) {
-                    console.log("Found comma-separated image data");
-                    photoData = [storedData];
-                } else {
-                    throw new Error("Could not parse photo data");
-                }
-            }
-        }
-
+        photoData = JSON.parse(storedData);
+        
         if (!Array.isArray(photoData)) {
-            console.log("Converting non-array data to array");
+            console.log("Converting to array");
             photoData = [photoData];
         }
 
-        if (photoData.length === 0) {
-            console.error("Empty photo data array");
-            return false;
-        }
-
-        let validPhotoCount = 0;
-        for (let i = 0; i < photoData.length; i++) {
-            if (photoData[i] && 
-                (typeof photoData[i] === 'string' && photoData[i].startsWith('data:image'))) {
-                validPhotoCount++;
-            } else {
-                console.warn(`Photo at index ${i} appears invalid, might cause render issues`);
-            }
-        }
-
-        console.log("Successfully loaded", validPhotoCount, "valid photos out of", photoData.length);
-        return validPhotoCount > 0;
+        console.log("Loaded", photoData.length, "photos");
+        return photoData.length > 0;
     } catch (error) {
         console.error("Error loading photos:", error);
-        try {
-            console.log("Attempting emergency fallback...");
-            for (let key of Object.keys(sessionStorage)) {
-                const value = sessionStorage.getItem(key);
-                if (value && typeof value === 'string' && value.startsWith('data:image')) {
-                    console.log("Found image data in key:", key);
-                    photoData = [value];
-                    return true;
-                }
-            }
-        } catch (fallbackError) {
-            console.error("Fallback also failed:", fallbackError);
-        }
         return false;
     }
 }

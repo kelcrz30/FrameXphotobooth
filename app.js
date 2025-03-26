@@ -839,30 +839,25 @@ function compressImage(photoData, callback) {
 }
 
 function storePhotosInSession(photos) {
+    console.log("🔍 Attempting to store photos:", photos);
+    
     if (!Array.isArray(photos) || photos.length === 0) {
         console.error("❌ Invalid photos array provided to storePhotosInSession.");
         return;
     }
 
-    let compressedPhotos = [];
-    let processedCount = 0;
-
-    photos.forEach((photo, index) => {
-        compressImage(photo, (compressedData) => {
-            compressedPhotos[index] = compressedData;
-            processedCount++;
-
-            if (processedCount === photos.length) {
-                try {
-                    sessionStorage.setItem("photos", JSON.stringify(compressedPhotos));
-                    console.log("✅ Photos successfully stored in session storage.");
-                } catch (e) {
-                    console.error("❌ Failed to store photos: ", e);
-                }
-            }
-        });
-    });
+    try {
+        sessionStorage.setItem("photos", JSON.stringify(photos));
+        console.log("✅ Photos successfully stored in session storage.");
+        
+        // Immediately verify storage
+        const storedPhotos = JSON.parse(sessionStorage.getItem("photos"));
+        console.log("🕵️ Stored photos retrieved:", storedPhotos);
+    } catch (e) {
+        console.error("❌ Failed to store photos: ", e);
+    }
 }
+
 
 document.getElementById("goToEditBtn").addEventListener("click", function(e) {
     e.preventDefault();
