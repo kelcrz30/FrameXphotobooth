@@ -70,8 +70,9 @@ async function startCamera(deviceId = null) {
             // as deviceId might not work consistently
             constraints.video = {
                 facingMode: "user", // or use "environment" for back camera
-                width: { ideal: 1280 },
-                height: { ideal: 720 }
+                width: { ideal: 800 },
+                height: { ideal: 600 },
+                aspectRatio: 4/3, // Standard photobooth ratio
             };
         }
         
@@ -328,8 +329,8 @@ function capturePhoto() {
         const ctx = tempCanvas.getContext("2d");
 
         // Use actual video dimensions instead of fixed size
-        tempCanvas.width = videoWidth;
-        tempCanvas.height = videoHeight;
+        tempCanvas.width = 1200;  // Increased from 1280
+        tempCanvas.height = 700; // Adjusted aspect ratio
 
         // Improved capture with high-quality settings
         ctx.imageSmoothingEnabled = true;

@@ -1023,11 +1023,12 @@ button:hover .arrow:before {
         }
         
         #video {
-            width: 100%; /* or a specific width that fits your layout */
-            max-width: 500px; /* Adjust as needed */
-            height: auto; /* Maintain aspect ratio */
-            object-fit: contain; /* Prevents cropping */
-        }
+            width: 100%;
+            height: auto;
+            max-height: 600px; /* Prevent extremely tall videos */
+            border-radius: 10px;
+            object-fit: contain; /* Ensures the entire video fits */
+          }
         
         #countdownText {
             position: absolute;
@@ -1126,28 +1127,30 @@ button:hover .arrow:before {
         }
         
         .photo-stack {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            height: 100%;
-            align-items:flex-end;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 15px;
         }
         
         .photo-stack canvas {
             width: auto !important;
-            max-width: 70%;
+            max-width: 50%;
             height: auto !important;
             image-rendering: crisp-edges;
             image-rendering: -moz-crisp-edges;
             image-rendering: -webkit-optimize-contrast;
             
         }
-        #canvas1, #canvas2, #canvas3, #canvas4 {
-            width: 100%; /* Match video width */
-            height: auto; /* Maintain aspect ratio */
-            object-fit: contain; /* Prevents cropping */
-        }
-
+        #video, #canvas1, #canvas2, #canvas3, #canvas4 {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1/1; /* More portrait-like ratio */
+    object-fit: cover;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    background-color: #f0f0f0;
+}
         /* Navigation button */
 
         .nextbtn{
@@ -1451,5 +1454,11 @@ button:hover .arrow:before {
                 position: relative;
                 bottom: 50px;
                 right: 7rem;
+            }
+        }
+        @supports (-webkit-touch-callout: none) {
+            #video, #canvas1, #canvas2, #canvas3, #canvas4 {
+                -webkit-transform: scaleX(1);
+                transform: scaleX(1);
             }
         }
