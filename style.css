@@ -1135,7 +1135,7 @@ button:hover .arrow:before {
         
         .photo-stack canvas {
             width: auto !important;
-            max-width: 50%;
+            max-width: 30%;
             height: auto !important;
             image-rendering: crisp-edges;
             image-rendering: -moz-crisp-edges;
@@ -1144,6 +1144,7 @@ button:hover .arrow:before {
         }
         #video, #canvas1, #canvas2, #canvas3, #canvas4 {
     width: 100%;
+    
     height: auto;
     aspect-ratio: 1/1; /* More portrait-like ratio */
     object-fit: cover;

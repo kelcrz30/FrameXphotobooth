@@ -328,9 +328,9 @@ function capturePhoto() {
         const tempCanvas = document.createElement("canvas");
         const ctx = tempCanvas.getContext("2d");
 
-        // Use actual video dimensions instead of fixed size
-        tempCanvas.width = 1000;   // Good for most devices
-        tempCanvas.height = 800;  // Square aspect ratio
+        const aspectRatio = videoWidth / videoHeight;
+        tempCanvas.width = 1000;  // Keep the width
+        tempCanvas.height = Math.round(1000 / aspectRatio);  // Adjust height proportionally
 
         // Improved capture with high-quality settings
         ctx.imageSmoothingEnabled = true;
@@ -615,8 +615,9 @@ if (captureBtn) {
 function generatePhotoStrip() {
     if (!finalCanvas) return;
 
-    const width = canvasList[0].width;
-    const height = canvasList[0].height;
+    const width = 1000;  // Match the width used in capturePhoto
+    const height = Math.round(width / (video.videoWidth / video.videoHeight));
+    
     finalCanvas.width = width;
     finalCanvas.height = height * maxPhotos;
 
@@ -626,7 +627,6 @@ function generatePhotoStrip() {
     // Function to draw each photo correctly
     function drawPhoto(index) {
         if (index >= capturedPhotos.length) {
-            // All photos are drawn
             finalCanvas.style.display = "block";
             finalCanvas.scrollIntoView({ behavior: 'smooth' });
             return;
@@ -646,7 +646,6 @@ function generatePhotoStrip() {
             }
             finalCtx.restore();
 
-            // Draw the next photo **after** this one loads
             drawPhoto(index + 1);
         };
     }
@@ -654,7 +653,6 @@ function generatePhotoStrip() {
     // Start drawing the first photo
     drawPhoto(0);
 }
-
 
 
 // 🚀 Start camera when page loads
