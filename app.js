@@ -833,7 +833,7 @@ function compressImage(photoData, callback) {
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
         // Convert to JPEG with 90% quality for better results
-        let compressedData = canvas.toDataURL("image/jpeg", 0.9);
+        let compressedData = canvas.toDataURL("image/jpeg", 0.98);
 
         callback(compressedData);
     };

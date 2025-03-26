@@ -1,0 +1,54 @@
+<input type="file" id="fileInput" accept="image/*">
+<img id="originalImage" style="max-width: 500px;">
+<img id="compressedImage" style="max-width: 500px;">
+<div id="sizeInfo"></div>
+
+<script>
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        const originalImg = document.getElementById('originalImage');
+        const compressedImg = document.getElementById('compressedImage');
+        const sizeInfo = document.getElementById('sizeInfo');
+
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            originalImg.src = event.target.result;
+            
+            // Create temporary canvas for compression
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+
+                // Set canvas to original image dimensions
+                canvas.width = img.width;
+                canvas.height = img.height;
+
+                // Draw image at full size
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                // Try different compression levels
+                const compressionLevels = [0.5, 0.7, 0.9, 1.0];
+                compressionLevels.forEach(quality => {
+                    const compressedData = canvas.toDataURL('image/jpeg', quality);
+                    
+                    // Display compressed image
+                    const compressedImg = document.createElement('img');
+                    compressedImg.src = compressedData;
+                    compressedImg.style.maxWidth = '500px';
+                    document.body.appendChild(compressedImg);
+
+                    // Calculate and display file sizes
+                    const originalSize = (event.target.result.length / 1024).toFixed(2);
+                    const compressedSize = (compressedData.length / 1024).toFixed(2);
+                    
+                    const sizeDisplay = document.createElement('div');
+                    sizeDisplay.textContent = `Quality: ${quality} - Original: ${originalSize}KB, Compressed: ${compressedSize}KB`;
+                    document.body.appendChild(sizeDisplay);
+                });
+            }
+            img.src = event.target.result;
+        }
+        reader.readAsDataURL(file);
+    });
+</script>
