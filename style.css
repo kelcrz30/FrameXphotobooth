@@ -764,10 +764,12 @@ button:hover .arrow:before {
         align-items: center;
         margin-top: 5rem;
         margin-bottom: 40rem;
+        padding: 0 20px;
+        position: absolute;
         gap: 1rem;
         position: relative;
         z-index: 10;
-        justify-content: center; /* Center items horizontally */
+        justify-content: space-between; /* Center items horizontally */
     }
 
     /* Button Styling */
@@ -787,12 +789,12 @@ button:hover .arrow:before {
 
     /* Content Container */
     .content {
-        bottom: 10px;
-        left: 5px;
-        width: calc(100% - 10px);
+        flex-grow: 1;
         display: flex;
         flex-direction: column;
-        align-items: center; /* Center content items */
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 60px; /* Additional space above footer */
     }
 
     /* Dark Mode Toggle */
