@@ -55,23 +55,24 @@ async function startCamera(deviceId = null) {
         let constraints = {
             audio: false,
             video: {
-                width: { ideal: 1080, max: 1920 },
-                height: { ideal: 1440, max: 2560 }, // More portrait-oriented
-                aspectRatio: { ideal: 3/4 }, // Match typical photobooth aspect ratio
-                facingMode: deviceId ? undefined : "user", // Prefer front camera
+                width: { ideal: 1280 },
+                height: { ideal: 720 },
+                facingMode: deviceId ? undefined : "user",
                 deviceId: deviceId ? { exact: deviceId } : undefined
             }
         };
-
         
         // iOS-specific constraints adjustments
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         if (isIOS) {
+            console.log("iOS device detected, applying special video constraints");
+            // On iOS, simplify constraints and prioritize facingMode over deviceId
+            // as deviceId might not work consistently
             constraints.video = {
-                width: { ideal: 900, max: 1200 },
-                height: { ideal: 1200, max: 1600 },
-                aspectRatio: 3/4,
-                facingMode: "user"
+                facingMode: "user", // or use "environment" for back camera
+                width: { ideal: 800 },
+                height: { ideal: 600 },
+                aspectRatio: 4/3, // Standard photobooth ratio
             };
         }
         
@@ -82,7 +83,6 @@ async function startCamera(deviceId = null) {
         
         // Assign stream to video element
         video.srcObject = stream;
-        video.style.transform = "scaleX(-1)"; // Mirror for selfie-style
         
         // iOS Safari specific setup
         if (isIOS) {
