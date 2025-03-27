@@ -134,7 +134,7 @@ html, body {
     align-items: center;
     gap: 1rem;
     margin-top: 10rem;
-    margin-bottom: 4rem;
+    margin-bottom: 10rem;
     position: relative;
     z-index: 10;
 }
@@ -640,7 +640,7 @@ button:hover .arrow:before {
         margin-top: 2rem;
     }
     .bottom-section{
-    margin-bottom: 40rem; 
+    margin-bottom: 80vh; 
     }
     .button-container{
         position: relative;
@@ -666,7 +666,7 @@ button:hover .arrow:before {
         left: 20px;
     }
     .bottom-section{
-        margin-bottom: 20rem;
+        margin-bottom: 50vh;
     }
 
     .title {
@@ -723,7 +723,7 @@ button:hover .arrow:before {
         left: 20px;
     }
     .bottom-section{
-        margin-bottom: 30rem;
+        margin-bottom: 70vh;
     }
     .title {
         position: relative;
@@ -765,7 +765,7 @@ button:hover .arrow:before {
         left: 20px;
     }
     .bottom-section{
-        margin-bottom: 25rem;
+        margin-bottom: 60vh;
     }
     .title {
         font-size: clamp(4rem, 4vw, 40px);
@@ -1042,7 +1042,6 @@ button:hover .arrow:before {
             overflow: hidden;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             margin: 0 auto;
-           
             max-height: 70vh;
         }
         
@@ -1069,11 +1068,11 @@ button:hover .arrow:before {
         }
         
         #video {
-            width: 100%;
-            height: auto;
-            max-height: 600px; /* Prevent extremely tall videos */
+            width: 100%; /* Takes full width of the parent container */
+            max-width: 600px; /* Prevents it from getting too wide */
+            height: auto; /* Keeps aspect ratio */
             border-radius: 10px;
-            object-fit: contain; /* Ensures the entire video fits */
+            object-fit: contain;
           }
         
         #countdownText {
@@ -1164,24 +1163,27 @@ button:hover .arrow:before {
         
         /* Right section - Photo stack */
         .right-section {
-            flex: 1;
-            min-width: 80px;
+            flex: 2;
+            min-width: 150px; /* Adjust if needed */
             display: flex;
             flex-direction: column;
-            align-items:flex-end;
+            justify-content: flex-start; /* Ensures content starts from the top */
+            align-items: flex-end; /* Moves everything to the right */
             gap: 20px;
         }
         
+        
         .photo-stack {
-            display: grid;
-            grid-template-columns: 1fr;
+            display: flex;
+            flex-direction: column; /* Stack canvases vertically */
+            align-items: flex-end; /* Align canvases to the right */
             gap: 10px;
-            margin-top: 15px;
+            width: 100%; /* Ensure it takes up full space */
         }
         
         .photo-stack canvas {
             width: auto !important;
-            max-width: 50%;
+            max-width: 40%;
             height: auto !important;
             image-rendering: crisp-edges;
             image-rendering: -moz-crisp-edges;
@@ -1190,10 +1192,9 @@ button:hover .arrow:before {
         }
         #video, #canvas1, #canvas2, #canvas3, #canvas4 {
     width: 100%;
-    
     height: auto;
-    aspect-ratio: 1/1; /* More portrait-like ratio */
-    object-fit: cover;
+   
+    object-fit: contain;
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
     background-color: #f0f0f0;
@@ -1432,6 +1433,7 @@ button:hover .arrow:before {
             height: 40vh !important;  /* Adjust this value as needed */
             max-height: 300px;        /* Optional: set a maximum height */
             object-fit: cover;
+            aspect-ratio: 1/1;
     }
             .photo-stack canvas {
                 width: 100%;
