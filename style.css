@@ -135,12 +135,11 @@ body {
 }
 .bottom-section{
     display: flex;
-    flex-direction: row-reverse;
+    flex-direction: row;
     align-items: center;
     gap: 1rem;
     margin-top: 10rem;
     margin-bottom: 25rem;
-    position: relative;
     z-index: 10;
 }
 
@@ -289,8 +288,8 @@ body {
     text-align: center;
     font-family: almost;
     position: fixed;
-    top: 400px;
-;
+    top: 450px;
+
     
     animation: fadeInUp 1.5s ease-in 0.5s both;
 }
@@ -409,7 +408,10 @@ button {
     cursor: pointer;
     font-family: inherit;
   }
-  
+  .btn-section{
+    position: relative;
+    gap: 2px;
+  }
   /* <main-style> ============================ */
   .theme__icon {
     width: 32px;
@@ -417,7 +419,6 @@ button {
     padding: 4px;
     border-radius: 10px;
     background-color: black !important; /* Change background to black */
-    position: relative;
     overflow: hidden;
   }
  
@@ -703,7 +704,7 @@ button:hover .arrow:before {
     }
     .button-container{
         position: relative;
-        top: 250px;
+        top: 230px;
         border-radius: 20px;
     }
     .content {
@@ -735,8 +736,15 @@ button:hover .arrow:before {
         font-size: 15px;
         left: 20px;
     }
-    .bottom-section{
-        margin-bottom: 70vh;
+    .bottom-section {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-top: 5rem;
+        margin-bottom: 40rem;
+        gap: 1rem;
+        position: relative;
+        z-index: 10;
     }
     .title {
         position: relative;
@@ -759,6 +767,10 @@ button:hover .arrow:before {
         padding: 15px 14px;
         font-size: 12px;
     }
+    .carousel-container{
+        position: relative;
+        top: 200px;
+    }
     
     .content {
         bottom: 10px; /* Less bottom spacing */
@@ -779,6 +791,7 @@ button:hover .arrow:before {
     }
     .bottom-section{
         margin-bottom: 60vh;
+        position: relative;
     }
     .title {
         font-size: clamp(4rem, 4vw, 40px);
