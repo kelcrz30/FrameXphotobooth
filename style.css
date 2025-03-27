@@ -731,6 +731,21 @@ button:hover .arrow:before {
 
 
 @media screen and (max-width: 480px) {
+    body {
+        position: relative;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+    }
+    .container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
     /* Logo Styling */
     .logo {
         margin-top: auto;
@@ -742,7 +757,7 @@ button:hover .arrow:before {
     /* Title Styling */
     .title {
         position: relative;
-        top: 100px; /* Adjust vertical positioning */
+        top: 140px; /* Adjust vertical positioning */
         font-size: clamp(5rem, 4vw, 40px); /* Responsive font size */
         margin-top: 4rem;
         margin-bottom: 0;
@@ -753,26 +768,21 @@ button:hover .arrow:before {
     /* Description Styling */
     .description {
         position: relative;
-        top: 100px;
+        top: 130px;
         text-align: center; /* Center the description */
         padding-top: 1px;
     }
 
     /* Bottom Section Layout */
     .bottom-section {
+        width: 100%;
         display: flex;
         flex-direction: row;
         align-items: center;
-        margin-top: 5rem;
-        margin-bottom: 30rem;
-        padding: 0 20px;
-        position: absolute;
-        gap: 1rem;
-        position: relative;
-        z-index: 10;
-        justify-content: space-between; /* Center items horizontally */
+        justify-content: center;
+        padding: 20px;
+        margin-bottom: 500px;
     }
-
     /* Button Styling */
     button {
         padding: 15px 14px;
@@ -782,7 +792,7 @@ button:hover .arrow:before {
     /* Carousel Container */
     .carousel-container {
         position: relative;
-        top: 180px;
+        top: 280px;
         width: 100%; /* Full width */
         display: flex;
         justify-content: center; /* Center carousel */
@@ -795,7 +805,6 @@ button:hover .arrow:before {
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        margin-bottom: 10px; /* Additional space above footer */
     }
 
     /* Dark Mode Toggle */
@@ -816,6 +825,7 @@ button:hover .arrow:before {
         font-size: 0.9rem;
     }
     .footer-text{
+        font-size: 100px;
         position: fixed;
         text-align: center;
     }
@@ -1584,16 +1594,11 @@ button:hover .arrow:before {
                 position: relative;
                 bottom: 50px;
                 right: 7rem;
-            }
-            .footer-text {
-                position: fixed;
-                bottom: 0;
-                font-size: 7px;
-            }
-        }
+            }          
         @supports (-webkit-touch-callout: none) {
             #video, #canvas1, #canvas2, #canvas3, #canvas4 {
                 -webkit-transform: scaleX(1);
                 transform: scaleX(1);
             }
         }
+    } 
