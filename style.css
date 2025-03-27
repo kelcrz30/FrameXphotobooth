@@ -288,7 +288,7 @@ body {
     text-align: center;
     font-family: almost;
     position: fixed;
-    top: 450px;
+    top: 400px;
 
     
     animation: fadeInUp 1.5s ease-in 0.5s both;
@@ -679,25 +679,28 @@ button:hover .arrow:before {
         font-size: 15px;
         left: 20px;
     }
-    .bottom-section{
-        margin-bottom: 50vh;
+    .bottom-section {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        margin-bottom: 650px;
     }
 
     .title {
         position: relative;
-        top: 140px;
-        font-size: calc(80px + 5vw); /* Use this font size value */
-        letter-spacing: -0.5px; /* Less letter spacing on mobile */
-        animation-duration: 2.5s; /* Slightly faster on mobile */
-        white-space: normal; /* Allow text to wrap */
-        overflow: visible; /* Show all text */
-        margin-top: 1rem; /* Adjusted for better spacing */
-        text-align: center;
+        top: 200px; /* Adjust vertical positioning */
+        font-size: clamp(7rem, 4vw, 40px); /* Responsive font size */
+        margin-top: 4rem;
         margin-bottom: 0;
+        padding: 10px;
+        text-align: center; /* Center the title */
     }
     .description{
         position: relative;
-        top: 140px;
+        top: 180px;
     }
     .toggle-switch{
         right: 10px;
@@ -1113,17 +1116,7 @@ button:hover .arrow:before {
             gap: 1.5rem;
         }
         
-        .video-container {
-            position: relative;
-            max-width: 700px;
-            width: 100%;
-            background-color: #222;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            margin: 0 auto;
-            max-height: 70vh;
-        }
+        
         
         .camera-selection {
             display: flex;
@@ -1146,14 +1139,29 @@ button:hover .arrow:before {
             color: white;
             font-family: 'League Spartan', sans-serif;
         }
+        .video-container {
+            position: relative;
+            width: 140%;
+            max-width: 600px; /* Reasonable max-width for most devices */
+            aspect-ratio: 3/3; /* More portrait-oriented for selfies */
+            background-color: #222;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            margin: 0 auto;
+        }
         
         #video {
-            width: 100%; /* Takes full width of the parent container */
-            max-width: 600px; /* Prevents it from getting too wide */
-            height: auto; /* Keeps aspect ratio */
-            border-radius: 10px;
-            object-fit: contain;
-          }
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Ensures full coverage while maintaining aspect ratio */
+            border-radius: 15px;
+        }
+        
+        /* Responsive adjustments */
         
         #countdownText {
             position: absolute;
@@ -1526,6 +1534,7 @@ button:hover .arrow:before {
             object-fit: cover;
             aspect-ratio: 1/1;
     }
+    
             .photo-stack canvas {
                 width: 100%;
                 max-width: none;
@@ -1573,7 +1582,18 @@ button:hover .arrow:before {
                 font-size: 8px;
             }
         }
+        @media screen and (max-width: 480px) {
+            .video-container {
+                max-width: 95%; /* Nearly full width on small screens */
+                aspect-ratio: 3/4; /* Maintain portrait orientation */
+            }
+        }
         
+        @media screen and (min-width: 481px) and (max-width: 768px) {
+            .video-container {
+                max-width: 80%; /* Slightly narrower on tablets */
+            }
+        }
         @media (max-width: 360px) {
             #canvas1, 
             #canvas2, 
