@@ -731,11 +731,33 @@ button:hover .arrow:before {
 
 
 @media screen and (max-width: 480px) {
-    .logo{
+    /* Logo Styling */
+    .logo {
         margin-top: 2rem;
         font-size: 15px;
         left: 20px;
     }
+
+    /* Title Styling */
+    .title {
+        position: relative;
+        top: 150px; /* Adjust vertical positioning */
+        font-size: clamp(5rem, 4vw, 40px); /* Responsive font size */
+        margin-top: 13rem;
+        margin-bottom: 0;
+        padding: 10px;
+        text-align: center; /* Center the title */
+    }
+
+    /* Description Styling */
+    .description {
+        position: relative;
+        top: 150px;
+        text-align: center; /* Center the description */
+        padding-top: 1px;
+    }
+
+    /* Bottom Section Layout */
     .bottom-section {
         display: flex;
         flex-direction: row;
@@ -745,40 +767,50 @@ button:hover .arrow:before {
         gap: 1rem;
         position: relative;
         z-index: 10;
+        justify-content: center; /* Center items horizontally */
     }
-    .title {
-        position: relative;
-        top: 150x;
-        font-size: clamp(5rem, 4vw, 40px);
-        margin-top: 13rem;
-        margin-bottom: 0;
-        padding: 10px;
-    }
-    .description{
-        position: relative ;
-        top: 150px;
-    }
-    .toggle-switch{
-        right: 60px;
-        margin-top: 1rem;
-    }
-    
+
+    /* Button Styling */
     button {
         padding: 15px 14px;
         font-size: 12px;
     }
-    .carousel-container{
+
+    /* Carousel Container */
+    .carousel-container {
         position: relative;
         top: 200px;
+        width: 100%; /* Full width */
+        display: flex;
+        justify-content: center; /* Center carousel */
     }
-    
+
+    /* Content Container */
     .content {
-        bottom: 10px; /* Less bottom spacing */
+        bottom: 10px;
         left: 5px;
         width: calc(100% - 10px);
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Center content items */
     }
-    .description{
-        padding-top: 1px;
+
+    /* Dark Mode Toggle */
+    .toggle-switch {
+        right: 60px;
+        margin-top: 1rem;
+    }
+
+    /* Responsive Adjustments */
+    .about-section {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+    }
+
+    .about-section a {
+        text-decoration: none;
+        font-size: 0.9rem;
     }
 }
 
