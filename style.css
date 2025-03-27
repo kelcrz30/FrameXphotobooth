@@ -742,7 +742,7 @@ button:hover .arrow:before {
     /* Title Styling */
     .title {
         position: relative;
-        top: 150px; /* Adjust vertical positioning */
+        top: 100px; /* Adjust vertical positioning */
         font-size: clamp(5rem, 4vw, 40px); /* Responsive font size */
         margin-top: 4rem;
         margin-bottom: 0;
@@ -753,7 +753,7 @@ button:hover .arrow:before {
     /* Description Styling */
     .description {
         position: relative;
-        top: 150px;
+        top: 100px;
         text-align: center; /* Center the description */
         padding-top: 1px;
     }
@@ -764,7 +764,7 @@ button:hover .arrow:before {
         flex-direction: row;
         align-items: center;
         margin-top: 5rem;
-        margin-bottom: 40rem;
+        margin-bottom: 30rem;
         padding: 0 20px;
         position: absolute;
         gap: 1rem;
@@ -814,6 +814,10 @@ button:hover .arrow:before {
     .about-section a {
         text-decoration: none;
         font-size: 0.9rem;
+    }
+    .footer-text{
+        position: fixed;
+        text-align: center;
     }
 }
 
@@ -1489,9 +1493,10 @@ button:hover .arrow:before {
                 padding-bottom: 5rem; /* Add space for fixed footer */
             }
             
-            footer {
+            .footer-text {
                 position: fixed;
                 bottom: 0;
+                font-size: 10px;
             }
         }
         
@@ -1547,6 +1552,11 @@ button:hover .arrow:before {
                 overflow-y: auto;
                 min-height: 100vh;
             }
+            .footer-text {
+                position: fixed;
+                bottom: 0;
+                font-size: 8px;
+            }
         }
         
         @media (max-width: 360px) {
@@ -1574,6 +1584,11 @@ button:hover .arrow:before {
                 position: relative;
                 bottom: 50px;
                 right: 7rem;
+            }
+            .footer-text {
+                position: fixed;
+                bottom: 0;
+                font-size: 7px;
             }
         }
         @supports (-webkit-touch-callout: none) {
