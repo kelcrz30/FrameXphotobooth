@@ -757,7 +757,7 @@ button:hover .arrow:before {
     /* Title Styling */
     .title {
         position: relative;
-        top: 140px; /* Adjust vertical positioning */
+        top: 200px; /* Adjust vertical positioning */
         font-size: clamp(5rem, 4vw, 40px); /* Responsive font size */
         margin-top: 4rem;
         margin-bottom: 0;
@@ -768,7 +768,7 @@ button:hover .arrow:before {
     /* Description Styling */
     .description {
         position: relative;
-        top: 130px;
+        top: 190px;
         text-align: center; /* Center the description */
         padding-top: 1px;
     }
@@ -781,18 +781,23 @@ button:hover .arrow:before {
         align-items: center;
         justify-content: center;
         padding: 20px;
-        margin-bottom: 500px;
+        margin-bottom: 650px;
     }
     /* Button Styling */
     button {
+        position: relative;
         padding: 15px 14px;
         font-size: 12px;
+    }
+    .button-container{
+        position: relative;
+        top: 280px;
     }
 
     /* Carousel Container */
     .carousel-container {
         position: relative;
-        top: 280px;
+        top: 310px;
         width: 100%; /* Full width */
         display: flex;
         justify-content: center; /* Center carousel */
