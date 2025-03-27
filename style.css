@@ -733,7 +733,8 @@ button:hover .arrow:before {
 @media screen and (max-width: 480px) {
     /* Logo Styling */
     .logo {
-        margin-top: 2rem;
+        margin-top: auto;
+        padding-top: 2rem;
         font-size: 15px;
         left: 20px;
     }
@@ -743,7 +744,7 @@ button:hover .arrow:before {
         position: relative;
         top: 150px; /* Adjust vertical positioning */
         font-size: clamp(5rem, 4vw, 40px); /* Responsive font size */
-        margin-top: 13rem;
+        margin-top: 4rem;
         margin-bottom: 0;
         padding: 10px;
         text-align: center; /* Center the title */
@@ -781,7 +782,7 @@ button:hover .arrow:before {
     /* Carousel Container */
     .carousel-container {
         position: relative;
-        top: 200px;
+        top: 180px;
         width: 100%; /* Full width */
         display: flex;
         justify-content: center; /* Center carousel */
@@ -794,7 +795,7 @@ button:hover .arrow:before {
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        margin-bottom: 60px; /* Additional space above footer */
+        margin-bottom: 10px; /* Additional space above footer */
     }
 
     /* Dark Mode Toggle */
