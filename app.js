@@ -55,9 +55,9 @@ async function startCamera(deviceId = null) {
         let constraints = {
             audio: false,
             video: {
-                width: { exact: 1200 },  // Force width
-                height: { exact: 900 },  // Force height
-                aspectRatio: 12/9,  
+                width: { ideal: 1200 },  // Suggested width, not forced
+                height: { ideal: 900 },  // Suggested height, not forced
+                aspectRatio: { ideal: 12 / 9 }, // Maintain correct aspect ratio
                 facingMode: "user"
             }
         };
@@ -65,12 +65,9 @@ async function startCamera(deviceId = null) {
         // iOS-specific constraints adjustments
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         if (isIOS) {
-            constraints.video = {
-                facingMode: "user",
-                width: { ideal: 1200 },
-                height: { ideal: 900 },
-                aspectRatio: 12/9, // Keep 12:9 for iOS as well
-            };
+            constraints.video.width = { ideal: 1200 };
+            constraints.video.height = { ideal: 900 };
+            constraints.video.aspectRatio = { ideal: 12 / 9 };
         }
         
         console.log("Requesting camera with constraints:", constraints);
