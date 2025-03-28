@@ -55,10 +55,10 @@ async function startCamera(deviceId = null) {
         let constraints = {
             audio: false,
             video: {
-                width: { min: 800, ideal: 1200, max: 1600 },  // Adjusted for 12:9
-                height: { min: 600, ideal: 900, max: 1200 },  // Adjusted for 12:9
-                aspectRatio: { ideal: 12/9 },  // Force 12:9 aspect ratio
-                facingMode: deviceId ? undefined : "user"
+                width: { exact: 1200 },  // Force width
+                height: { exact: 900 },  // Force height
+                aspectRatio: 12/9,  
+                facingMode: "user"
             }
         };
         
