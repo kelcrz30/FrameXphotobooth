@@ -55,9 +55,9 @@ async function startCamera(deviceId = null) {
         let constraints = {
             audio: false,
             video: {
-                width: { ideal: 1200 },  // Suggested width, not forced
-                height: { ideal: 900 },  // Suggested height, not forced
-                aspectRatio: { ideal: 12 / 9 }, // Maintain correct aspect ratio
+                width: { ideal: 1920 },  // Higher resolution
+                height: { ideal: 1080 },
+                aspectRatio: { ideal: 12 / 9 },
                 facingMode: "user"
             }
         };
@@ -397,18 +397,21 @@ function capturePhoto() {
             // Update canvases with compressed photo
             canvasList.forEach((canvas, index) => {
                 if (canvas && capturedPhotos[index]) {
-                    // Use actual canvas dimensions
-                    canvas.width = tempCanvas.width;
-                    canvas.height = tempCanvas.height;
-
+                    // Ensure tempCanvas is set correctly
+                    canvas.width = tempCanvas.width = video.videoWidth;
+                    canvas.height = tempCanvas.height = video.videoHeight;
+            
                     const targetCtx = canvas.getContext("2d");
-                    targetCtx.imageSmoothingEnabled = true;
-                    targetCtx.imageSmoothingQuality = 'high';
-
+                    targetCtx.imageSmoothingEnabled = false; // Avoid blurriness
+            
                     let displayImg = new Image();
                     displayImg.src = capturedPhotos[index];
-
+            
                     displayImg.onload = () => {
+                        console.log("Image loaded:", displayImg.src);
+                        console.log("Image Size:", displayImg.width, displayImg.height);
+                        console.log("Canvas Size:", canvas.width, canvas.height);
+            
                         targetCtx.drawImage(displayImg, 0, 0, canvas.width, canvas.height);
                         canvas.style.display = "block";
                     };
