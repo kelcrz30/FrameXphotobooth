@@ -55,10 +55,10 @@ async function startCamera(deviceId = null) {
         let constraints = {
             audio: false,
             video: {
-                width: { ideal: 1280 },
-                height: { ideal: 720 },
-                facingMode: deviceId ? undefined : "user",
-                deviceId: deviceId ? { exact: deviceId } : undefined
+                width: { min: 640, ideal: 1280, max: 1920 },
+                height: { min: 360, ideal: 720, max: 1080 },
+                aspectRatio: { ideal: 16/9 },
+                facingMode: deviceId ? undefined : "user"
             }
         };
         
@@ -330,7 +330,7 @@ function capturePhoto() {
 
         const aspectRatio = videoWidth / videoHeight;
         tempCanvas.width = 1000;  // Keep the width
-        tempCanvas.height = Math.round(1000 / aspectRatio);  // Adjust height proportionally
+        tempCanvas.height = Math.round(1000 * (9/16));  // Fixed 16:9 ratio
 
         // Improved capture with high-quality settings
         ctx.imageSmoothingEnabled = true;
@@ -616,7 +616,7 @@ function generatePhotoStrip() {
     if (!finalCanvas) return;
 
     const width = 1000;  // Match the width used in capturePhoto
-    const height = Math.round(width / (video.videoWidth / video.videoHeight));
+    const height = Math.round(width * (9/16));  // Fixed 16:9 ratio
     
     finalCanvas.width = width;
     finalCanvas.height = height * maxPhotos;

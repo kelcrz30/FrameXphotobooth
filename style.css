@@ -1469,13 +1469,14 @@ button:hover .arrow:before {
             #canvas1, 
             #canvas2, 
             #canvas3, 
-            #canvas4, 
+            #canvas4,
             #editorCanvas {
-            height: 40vh !important;  /* Adjust this value as needed */
-            max-height: 300px;        /* Optional: set a maximum height */
-            object-fit: cover;
-            aspect-ratio: 1/1;
-    }
+                height: 40vh !important;  /* Adjust this value as needed */
+                max-height: 300px;        /* Optional: set a maximum height */
+                object-fit: cover;
+                aspect-ratio: 16/9;       /* Changed from 1/1 to 16/9 */
+            }
+        }
             
             .content-container {
                 padding: 1.5rem;
@@ -1516,7 +1517,7 @@ button:hover .arrow:before {
                 bottom: 0;
                 font-size: 10px;
             }
-        }
+        
         
         @media (max-width: 480px) {
             #canvas1, 
@@ -1527,7 +1528,7 @@ button:hover .arrow:before {
             height: 40vh !important;  /* Adjust this value as needed */
             max-height: 300px;        /* Optional: set a maximum height */
             object-fit: cover;
-            aspect-ratio: 1/1;
+            aspect-ratio: 12/9;
     }
             .photo-stack canvas {
                 width: 100%;
@@ -1560,10 +1561,13 @@ button:hover .arrow:before {
             }
             
             #video {
-                aspect-ratio: 4/3;
-                max-height: 100vh;
-                max-width: 100vh;
+                aspect-ratio: 12/9;
+                object-fit: cover;
+                width: 100%;
+                height: auto;
+                max-height: 100vh; /* Slightly shorter on mobile */
             }
+        }
             
             /* Make the app scrollable on small screens */
             .boot {
@@ -1575,7 +1579,7 @@ button:hover .arrow:before {
                 bottom: 0;
                 font-size: 8px;
             }
-        }
+        
         
         @media (max-width: 360px) {
             #canvas1, 
@@ -1583,9 +1587,10 @@ button:hover .arrow:before {
             #canvas3, 
             #canvas4, 
             #editorCanvas {
-            height: 20vh !important;  /* Adjust this value as needed */
+            height: 40vh !important;  /* Adjust this value as needed */
             max-height: 300px;        /* Optional: set a maximum height */
             object-fit: cover;
+            aspect-ratio: 12/9;
     }
             #countdownText {
                 font-size: 2.5rem;
