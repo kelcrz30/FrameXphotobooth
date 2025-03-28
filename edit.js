@@ -47,8 +47,8 @@ function initCanvas() {
         return;
     }
     
-    editCanvas.width = 1200;  // Match photobooth width
-    editCanvas.height = 3250; // Allow more vertical space
+    editCanvas.width = 1350;  
+    editCanvas.height = 3250; 
     editCanvas.style.display = 'block';
     editCanvas.style.border = '1px solid #ccc';
     
@@ -308,7 +308,7 @@ function drawPhotos() {
 
         img.onload = function () {
             const aspectRatio = img.width / img.height;
-            const photoWidth = 1000; // Match photobooth size
+            const photoWidth = 1100; // Match photobooth size
             const photoHeight = 700;
             const xOffset = (editCanvas.width - photoWidth) / 2;
             const yPosition = topPadding + index * (photoHeight + spacing);
