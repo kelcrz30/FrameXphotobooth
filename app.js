@@ -53,12 +53,12 @@ async function startCamera(deviceId = null) {
         
         // Define constraints with iOS-specific handling
         let constraints = {
-            audio: false,
+            audio: false,  // No microphone input
             video: {
-                width: { ideal: 1920 },  // Higher resolution
-                height: { ideal: 1080 },
-                aspectRatio: { ideal: 12 / 9 },
-                facingMode: "user"
+                width: { ideal: 1200 },  // Preferred video width
+                height: { ideal: 900 },  // Preferred video height
+                aspectRatio: 12 / 9,  // Forces 12:9 aspect ratio
+                facingMode: "user"  // Uses the front camera (selfie cam)
             }
         };
         
@@ -397,21 +397,18 @@ function capturePhoto() {
             // Update canvases with compressed photo
             canvasList.forEach((canvas, index) => {
                 if (canvas && capturedPhotos[index]) {
-                    // Ensure tempCanvas is set correctly
-                    canvas.width = tempCanvas.width = video.videoWidth;
-                    canvas.height = tempCanvas.height = video.videoHeight;
-            
+                    // Use actual canvas dimensions
+                    canvas.width = tempCanvas.width;
+                    canvas.height = tempCanvas.height;
+
                     const targetCtx = canvas.getContext("2d");
-                    targetCtx.imageSmoothingEnabled = false; // Avoid blurriness
-            
+                    targetCtx.imageSmoothingEnabled = true;
+                    targetCtx.imageSmoothingQuality = 'high';
+
                     let displayImg = new Image();
                     displayImg.src = capturedPhotos[index];
-            
+
                     displayImg.onload = () => {
-                        console.log("Image loaded:", displayImg.src);
-                        console.log("Image Size:", displayImg.width, displayImg.height);
-                        console.log("Canvas Size:", canvas.width, canvas.height);
-            
                         targetCtx.drawImage(displayImg, 0, 0, canvas.width, canvas.height);
                         canvas.style.display = "block";
                     };

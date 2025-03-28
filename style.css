@@ -1520,20 +1520,15 @@ button:hover .arrow:before {
         
         
         @media (max-width: 480px) {
-            @media (max-width: 480px) {
-                #canvas1, #canvas2, #canvas3, #canvas4, #editorCanvas {
-                    width: 100% !important;  /* Ensures proper scaling */
-                    height: auto !important; /* Keeps aspect ratio */
-                    max-height: none !important;  /* Removes unnecessary height restrictions */
-                    aspect-ratio: 12/9 !important; /* Forces 12:9 aspect ratio */
-                    display: block; /* Ensures it takes up the right space */
-                }
-            
-                .photo-stack canvas {
-                    width: 100% !important;
-                    max-width: none;
-                    height: auto !important;
-                }
+            #canvas1, #canvas2, #canvas3, #canvas4, #editorCanvas {
+                height: 40vh !important;  
+                max-height: 300px;        
+                aspect-ratio: 12/9 !important;  /* Ensure 12:9 ratio */
+                width: auto; /* Let width adjust automatically */
+            }
+            .photo-stack canvas {
+                width: 100%;
+                max-width: none;
             }
             
             #countdownText {
