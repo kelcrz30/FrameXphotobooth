@@ -72,7 +72,7 @@ async function startCamera(deviceId = null) {
                 facingMode: "user", // or use "environment" for back camera
                 width: { ideal: 800 },
                 height: { ideal: 600 },
-                aspectRatio: 4/3, // Standard photobooth ratio
+                aspectRatio: 12/9, // Standard photobooth ratio
             };
         }
         

@@ -1266,7 +1266,7 @@ button:hover .arrow:before {
         
         .photo-stack canvas {
             width: auto !important;
-            max-width: 30%;
+            max-width: 40%;
             height: auto !important;
             image-rendering: crisp-edges;
             image-rendering: -moz-crisp-edges;
@@ -1474,7 +1474,7 @@ button:hover .arrow:before {
                 height: 40vh !important;  /* Adjust this value as needed */
                 max-height: 300px;        /* Optional: set a maximum height */
                 object-fit: cover;
-                aspect-ratio: 16/9;       /* Changed from 1/1 to 16/9 */
+                aspect-ratio: 12/9;       /* Changed from 1/1 to 16/9 */
             }
         }
             
@@ -1527,7 +1527,6 @@ button:hover .arrow:before {
             #editorCanvas {
             height: 40vh !important;  /* Adjust this value as needed */
             max-height: 300px;        /* Optional: set a maximum height */
-            object-fit: cover;
             aspect-ratio: 12/9;
     }
             .photo-stack canvas {
