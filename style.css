@@ -1273,7 +1273,7 @@ button:hover .arrow:before {
             image-rendering: -webkit-optimize-contrast;
             
         }
-        #video, #canvas1, #canvas2, #canvas3, #canvas4 {
+#canvas1, #canvas2, #canvas3, #canvas4 {
     width: 100%;
     height: auto;
 
@@ -1520,15 +1520,12 @@ button:hover .arrow:before {
         
         
         @media (max-width: 480px) {
-            #canvas1, 
-            #canvas2, 
-            #canvas3, 
-            #canvas4, 
-            #editorCanvas {
-            height: 40vh !important;  /* Adjust this value as needed */
-            max-height: 300px;        /* Optional: set a maximum height */
-            aspect-ratio: 12/9;
-    }
+            #canvas1, #canvas2, #canvas3, #canvas4, #editorCanvas {
+                height: 40vh !important;  
+                max-height: 300px;        
+                aspect-ratio: 12/9 !important;  /* Ensure 12:9 ratio */
+                width: auto; /* Let width adjust automatically */
+            }
             .photo-stack canvas {
                 width: 100%;
                 max-width: none;

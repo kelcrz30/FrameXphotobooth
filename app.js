@@ -55,9 +55,9 @@ async function startCamera(deviceId = null) {
         let constraints = {
             audio: false,
             video: {
-                width: { min: 640, ideal: 1280, max: 1920 },
-                height: { min: 360, ideal: 720, max: 1080 },
-                aspectRatio: { ideal: 16/9 },
+                width: { min: 800, ideal: 1200, max: 1600 },  // Adjusted for 12:9
+                height: { min: 600, ideal: 900, max: 1200 },  // Adjusted for 12:9
+                aspectRatio: { ideal: 12/9 },  // Force 12:9 aspect ratio
                 facingMode: deviceId ? undefined : "user"
             }
         };
@@ -65,14 +65,11 @@ async function startCamera(deviceId = null) {
         // iOS-specific constraints adjustments
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         if (isIOS) {
-            console.log("iOS device detected, applying special video constraints");
-            // On iOS, simplify constraints and prioritize facingMode over deviceId
-            // as deviceId might not work consistently
             constraints.video = {
-                facingMode: "user", // or use "environment" for back camera
-                width: { ideal: 800 },
-                height: { ideal: 600 },
-                aspectRatio: 12/9, // Standard photobooth ratio
+                facingMode: "user",
+                width: { ideal: 1200 },
+                height: { ideal: 900 },
+                aspectRatio: 12/9, // Keep 12:9 for iOS as well
             };
         }
         
