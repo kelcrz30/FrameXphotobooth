@@ -291,12 +291,12 @@ function applyFilter(ctx, canvas, img) {
         } catch (error) {
             console.error("Error applying filter manually:", error);
             // Fallback to direct drawing if imageData manipulation fails
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
         }
     } else {
         // Use standard filter on desktop
         ctx.filter = currentFilter;
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
     }
 }
 const brightnessSlider = document.getElementById("brightness");
