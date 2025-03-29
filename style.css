@@ -1324,6 +1324,14 @@ button:hover .arrow:before {
             gap: 5px; /* Ensure equal spacing */
             flex-wrap: wrap;
         }
+        #canvas1, #canvas2, #canvas3, #canvas4, #editorCanvas {
+            width: 100% !important;
+            height: auto !important;
+            aspect-ratio: 12/9 !important;
+            object-fit: contain;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }
         
         .filter-container {
             display: flex;
@@ -1406,15 +1414,14 @@ button:hover .arrow:before {
         }
         
         @media (max-width: 765px) {
-            #canvas1, 
-            #canvas2, 
-            #canvas3, 
-            #canvas4, 
-            #editorCanvas {
-            height: 40vh !important;  /* Adjust this value as needed */
-            max-height: 200px;        /* Optional: set a maximum height */
-            object-fit: cover;
-    }
+            #canvas1, #canvas2, #canvas3, #canvas4, #editorCanvas {
+                width: 100% !important;
+                height: auto !important;
+                aspect-ratio: 12/9 !important;
+                object-fit: contain;
+                image-rendering: -webkit-optimize-contrast;
+                image-rendering: crisp-edges;
+            }
             .content-container {
                 flex-direction: column;
                 padding: 1rem;
@@ -1521,14 +1528,14 @@ button:hover .arrow:before {
         
         @media (max-width: 480px) {
             #canvas1, #canvas2, #canvas3, #canvas4, #editorCanvas {
-                height: 40vh !important;  
-                max-height: 300px;        
-                aspect-ratio: 12/9 !important;  /* Ensure 12:9 ratio */
-                width: auto; /* Let width adjust automatically */
+                width: 100% !important;
+                height: auto !important;
+                aspect-ratio: 12/9 !important;
+                max-height: none;
             }
             .photo-stack canvas {
-                width: 100%;
-                max-width: none;
+                width: 100% !important;
+                max-width: 100%;
             }
             
             #countdownText {

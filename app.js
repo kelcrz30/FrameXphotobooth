@@ -315,16 +315,16 @@ brightnessSlider.addEventListener("input", updateFilters);
 contrastSlider.addEventListener("input", updateFilters);
 function capturePhoto() {
     if (capturedPhotos.length < maxPhotos) {
-        // Get actual video dimensions for more accurate capture
+        // Get actual video dimensions
         const videoWidth = video.videoWidth;
         const videoHeight = video.videoHeight;
 
         const tempCanvas = document.createElement("canvas");
         const ctx = tempCanvas.getContext("2d");
 
-        const aspectRatio = videoWidth / videoHeight;
-        tempCanvas.width = 1000;  // Keep the width
-        tempCanvas.height = Math.round(1000 * (9/16));  // Fixed 16:9 ratio
+        // Set fixed 12:9 aspect ratio
+        tempCanvas.width = 1200;  // Width 12 units
+        tempCanvas.height = 900;  // Height 9 units
 
         // Improved capture with high-quality settings
         ctx.imageSmoothingEnabled = true;
@@ -336,47 +336,35 @@ function capturePhoto() {
             ctx.scale(-1, 1);
         }
 
-        // Draw image scaled to fit entire canvas
+        // Calculate scaling to properly fit video into 12:9 canvas without stretching
+        const videoAspectRatio = videoWidth / videoHeight;
+        const canvasAspectRatio = tempCanvas.width / tempCanvas.height;
+        
+        let drawWidth, drawHeight, offsetX = 0, offsetY = 0;
+        
+        if (videoAspectRatio > canvasAspectRatio) {
+            // Video is wider than canvas - fit to height
+            drawHeight = tempCanvas.height;
+            drawWidth = drawHeight * videoAspectRatio;
+            offsetX = (tempCanvas.width - drawWidth) / 2;
+        } else {
+            // Video is taller than canvas - fit to width
+            drawWidth = tempCanvas.width;
+            drawHeight = drawWidth / videoAspectRatio;
+            offsetY = (tempCanvas.height - drawHeight) / 2;
+        }
+
+        // Draw video properly centered and scaled without stretching
         ctx.drawImage(
             video, 
             0, 0, videoWidth, videoHeight,  // Source rectangle
-            0, 0, tempCanvas.width, tempCanvas.height  // Destination rectangle
+            offsetX, offsetY, drawWidth, drawHeight  // Destination rectangle
         );
 
         // Reset transformation
         ctx.setTransform(1, 0, 0, 1, 0, 0);
 
-        // Improved compression function
-        function compressImage(canvas, quality = 0.95, maxWidth = 1920) {
-            // Create a new canvas for potential resizing
-            const outputCanvas = document.createElement('canvas');
-            const ctx = outputCanvas.getContext('2d');
-        
-            // Calculate scaled dimensions if needed
-            let scale = 1;
-            if (canvas.width > maxWidth) {
-                scale = maxWidth / canvas.width;
-            }
-        
-            const scaledWidth = canvas.width * scale;
-            const scaledHeight = canvas.height * scale;
-        
-            // Set new canvas dimensions
-            outputCanvas.width = scaledWidth;
-            outputCanvas.height = scaledHeight;
-        
-            // High-quality scaling
-            ctx.imageSmoothingEnabled = true;
-            ctx.imageSmoothingQuality = 'high';
-        
-            // Draw the image with high-quality scaling
-            ctx.drawImage(canvas, 0, 0, scaledWidth, scaledHeight);
-        
-            // Convert to high-quality JPEG
-            return outputCanvas.toDataURL('image/jpeg', quality);
-        }
-
-        // Capture raw photo data
+        // Capture raw photo data with correct aspect ratio
         const rawPhotoData = tempCanvas.toDataURL("image/png");
 
         // Create image to apply filter
@@ -390,14 +378,14 @@ function capturePhoto() {
             // Apply the current filter
             applyFilter(ctx, tempCanvas, img);
 
-            // Compress with higher quality and optional resizing
-            const compressedPhotoData = compressImage(tempCanvas);
-            capturedPhotos.push(compressedPhotoData);
+            // Store high-quality data
+            const photoData = tempCanvas.toDataURL("image/jpeg", 0.95);
+            capturedPhotos.push(photoData);
 
-            // Update canvases with compressed photo
+            // Update canvases with photo
             canvasList.forEach((canvas, index) => {
                 if (canvas && capturedPhotos[index]) {
-                    // Use actual canvas dimensions
+                    // Use same dimensions for consistent display
                     canvas.width = tempCanvas.width;
                     canvas.height = tempCanvas.height;
 
