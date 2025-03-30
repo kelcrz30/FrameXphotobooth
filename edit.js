@@ -492,18 +492,28 @@ const stickerPresets = {
         { src: "stickers/black10.png", x: 1050, y: -10, size: 250 },
     ],
     "miffy": [ // Corrected from "piffy" to "miffy"
-        { src: "stickers/ghibli.png", x: -50, y: -10, size: 450 },
-        { src: "stickers/ghibli1.png", x: 1000, y: 600, size: 300 },
+        { src: "stickers/ghibli.png", x: -50, y: 20, size: 450 },
+        { src: "stickers/ghibli1.png", x: 1000, y: 800, size: 300 },
+        { src: "stickers/ghibli5.png", x: 1000, y: -10, size: 300 },
         { src: "stickers/ghibli2.png", x: -10, y: 1500, size: 350 },
+        { src: "stickers/ghibli6.png", x: -40, y: 800, size: 550 },
         { src: "stickers/ghibli3.png", x: 1000, y: 2250, size: 300 },
-        { src: "stickers/ghibli4.png", x: -50, y: 3100, size: 400 }
+        { src: "stickers/ghibli8.png", x: -10, y: 2250, size: 300 },
+        { src: "stickers/ghibli7.png", x: 1000, y: 1800, size: 300 },
+        { src: "stickers/ghibli4.png", x: -50, y: 3100, size: 400 },
+        { src: "stickers/ghibli9.png", x: 1000, y: 3100, size: 400 }
     ],
     "hirono": [ 
         { src: "stickers/hirono1.png", x: -50, y: -10, size: 350 },
-        { src: "stickers/", x: 1000, y: 600, size: 300 },
-        { src: "stickers/", x: -10, y: 1500, size: 350 },
-        { src: "stickers/", x: 1000, y: 2250, size: 300 },
-        { src: "stickers/", x: -50, y: 3100, size: 400 }
+        { src: "stickers/hirono10.png", x: -50, y: 700, size: 350 },
+        { src: "stickers/hirono9.png", x: 1100, y: -10, size: 280 },
+        { src: "stickers/hirono2.png", x: 1000, y: 750, size: 350 },
+        { src: "stickers/hirono8.png", x: 1000, y: 1350, size: 450 },
+        { src: "stickers/hirono3.png", x: -10, y: 1500, size: 350 },
+        { src: "stickers/hirono4.png", x: 1000, y: 2250, size: 300 },
+        { src: "stickers/hirono7.png", x: 1000, y: 3100, size: 300 },
+        { src: "stickers/hirono5.png", x: -50, y: 2500, size: 300 },
+        { src: "stickers/hirono6.png", x: -50, y: 2100, size: 300 },
     ]
 };
 
