@@ -10,10 +10,15 @@ const counterText = document.getElementById("counterText");
 const countdownText = document.getElementById("countdownText");
 const finalCanvas = document.getElementById("finalCanvas");
 const finalCtx = finalCanvas ? finalCanvas.getContext("2d") : null; // Only if exists
-const filterSelect = document.getElementById("filterSelect");
 const cameraSelect = document.getElementById("cameraSelect");
 let timerValue = parseInt(document.getElementById('timerSelect').value);
 let countdownDisplay = document.getElementById('countdownDisplay');
+const filterSelect = document.getElementById("filterSelect"); // This is now the button
+const brightnessSlider = document.getElementById("brightness");
+const contrastSlider = document.getElementById("contrast");
+const mirrorToggle = document.getElementById("mirrorToggle");
+
+
 
 // Get multiple canvas elements for stacking photos
 const canvasList = [
@@ -158,35 +163,125 @@ async function startCamera(deviceId = null) {
         }
     }
 }
-let isMirrored = false; // Track mirror state
+let isMirrored = false;
 
 function toggleMirror() {
-    var video = document.getElementById("video"); // Make sure this is the correct ID of your video feed
     isMirrored = !isMirrored;
+    console.log("Mirror toggled:", isMirrored);
+    
+    // Update video preview only - don't modify existing photos
     video.style.transform = isMirrored ? "scaleX(-1)" : "scaleX(1)";
+    
+    // Visual feedback
+    document.querySelector(".cbx").classList.toggle("active", isMirrored);
 }
+    // Update existing canvas displays
+    canvasList.forEach((canvas, index) => {
+        if (canvas && capturedPhotos[index]) {
+            const ctx = canvas.getContext("2d");
+            let img = new Image();
+            img.src = capturedPhotos[index];
+            
+            img.onload = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                if (isMirrored) {
+                    ctx.save();
+                    ctx.translate(canvas.width, 0);
+                    ctx.scale(-1, 1);
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    ctx.restore();
+                } else {
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                }
+            };
+        }
+    });
 
-// 🎨 Apply Filter to Live Camera Feed
-filterSelect.addEventListener("change", () => {
-    video.style.filter = filterSelect.value; // Apply selected filter to live video
-});
+    function applyMirroringToCanvas(canvas, ctx, img) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        if (isMirrored) {
+            ctx.save();
+            ctx.translate(canvas.width, 0);
+            ctx.scale(-1, 1);
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            ctx.restore();
+        } else {
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        }
+    }
 
 function toggleSlider(id) {
     var slider = document.getElementById(id);
     slider.style.display = (slider.style.display === "none" || slider.style.display === "") ? "block" : "none";
 }
+let currentFilter = "none"; // Track selected filter
+function setupFilterDropdown() {
+    console.log('Initializing dropdown...'); // Add this first line
+    const filterOptions = {
+        "none": "No Filter",
+        "grayscale(100%)": "B&W",
+        "sepia(100%)": "Sepia",
+        "contrast(1.4) brightness(0.9)": "Vintage",
+        "blur(2px) brightness(1.2)": "Soft",
+        "contrast(1.5) brightness(0.7)": "Noir",
+        "saturate(2) brightness(1.1)": "Vivid"
+    };
+    
+
+    const dropdown = document.createElement('div');
+    console.log('Dropdown element created:', dropdown); 
+    dropdown.id = "filterDropdown";
+    dropdown.className = "filter-dropdown";
+    dropdown.style.display = "none";
+
+    Object.entries(filterOptions).forEach(([value, text]) => {
+        const option = document.createElement('button');
+        option.className = "filter-option";
+        option.textContent = text;
+        option.dataset.filter = value;
+        dropdown.appendChild(option);
+    });
+
+    document.body.appendChild(dropdown);
+
+    // Toggle dropdown
+    filterSelect.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+    });
+
+    // Handle filter selection
+    dropdown.addEventListener('click', (e) => {
+        if (e.target.classList.contains('filter-option')) {
+            currentFilter = e.target.dataset.filter;
+            applyFilterToVideo(currentFilter);
+            dropdown.style.display = 'none';
+        }
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!filterSelect.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.style.display = 'none';
+        }
+    });
+}
+
 function applyFilter(ctx, canvas, img) {
-    // Clear before drawing
+    // Get current values directly from the sliders
+    const brightnessValue = brightnessSlider.value;
+    const contrastValue = contrastSlider.value;
+    let filterString = `brightness(${brightnessValue}%) contrast(${contrastValue}%)`;
+    
+    // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    // Store the current filter
-    const currentFilter = filterSelect.value;
-    
-    // Always use manual filters on mobile for consistency
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     
     if (isMobile) {
-        // First draw the image without filters
+        // Draw the image first without filters
         ctx.filter = "none";
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         
@@ -195,119 +290,77 @@ function applyFilter(ctx, canvas, img) {
             const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
             const data = imageData.data;
             
-            // Apply filters manually based on selection
-            if (currentFilter.includes("grayscale")) {
-                for (let i = 0; i < data.length; i += 4) {
-                    const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-                    data[i] = avg;     // Red
-                    data[i + 1] = avg; // Green
-                    data[i + 2] = avg; // Blue
-                }
-            } else if (currentFilter.includes("sepia")) {
-                for (let i = 0; i < data.length; i += 4) {
-                    const r = data[i];
-                    const g = data[i + 1];
-                    const b = data[i + 2];
-                    
-                    data[i] = Math.min(255, (r * 0.393) + (g * 0.769) + (b * 0.189));
-                    data[i + 1] = Math.min(255, (r * 0.349) + (g * 0.686) + (b * 0.168));
-                    data[i + 2] = Math.min(255, (r * 0.272) + (g * 0.534) + (b * 0.131));
-                }
-            } else if (currentFilter.includes("contrast")) {
-                // Simple contrast adjustment
-                const factor = currentFilter.includes("1.5") ? 1.5 : 1.4;
-                const brightnessAdjust = currentFilter.includes("0.7") ? 0.7 : 0.9;
+            // Apply brightness and contrast manually
+            const factor = contrastValue / 100;
+            const brightnessAdjust = brightnessValue / 100;
+            
+            for (let i = 0; i < data.length; i += 4) {
+                // Apply brightness
+                data[i] = Math.min(255, Math.max(0, data[i] * brightnessAdjust));
+                data[i + 1] = Math.min(255, Math.max(0, data[i + 1] * brightnessAdjust));
+                data[i + 2] = Math.min(255, Math.max(0, data[i + 2] * brightnessAdjust));
                 
-                for (let i = 0; i < data.length; i += 4) {
-                    data[i] = Math.min(255, Math.max(0, (((data[i] / 255) - 0.5) * factor + 0.5) * 255 * brightnessAdjust));
-                    data[i + 1] = Math.min(255, Math.max(0, (((data[i + 1] / 255) - 0.5) * factor + 0.5) * 255 * brightnessAdjust));
-                    data[i + 2] = Math.min(255, Math.max(0, (((data[i + 2] / 255) - 0.5) * factor + 0.5) * 255 * brightnessAdjust));
-                }
-            } else if (currentFilter.includes("saturate")) {
-                // Simple saturation increase for "vivid" filter
-                for (let i = 0; i < data.length; i += 4) {
-                    const r = data[i];
-                    const g = data[i + 1];
-                    const b = data[i + 2];
-                    
-                    // Convert RGB to HSL, increase saturation, convert back
-                    const brightness = (r + g + b) / 3;
-                    
-                    // Increase difference between values (crude saturation)
-                    data[i] = r > brightness ? Math.min(255, r * 1.2) : Math.max(0, r * 0.8);
-                    data[i + 1] = g > brightness ? Math.min(255, g * 1.2) : Math.max(0, g * 0.8);
-                    data[i + 2] = b > brightness ? Math.min(255, b * 1.2) : Math.max(0, b * 0.8);
-                    
-                    // Brightness adjustment for "vivid" filter
-                    if (currentFilter.includes("brightness")) {
-                        data[i] = Math.min(255, data[i] * 1.1);
-                        data[i + 1] = Math.min(255, data[i + 1] * 1.1);
-                        data[i + 2] = Math.min(255, data[i + 2] * 1.1);
-                    }
-                }
-            } else if (currentFilter.includes("blur")) {
-                // Use a simplified blur approximation
-                const copy = new Uint8ClampedArray(data.length);
-                copy.set(data);
-                
-                const width = canvas.width;
-                const radius = 2; // Blur radius
-                
-                for (let y = radius; y < canvas.height - radius; y++) {
-                    for (let x = radius; x < width - radius; x++) {
-                        const pos = (y * width + x) * 4;
-                        
-                        let r = 0, g = 0, b = 0, count = 0;
-                        
-                        // Average pixels in a small area
-                        for (let ky = -radius; ky <= radius; ky++) {
-                            for (let kx = -radius; kx <= radius; kx++) {
-                                const offset = ((y + ky) * width + (x + kx)) * 4;
-                                r += copy[offset];
-                                g += copy[offset + 1];
-                                b += copy[offset + 2];
-                                count++;
-                            }
-                        }
-                        
-                        // Apply average values
-                        data[pos] = r / count;
-                        data[pos + 1] = g / count;
-                        data[pos + 2] = b / count;
-                    }
-                }
-                
-                // Apply brightness if needed
-                if (currentFilter.includes("brightness")) {
-                    for (let i = 0; i < data.length; i += 4) {
-                        data[i] = Math.min(255, data[i] * 1.2);
-                        data[i + 1] = Math.min(255, data[i + 1] * 1.2);
-                        data[i + 2] = Math.min(255, data[i + 2] * 1.2);
-                    }
-                }
+                // Apply contrast
+                data[i] = Math.min(255, Math.max(0, (((data[i] / 255) - 0.5) * factor + 0.5) * 255));
+                data[i + 1] = Math.min(255, Math.max(0, (((data[i + 1] / 255) - 0.5) * factor + 0.5) * 255));
+                data[i + 2] = Math.min(255, Math.max(0, (((data[i + 2] / 255) - 0.5) * factor + 0.5) * 255));
             }
             
             ctx.putImageData(imageData, 0, 0);
         } catch (error) {
             console.error("Error applying filter manually:", error);
-            // Fallback to direct drawing if imageData manipulation fails
-            ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
         }
     } else {
-        // Use standard filter on desktop
-        ctx.filter = currentFilter;
-        ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+        // For non-mobile, apply filters through canvas API
+        // Combine all filters
+        
+        // Add any other filter from dropdown if not "none"
+        if (currentFilter !== "none" && !currentFilter.includes("brightness") && !currentFilter.includes("contrast")) {
+        filterString += " " + currentFilter;
+    }
+        
+        console.log("Applying filter to canvas:", filterString);
+        
+        ctx.filter = filterString;
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
     }
 }
-const brightnessSlider = document.getElementById("brightness");
-const contrastSlider = document.getElementById("contrast");
-
-
+// Function to update video filter
 // Function to update video filter
 function updateFilters() {
     const brightness = brightnessSlider.value;
     const contrast = contrastSlider.value;
+    
+    // Update video display
     video.style.filter = `brightness(${brightness}%) contrast(${contrast}%)`;
+    
+    // Important: Update the currentFilter value to include brightness/contrast
+    // Preserve any existing filter while adding brightness/contrast
+    if (currentFilter === "none") {
+        currentFilter = `brightness(${brightness}%) contrast(${contrast}%)`;
+    } else {
+        // Extract existing filters that aren't brightness/contrast
+        let filters = currentFilter.split(') ').filter(f => 
+            !f.startsWith('brightness') && !f.startsWith('contrast')
+        );
+        
+        // Add updated brightness/contrast
+        filters.push(`brightness(${brightness}%)`);
+        filters.push(`contrast(${contrast}%)`);
+        
+        // Combine filters
+        currentFilter = filters.join(') ') + ')';
+    }
+    
+    // Update any already captured photos with new filter
+    canvasList.forEach((canvas, index) => {
+        if (canvas && capturedPhotos[index]) {
+            const ctx = canvas.getContext("2d");
+            let img = new Image();
+            img.src = capturedPhotos[index];
+            img.onload = () => applyFilter(ctx, canvas, img);
+        }
+    });
 }
 
 // Event listeners to update filters in real time
@@ -412,6 +465,96 @@ function capturePhoto() {
         };
     }
 }
+
+function updatePhotoDisplays() {
+    canvasList.forEach((canvas, index) => {
+        if (canvas && capturedPhotos[index]) {
+            canvas.width = 1200;
+            canvas.height = 900;
+            
+            const ctx = canvas.getContext("2d");
+            const img = new Image();
+            img.src = capturedPhotos[index];
+            
+            img.onload = () => {
+                if (isMirrored) {
+                    ctx.save();
+                    ctx.translate(canvas.width, 0);
+                    ctx.scale(-1, 1);
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    ctx.restore();
+                } else {
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                }
+                canvas.style.display = "block";
+            };
+        }
+    });
+}
+// Add this function
+function updateCanvasMirroring() {
+    canvasList.forEach((canvas, index) => {
+        if (canvas && capturedPhotos[index]) {
+            const ctx = canvas.getContext("2d");
+            let img = new Image();
+            img.src = capturedPhotos[index];
+            
+            img.onload = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                if (isMirrored) {
+                    ctx.save();
+                    ctx.translate(canvas.width, 0);
+                    ctx.scale(-1, 1);
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    ctx.restore();
+                } else {
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                }
+            };
+        }
+    });
+}
+// Event listeners to update filters in real time
+brightnessSlider.addEventListener("input", function() {
+    // Update video display
+    updateFilters();
+    
+    console.log("Brightness changed to:", brightnessSlider.value);
+    
+    // Update all canvases with new filter values
+    canvasList.forEach((canvas, index) => {
+        if (canvas && capturedPhotos[index]) {
+            const targetCtx = canvas.getContext("2d");
+            let img = new Image();
+            img.src = capturedPhotos[index];
+            
+            img.onload = () => {
+                applyFilter(targetCtx, canvas, img);
+            };
+        }
+    });
+});
+
+contrastSlider.addEventListener("input", function() {
+    // Update video display
+    updateFilters();
+    
+    console.log("Contrast changed to:", contrastSlider.value);
+    
+    // Update all canvases with new filter values
+    canvasList.forEach((canvas, index) => {
+        if (canvas && capturedPhotos[index]) {
+            const targetCtx = canvas.getContext("2d");
+            let img = new Image();
+            img.src = capturedPhotos[index];
+            
+            img.onload = () => {
+                applyFilter(targetCtx, canvas, img);
+            };
+        }
+    });
+});
 
 // Updated storage function with detailed compression
 function storePhotosInSession(photos) {
@@ -639,6 +782,7 @@ function generatePhotoStrip() {
 
 // 🚀 Start camera when page loads
 window.addEventListener("load", () => {
+    setupFilterDropdown();
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         // On iOS, we need user interaction first
         if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
@@ -670,6 +814,18 @@ window.addEventListener("load", () => {
         console.error("Camera API not supported in this browser.");
     }
 });
+function applyFilterToVideo(filter) {
+    video.style.filter = filter;
+    // Update canvases when filter changes
+    canvasList.forEach((canvas, index) => {
+        if (canvas && capturedPhotos[index]) {
+            const ctx = canvas.getContext("2d");
+            let img = new Image();
+            img.src = capturedPhotos[index];
+            img.onload = () => applyFilter(ctx, canvas, img);
+        }
+    });
+}
 
 if (captureBtn) {
     captureBtn.addEventListener("click", startAutoCapture);

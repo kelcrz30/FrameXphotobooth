@@ -51,17 +51,13 @@
                             <input type="range" id="contrast" class="slider" min="50" max="200" value="100" style="display: none;">
                         </div>
                         
-                        <label for="filterSelect">Select Filter:</label>
-
-                    <select id="filterSelect">
-                        <option value="none">No Filter</option>
-                        <option value="grayscale(100%)">B&W</option>
-                        <option value="sepia(100%)">Sepia</option>
-                        <option value="contrast(1.4) brightness(0.9)">Vintage</option>
-                        <option value="blur(2px) brightness(1.2)">Soft</option>
-                        <option value="contrast(1.5) brightness(0.7)">Noir</option>
-                        <option value="saturate(2) brightness(1.1)">Vivid</option>
-                    </select>
+                        <div class="filter-control">
+                            <button id="filterSelect" class="filter-button" aria-label="Photo Filters">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#1f1f1f">
+                                    <path d="M440-160q-17 0-28.5-11.5T400-200v-240L168-736q-15-20-4.5-42t36.5-22h560q26 0 36.5 22t-4.5 42L560-440v240q0 17-11.5 28.5T520-160h-80Zm40-308 198-252H282l198 252Zm0 0Z"/>
+                                </svg>
+                            </button>
+                        </div>
                     <label for="timerSelect">Timer:</label>
                     <select id="timerSelect">
                         <option value="0">No Timer</option>

@@ -458,38 +458,52 @@ function goBack() {
 // Sticker preset configurations
 const stickerPresets = {
     "girlpop": [
-        { src: "", x: 50, y: 100, size: 500 },
-        { src: "stickers/flower.png", x: 400, y: 200, size: 80 },
+        { src: "stickers/black.png", x: 50, y: 100, size: 500 },
+        { src: "stickers/", x: 400, y: 200, size: 80 },
         { src: "stickers/star.png", x: 100, y: 700, size: 60 },
         { src: "stickers/butterfly.png", x: 350, y: 800, size: 75 },
         { src: "stickers/sparkle.png", x: 200, y: 400, size: 65 }
     ],
     "cute": [
-        { src: "stickers/sanrio.png", x: 580, y: -30, size: 350 },
-        { src: "stickers/sanrio1.png", x: -50, y: 450, size: 350 },
-        { src: "stickers/sanrio2.png", x: 580, y: 1000, size: 350 },
-        { src: "stickers/sanrio3.png", x: -80, y: 1600, size: 350 },
-        { src: "stickers/sanrio4.png", x: 550, y: 2300, size: 350 }
+        { src: "stickers/sanrio.png", x: 980, y: -30, size: 400 },
+        { src: "stickers/sanrio1.png", x: -50, y: 550, size: 400 },
+        { src: "stickers/sanrio2.png", x: 970, y: 1400, size: 400 },
+        { src: "stickers/sanrio3.png", x: -80, y: 2250, size: 400 },
+        { src: "stickers/sanrio4.png", x: 950, y: 3000, size: 400 }
     ],
     "mofusand": [
-        { src: "stickers/cat.png", x: 560, y: -110, size: 400 },
-        { src: "stickers/cat2.png", x: -80, y: 400, size: 400},
-        { src: "stickers/cat3.png", x: 230, y: 1620, size: 410 },
-        { src: "stickers/cat6.png", x: -150, y: 2220, size: 400 },
-        { src: "stickers/cat7.png", x: 580, y: 1000, size: 350 }
+        { src: "stickers/cat1.png", x: 920, y: -140, size: 500 },
+        { src: "stickers/cat2.png", x: 950, y: 1350, size: 550},
+        { src: "stickers/cat3.png", x: -150, y: 550, size: 500 },
+        { src: "stickers/cat4.png", x: -150, y: 2220, size: 500 },
+        { src: "stickers/cat6.png", x: 900, y: 2900, size: 550 }
     ],
     "shinchan": [
-        { src: "stickers/shinchan1.png", x: 80, y: 150, size: 90 },
-        { src: "stickers/shinchan2.png", x: 400, y: 300, size: 90 },
-        { src: "stickers/shinchan3.png", x: 100, y: 500, size: 90 },
-        { src: "stickers/shinchan4.png", x: 350, y: 700, size: 90 }
+        { src: "stickers/black.png", x: -100, y: -150, size: 500 },
+        { src: "stickers/black1.png", x: 1000, y: 700, size: 300 },
+        { src: "stickers/black2.png", x: 1050, y: 2400, size: 250 },
+        { src: "stickers/black3.png", x: -30, y: 1500, size: 350 },
+        { src: "stickers/black4.png", x: -20, y: 3000, size: 300 },
+        { src: "stickers/black5.png", x: -20, y: 3000, size: 300 },
+        { src: "stickers/black6.png", x: -20, y: 2300, size: 250 },
+        { src: "stickers/black7.png", x: -20, y: 800, size: 250 },
+        { src: "stickers/black8.png", x: 1050, y: 1500, size: 250 },
+        { src: "stickers/black9.png", x: 1050, y: 3100, size: 250 },
+        { src: "stickers/black10.png", x: 1050, y: -10, size: 250 },
     ],
     "miffy": [ // Corrected from "piffy" to "miffy"
-        { src: "stickers/miffy1.png", x: 50, y: 120, size: 80 },
-        { src: "stickers/miffy2.png", x: 420, y: 250, size: 80 },
-        { src: "stickers/miffy3.png", x: 100, y: 500, size: 80 },
-        { src: "stickers/miffy4.png", x: 380, y: 650, size: 80 },
-        { src: "stickers/miffy5.png", x: 150, y: 850, size: 80 }
+        { src: "stickers/ghibli.png", x: -50, y: -10, size: 450 },
+        { src: "stickers/ghibli1.png", x: 1000, y: 600, size: 300 },
+        { src: "stickers/ghibli2.png", x: -10, y: 1500, size: 350 },
+        { src: "stickers/ghibli3.png", x: 1000, y: 2250, size: 300 },
+        { src: "stickers/ghibli4.png", x: -50, y: 3100, size: 400 }
+    ],
+    "hirono": [ 
+        { src: "stickers/hirono1.png", x: -50, y: -10, size: 350 },
+        { src: "stickers/", x: 1000, y: 600, size: 300 },
+        { src: "stickers/", x: -10, y: 1500, size: 350 },
+        { src: "stickers/", x: 1000, y: 2250, size: 300 },
+        { src: "stickers/", x: -50, y: 3100, size: 400 }
     ]
 };
 
