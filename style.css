@@ -1117,8 +1117,8 @@ button:hover .arrow:before {
         
         /* Left section - Camera and controls */
         .left-section {
-            flex: 1;
-            min-width: 400px;
+            flex: 1.5; /* Increased from 1 to give more space */
+            min-width: 600px; /* Increased from 400px */
             display: flex;
             flex-direction: column;
             gap: 1.5rem;
@@ -1126,14 +1126,14 @@ button:hover .arrow:before {
         
         .video-container {
             position: relative;
-            max-width: 700px;
+            max-width: 100%; /* Changed from 700px */
             width: 100%;
             background-color: #222;
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             margin: 0 auto;
-            max-height: 70vh;
+            max-height: 80vh; /* Increased from 70vh */
         }
         
         .camera-selection {
@@ -1164,8 +1164,9 @@ button:hover .arrow:before {
             aspect-ratio: 4/3;
             object-fit: cover;
             border-radius: 8px;
-            max-height: 70vh !important;
+            max-height: 80vh !important; /* Increased from 70vh */
         }
+        
         
         #countdownText {
             position: absolute;
