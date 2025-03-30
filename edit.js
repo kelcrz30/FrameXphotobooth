@@ -469,14 +469,24 @@ const stickerPresets = {
         { src: "stickers/sanrio1.png", x: -50, y: 550, size: 400 },
         { src: "stickers/sanrio2.png", x: 970, y: 1400, size: 400 },
         { src: "stickers/sanrio3.png", x: -80, y: 2250, size: 400 },
-        { src: "stickers/sanrio4.png", x: 950, y: 3000, size: 400 }
+        { src: "stickers/sanrio4.png", x: 950, y: 600, size: 400 },
+        { src: "stickers/sanrio5.png", x: 950, y: 3200, size: 500 },
+        { src: "stickers/sanrio6.png", x: -100, y: -150, size: 500 },
+        { src: "stickers/sanrio7.png", x: -100, y: 1400, size: 380 },
+        { src: "stickers/sanrio8.png", x: 1020, y: 2300, size: 300 },
+        { src: "stickers/sanrio9.png", x: -10, y: 3000, size: 300 },
     ],
     "mofusand": [
         { src: "stickers/cat1.png", x: 920, y: -140, size: 500 },
         { src: "stickers/cat2.png", x: 950, y: 1350, size: 550},
         { src: "stickers/cat3.png", x: -150, y: 550, size: 500 },
         { src: "stickers/cat4.png", x: -150, y: 2220, size: 500 },
-        { src: "stickers/cat6.png", x: 900, y: 2900, size: 550 }
+        { src: "stickers/cat6.png", x: 900, y: 2900, size: 550 },
+        { src: "stickers/cat7.png", x: -100, y: 3100, size: 400 },
+        { src: "stickers/cat8.png", x: 1050, y: 700, size: 300 },
+        { src: "stickers/cat9.png", x: 1000, y: 2300, size: 350 },
+        { src: "stickers/cat10.png", x: -100, y: 1400, size: 350 },
+        { src: "stickers/cat11.png", x: -10, y: -10, size: 350 },
     ],
     "shinchan": [
         { src: "stickers/black.png", x: -100, y: -150, size: 500 },
@@ -493,13 +503,13 @@ const stickerPresets = {
     ],
     "miffy": [ // Corrected from "piffy" to "miffy"
         { src: "stickers/ghibli.png", x: -50, y: 20, size: 450 },
-        { src: "stickers/ghibli1.png", x: 1000, y: 800, size: 300 },
+        { src: "stickers/ghibli1.png", x: 1050, y: 800, size: 250 },
         { src: "stickers/ghibli5.png", x: 1000, y: -10, size: 300 },
         { src: "stickers/ghibli2.png", x: -10, y: 1500, size: 350 },
-        { src: "stickers/ghibli6.png", x: -40, y: 800, size: 550 },
+        { src: "stickers/ghibli6.png", x: -40, y: 600, size: 550 },
         { src: "stickers/ghibli3.png", x: 1000, y: 2250, size: 300 },
         { src: "stickers/ghibli8.png", x: -10, y: 2250, size: 300 },
-        { src: "stickers/ghibli7.png", x: 1000, y: 1800, size: 300 },
+        { src: "stickers/ghibli7.png", x: 1000, y: 1600, size: 300 },
         { src: "stickers/ghibli4.png", x: -50, y: 3100, size: 400 },
         { src: "stickers/ghibli9.png", x: 1000, y: 3100, size: 400 }
     ],

@@ -60,7 +60,7 @@ async function startCamera(deviceId = null) {
         let constraints = {
             audio: false,  // No microphone input
             video: {
-                width: { ideal: 1200 },  // Preferred video width
+                width: { ideal: 1300 },  // Preferred video width
                 height: { ideal: 900 },  // Preferred video height
                 aspectRatio: 12 / 9,  // Forces 12:9 aspect ratio
                 facingMode: "user"  // Uses the front camera (selfie cam)
