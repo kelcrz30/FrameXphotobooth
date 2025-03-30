@@ -1588,12 +1588,10 @@ button:hover .arrow:before {
                 max-width: 100%;
             }
             .video-container {
-                width: 95vw;
-                height: calc(95vw * 9/12); /* Keeping 12:9 ratio */
-                min-height: 70vh; /* Set a higher minimum height */
-                max-height: none !important; /* Remove the max-height constraint */
-                margin: 1rem auto;
-            }
+        width: 95vw;
+        height: 40vh !important; /* Match canvas height directly */
+        min-height: 0;
+    }
             
             #video {
                 width: 100% !important;
@@ -1627,7 +1625,7 @@ button:hover .arrow:before {
                 right: 10rem;
             }
             
-            x
+            
         }
             
             /* Make the app scrollable on small screens */
