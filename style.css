@@ -1124,7 +1124,17 @@ button:hover .arrow:before {
             gap: 1.5rem;
         }
         
-        
+        .video-container {
+            position: relative;
+            max-width: 700px;
+            width: 100%;
+            background-color: #222;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin: 0 auto;
+            max-height: 70vh;
+        }
         
         .camera-selection {
             display: flex;
@@ -1148,24 +1158,15 @@ button:hover .arrow:before {
             font-family: 'League Spartan', sans-serif;
         }
         
-        .video-container {
-            width: 38vw;
-            height: calc(38vw * 9/12) !important; /* Matches 12:9 ratio */
-            max-width: 800px !important;
-            max-height: calc(800px * 9/12) !important; /* 600px */
-            margin: 0 auto;
-            position: relative;
-          }
-          
-          #video {
+        #video {
             width: 100% !important;
-            height: 100% !important;
-            aspect-ratio: 12/9;
+            height: auto;
+            aspect-ratio: 4/3;
             object-fit: cover;
-            object-position: center;
-            border: 3px solid blue; /* Debug border */
-          }
-          
+            border-radius: 8px;
+            max-height: 70vh !important;
+        }
+        
         #countdownText {
             position: absolute;
             top: 50%;
@@ -1587,18 +1588,6 @@ button:hover .arrow:before {
                 width: 100% !important;
                 max-width: 100%;
             }
-            .video-container {
-        width: 95vw;
-        height: 40vh !important; /* Match canvas height directly */
-        min-height: 0;
-    }
-            
-            #video {
-                width: 100% !important;
-                height: 100% !important;
-                object-fit: cover;
-            }
-            
             
             #countdownText {
                 font-size: 3rem;
@@ -1625,7 +1614,13 @@ button:hover .arrow:before {
                 right: 10rem;
             }
             
-            
+            #video {
+                aspect-ratio: 12/9;
+                object-fit: cover;
+                width: 100%;
+                height: auto;
+                max-height: 100vh; /* Slightly shorter on mobile */
+            }
         }
             
             /* Make the app scrollable on small screens */
