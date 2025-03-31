@@ -29,7 +29,8 @@ const canvasList = [
 ];
 
 // Open popup when heart button is clicked
-
+let isUploadMode = false;
+let selectedFiles = []; // Store selected files
 let capturedPhotos = [];
 const maxPhotos = 4;
 let photoIndex = 0;
@@ -163,6 +164,246 @@ async function startCamera(deviceId = null) {
         }
     }
 }
+if (!document.getElementById("uploadBtn")) {
+    // Create the button if it doesn't exist
+    const uploadBtn = document.createElement("button");
+    uploadBtn.id = "uploadBtn";
+    uploadBtn.className = "control-btn";
+    uploadBtn.textContent = "Upload Photo";
+    
+    // Insert it near other controls
+    const controlsContainer = document.querySelector(".camera-controls") || document.body;
+    controlsContainer.appendChild(uploadBtn);
+  }
+  
+  // Create a file input element
+  const fileInput = document.createElement("input");
+  fileInput.type = "file";
+  fileInput.multiple = true;
+  fileInput.accept = "image/*";
+  fileInput.style.display = "none";
+  fileInput.id = "photoFileInput";
+  document.body.appendChild(fileInput);
+  
+  // Function to handle the upload button click
+  function handleUploadBtnClick() {
+    const photoFileInput = document.getElementById("photoFileInput");
+    const uploadBtn = document.getElementById("uploadBtn");
+    const videoElement = document.getElementById("video");
+
+    if (!isUploadMode) {
+        // Switch to upload mode
+        isUploadMode = true;
+        videoElement.style.display = "none";
+        uploadBtn.textContent = "Switch to Camera";
+
+        // Open file dialog
+        photoFileInput.click();
+        
+        // Add the "Select More" button
+        addSelectMoreButton();
+    } else {
+        // Switching back to camera mode
+        isUploadMode = false;
+        videoElement.style.display = "block";
+        uploadBtn.textContent = "Upload Photo";
+
+        // Remove the "Select More" button
+        const selectMoreBtn = document.getElementById("selectMoreBtn");
+        if (selectMoreBtn) {
+            selectMoreBtn.remove();
+        }
+    }
+}
+function addSelectMoreButton() {
+    // Remove existing button if it's there
+    const existingBtn = document.getElementById("selectMoreBtn");
+    if (existingBtn) {
+        existingBtn.remove();
+    }
+
+    // Create the button
+    const selectMoreBtn = document.createElement("button");
+    selectMoreBtn.id = "selectMoreBtn";
+    selectMoreBtn.className = "control-btn";
+    selectMoreBtn.textContent = "Select More Photos";
+    selectMoreBtn.style.marginLeft = "10px";
+
+    // Add it near the upload button
+    const uploadBtn = document.getElementById("uploadBtn");
+    if (uploadBtn && uploadBtn.parentNode) {
+        uploadBtn.parentNode.insertBefore(selectMoreBtn, uploadBtn.nextSibling);
+    }
+
+    // Add click event
+    selectMoreBtn.addEventListener("click", function() {
+        document.getElementById("photoFileInput").click();
+    });
+}
+  
+  // Handle file selection
+  function handleFileSelection(event) {
+    const files = event.target.files;
+    
+    if (files.length === 0) return;
+    
+    // Clear existing photos only if we have new files
+    capturedPhotos = [];
+    
+    // Process only up to maxPhotos (4) images
+    const filesToProcess = Math.min(files.length, maxPhotos);
+    
+    // Reset counter
+    counterText.textContent = `Photos: 0 / ${maxPhotos}`;
+    
+    // Process each file
+    for (let i = 0; i < filesToProcess; i++) {
+      const file = files[i];
+      const reader = new FileReader();
+      
+      reader.onload = function(e) {
+        processUploadedImage(e.target.result, i);
+      };
+      
+      reader.readAsDataURL(file);
+    }
+    
+    // Show the "Select More Photos" button when in upload mode
+    if (isUploadMode) {
+      addSelectMoreButton();
+    }
+  }
+  
+  // Function to process uploaded images
+  function processUploadedImage(dataUrl, index) {
+    const img = new Image();
+    img.src = dataUrl;
+    
+    img.onload = function() {
+      const tempCanvas = document.createElement("canvas");
+      const ctx = tempCanvas.getContext("2d");
+      
+      // Set fixed 12:9 aspect ratio
+      tempCanvas.width = 1200;
+      tempCanvas.height = 900;
+      
+      // Calculate scaling to properly fit image
+      const imgAspectRatio = img.width / img.height;
+      const canvasAspectRatio = tempCanvas.width / tempCanvas.height;
+      
+      let drawWidth, drawHeight, offsetX = 0, offsetY = 0;
+      
+      if (imgAspectRatio > canvasAspectRatio) {
+        // Image is wider than canvas - fit to height
+        drawHeight = tempCanvas.height;
+        drawWidth = drawHeight * imgAspectRatio;
+        offsetX = (tempCanvas.width - drawWidth) / 2;
+      } else {
+        // Image is taller than canvas - fit to width
+        drawWidth = tempCanvas.width;
+        drawHeight = drawWidth / imgAspectRatio;
+        offsetY = (tempCanvas.height - drawHeight) / 2;
+      }
+      
+      // Draw image properly centered
+      ctx.drawImage(
+        img, 
+        0, 0, img.width, img.height,
+        offsetX, offsetY, drawWidth, drawHeight
+      );
+      
+      // Store the processed image
+      const photoData = tempCanvas.toDataURL("image/jpeg", 0.95);
+      capturedPhotos[index] = photoData;
+      
+      // Update canvas display
+      if (canvasList[index]) {
+        const canvas = canvasList[index];
+        canvas.width = tempCanvas.width;
+        canvas.height = tempCanvas.height;
+        
+        const targetCtx = canvas.getContext("2d");
+        targetCtx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        const displayImg = new Image();
+        displayImg.src = photoData;
+        
+        displayImg.onload = () => {
+          // Apply any filters if needed
+          if (typeof applyFilter === 'function') {
+            applyFilter(targetCtx, canvas, displayImg);
+          } else {
+            targetCtx.drawImage(displayImg, 0, 0, canvas.width, canvas.height);
+          }
+          canvas.style.display = "block";
+        };
+      }
+      
+      // Update photo counter
+      const photosCount = capturedPhotos.filter(Boolean).length;
+      counterText.textContent = `Photos: ${photosCount} / ${maxPhotos}`;
+      
+      // Show next page button if all photos are added
+      if (photosCount === maxPhotos) {
+        if (document.getElementById("nextPageBtn")) {
+          document.getElementById("nextPageBtn").style.display = "block";
+        }
+        storePhotosInSession(capturedPhotos);
+      }
+    };
+  }
+  
+  // Add event listeners after DOM is fully loaded
+  document.addEventListener("DOMContentLoaded", function() {
+    const uploadBtn = document.getElementById("uploadBtn");
+    if (uploadBtn) {
+      // Remove any existing event listeners to prevent duplicates
+      uploadBtn.removeEventListener("click", handleUploadBtnClick);
+      // Add the event listener
+      uploadBtn.addEventListener("click", handleUploadBtnClick);
+    } else {
+      console.error("Upload button not found!");
+    }
+    
+    // File input change event
+    const fileInput = document.getElementById("photoFileInput");
+    if (fileInput) {
+      fileInput.removeEventListener("change", handleFileSelection);
+      fileInput.addEventListener("change", handleFileSelection);
+    }
+  });
+  
+  // If you're in upload mode but need to select more photos,
+  // add this helper function
+  function triggerPhotoSelection() {
+    // Reset file input to allow selecting the same files again
+    const fileInput = document.getElementById("photoFileInput");
+    if (fileInput) {
+      fileInput.value = "";
+      fileInput.click();
+    }
+  }
+  function displaySelectedPhotos() {
+    const previewContainer = document.getElementById("previewContainer");
+    previewContainer.innerHTML = ""; // Clear previous previews
+
+    selectedFiles.forEach((file) => {
+        const imgElement = document.createElement("img");
+        imgElement.src = URL.createObjectURL(file);
+        imgElement.style.width = "100px";
+        imgElement.style.margin = "5px";
+        previewContainer.appendChild(imgElement);
+    });
+}
+  document.getElementById("photoFileInput").addEventListener("change", function(event) {
+    if (event.target.files.length > 0) {
+        for (const file of event.target.files) {
+            selectedFiles.push(file); // Store files without overwriting previous ones
+        }
+        displaySelectedPhotos(); // Update display
+    }
+});
+
 let isMirrored = false;
 
 function toggleMirror() {
@@ -572,6 +813,221 @@ contrastSlider.addEventListener("input", function() {
             };
         }
     });
+});
+function setupPhotoUpload() {
+    const uploadBtn = document.getElementById("uploadBtn");
+    const videoContainer = document.getElementById("video-container");
+    const uploadContainer = document.createElement("div");
+    
+    // Create and configure the file input
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "image/*";
+    fileInput.multiple = true;
+    fileInput.style.display = "none";
+    fileInput.id = "photoFileInput";
+    
+    // Create a visible placeholder for when video is hidden
+    uploadContainer.id = "upload-container";
+    uploadContainer.style.display = "none";
+    uploadContainer.style.width = "100%";
+    uploadContainer.style.height = "100%";
+    uploadContainer.style.backgroundColor = "#f5f5f5";
+    uploadContainer.style.borderRadius = "8px";
+    uploadContainer.style.display = "flex";
+    uploadContainer.style.flexDirection = "column";
+    uploadContainer.style.justifyContent = "center";
+    uploadContainer.style.alignItems = "center";
+    uploadContainer.innerHTML = `
+        <div id="upload-placeholder">
+            <div style="font-size: 24px; margin-bottom: 15px;">📷 Click "Upload Photo" to select images</div>
+            <div id="upload-preview" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;"></div>
+        </div>
+    `;
+    
+    // Insert the upload container after the video container
+    videoContainer.parentNode.insertBefore(uploadContainer, videoContainer.nextSibling);
+    document.body.appendChild(fileInput);
+    
+    // Function to toggle between video and upload mode
+    function toggleUploadMode(showUpload) {
+        if (showUpload) {
+            videoContainer.style.display = "none";
+            uploadContainer.style.display = "flex";
+            uploadBtn.textContent = "Switch to Camera";
+            captureBtn.disabled = true; // Disable capture button in upload mode
+        } else {
+            videoContainer.style.display = "block";
+            uploadContainer.style.display = "none";
+            uploadBtn.textContent = "Upload Photo";
+            captureBtn.disabled = false; // Enable capture button in camera mode
+        }
+    }
+    
+    // Handle click on the upload button
+    uploadBtn.addEventListener("click", function() {
+        const isInUploadMode = uploadContainer.style.display !== "none";
+        
+        if (isInUploadMode) {
+            // Switch back to camera mode
+            toggleUploadMode(false);
+        } else {
+            // Switch to upload mode
+            toggleUploadMode(true);
+            fileInput.click(); // Open file dialog
+        }
+    });
+    
+    // Handle file selection
+    fileInput.addEventListener("change", function(event) {
+        const files = event.target.files;
+        if (files.length === 0) return;
+
+        // Calculate remaining slots
+        const remaining = maxPhotos - capturedPhotos.length;
+        if (remaining <= 0) {
+            alert("Maximum photos reached.");
+            return;
+        }
+        
+        // Limit to 4 photos max
+        const selectedFiles = Array.from(files).slice(0, maxPhotos);
+        const startIndex = capturedPhotos.length;
+        const indices = Array.from({ length: selectedFiles.length }, (_, i) => startIndex + i);
+        
+        
+        // Clear existing photos
+        capturedPhotos = [];
+        
+        // Clear preview area
+        const previewArea = document.getElementById("upload-preview");
+        previewArea.innerHTML = "";
+        
+        // Process each selected file
+        selectedFiles.forEach((file, i) => {
+            const index = indices[i];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                processUploadedImage(e.target.result, index);
+            };
+            reader.readAsDataURL(file);
+        });
+    });
+    
+    // Function to process the uploaded image
+    function processUploadedImage(dataUrl, index) {
+        const img = new Image();
+        img.src = dataUrl;
+        
+        img.onload = function() {
+            const tempCanvas = document.createElement("canvas");
+            const ctx = tempCanvas.getContext("2d");
+            
+            // Set fixed 12:9 aspect ratio as used in the capturePhoto function
+            tempCanvas.width = 1200;
+            tempCanvas.height = 900;
+            
+            // Calculate scaling to properly fit image into 12:9 canvas without stretching
+            const imgAspectRatio = img.width / img.height;
+            const canvasAspectRatio = tempCanvas.width / tempCanvas.height;
+            
+            let drawWidth, drawHeight, offsetX = 0, offsetY = 0;
+            
+            if (imgAspectRatio > canvasAspectRatio) {
+                // Image is wider than canvas - fit to height
+                drawHeight = tempCanvas.height;
+                drawWidth = drawHeight * imgAspectRatio;
+                offsetX = (tempCanvas.width - drawWidth) / 2;
+            } else {
+                // Image is taller than canvas - fit to width
+                drawWidth = tempCanvas.width;
+                drawHeight = drawWidth / imgAspectRatio;
+                offsetY = (tempCanvas.height - drawHeight) / 2;
+            }
+            
+            // Draw image properly centered and scaled without stretching
+            ctx.drawImage(
+                img, 
+                0, 0, img.width, img.height,  // Source rectangle
+                offsetX, offsetY, drawWidth, drawHeight  // Destination rectangle
+            );
+            
+            // Apply any current filters if needed
+            const filteredCtx = tempCanvas.getContext("2d");
+            applyFilter(filteredCtx, tempCanvas, img);
+            
+            // Store the processed image
+            const photoData = tempCanvas.toDataURL("image/jpeg", 0.95);
+            capturedPhotos[index] = photoData;
+            if (capturedPhotos.length === maxPhotos) {
+                document.getElementById("nextPageBtn").style.display = "block";
+                storePhotosInSession(capturedPhotos);
+            }
+            
+            // Update canvas display
+            if (canvasList[index]) {
+                const canvas = canvasList[index];
+                canvas.width = tempCanvas.width;
+                canvas.height = tempCanvas.height;
+                
+                const targetCtx = canvas.getContext("2d");
+                let displayImg = new Image();
+                displayImg.src = photoData;
+                
+                displayImg.onload = () => {
+                    targetCtx.drawImage(displayImg, 0, 0, canvas.width, canvas.height);
+                    canvas.style.display = "block";
+                };
+            }
+            
+            // Update photo counter
+            counterText.textContent = `Photos: ${capturedPhotos.filter(Boolean).length} / ${maxPhotos}`;
+            
+            // Show next page button if all photos are populated
+            if (capturedPhotos.filter(Boolean).length === maxPhotos) {
+                document.getElementById("nextPageBtn").style.display = "block";
+                storePhotosInSession(capturedPhotos);
+            }
+        };
+    }
+}
+
+// Call this function at the end of the window load event
+window.addEventListener("load", () => {
+    setupFilterDropdown();
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        // On iOS, we need user interaction first
+        if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+            // Create a temporary button if needed
+            const startButton = document.createElement('button');
+            startButton.textContent = "Start Camera";
+            startButton.className = "start-camera-btn";
+            
+            // Add styling to center the button
+            startButton.style.position = "fixed";
+            startButton.style.top = "50%";
+            startButton.style.left = "50%";
+            startButton.style.transform = "translate(-50%, -50%)";
+            startButton.style.padding = "12px 24px";
+            startButton.style.fontSize = "16px";
+            startButton.style.zIndex = "1000";
+            
+            document.body.appendChild(startButton);
+            
+            startButton.addEventListener('click', () => {
+                getCameras();
+                startButton.remove(); // Remove the button after starting
+            });
+        } else {
+            // For non-iOS devices, start immediately
+            getCameras();
+        }
+    } else {
+        console.error("Camera API not supported in this browser.");
+    }
+    
+    // Initialize photo upload functionality
+    setupPhotoUpload();
 });
 
 // Updated storage function with detailed compression

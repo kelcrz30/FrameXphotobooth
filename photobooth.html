@@ -17,6 +17,7 @@
     <div class="boot">
         
         <main class="content-container">
+            
             <div class="left-section">
                 <div class="video-container">
                     <div id="countdownText"></div>  <!-- Move this inside video-container -->
@@ -32,6 +33,8 @@
                 </div>
                 <div class="controls">
                     <button id="captureBtn">Capture</button>
+                    <button id="uploadBtn" class="control-btn">Upload Photo</button>
+
                     <div class="checkbox-wrapper-12">
                        <div class="filter-container">
                         <div class="cbx" onclick="toggleMirror()">
@@ -59,8 +62,6 @@
                                 </svg>
                             </button>
                         </div>
-                        <button id="retakeBtn" style="display: none;">Retake Last Photo</button>
-                        
                     <label for="timerSelect">Timer:</label>
                     <select id="timerSelect">
                         <option value="0">No Timer</option>
