@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Kreon:wght@300..700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=light_mode" />
+    
 </head>
 <body class="photobooth">
     <div class="boot">
@@ -30,7 +31,7 @@
   
                 </div>
                 <div class="controls">
-                    <button id="captureBtn">Capture Photo</button>
+                    <button id="captureBtn">Capture</button>
                     <div class="checkbox-wrapper-12">
                        <div class="filter-container">
                         <div class="cbx" onclick="toggleMirror()">
@@ -58,6 +59,8 @@
                                 </svg>
                             </button>
                         </div>
+                        <button id="retakeBtn" style="display: none;">Retake Last Photo</button>
+                        
                     <label for="timerSelect">Timer:</label>
                     <select id="timerSelect">
                         <option value="0">No Timer</option>
@@ -98,7 +101,7 @@
                 </div>
                 <div class="nextbtn">
                     <a href="edit.html">
-                        <button id="goToEditBtn">Next page</button>
+                        <button id="nextPageBtn" style="display: none;">Next page</button>
                     </a>
                 </div>
             </div>

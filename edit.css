@@ -178,9 +178,9 @@
 }
 
 .sticker-category.selected {
-    background-color: #ff5757;
+    background-color: #000000;
     color: white;
-    border-color: #ff5757;
+    border-color: #000000;
 }
 .photo-frame {
     position: relative; /* Allows layering inside */
