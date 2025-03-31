@@ -300,7 +300,8 @@ function drawPhotos() {
     const availableHeight = editCanvas.height - (topPadding + bottomPadding + spacing * (totalPhotos - 1));
     const photoHeight = availableHeight / totalPhotos;
     const borderRadius = 8; // Change this for more or less rounding
-
+    
+    if (footerInterval) clearInterval(footerInterval);
     photoData.forEach((photo, index) => {
         const img = new Image();
         img.crossOrigin = "Anonymous"; // Handle cross-origin issues
@@ -312,6 +313,7 @@ function drawPhotos() {
             const photoHeight = 800;
             const xOffset = (editCanvas.width - photoWidth) / 2;
             const yPosition = topPadding + index * (photoHeight + spacing);
+            
             
 
             // Draw rounded rectangle
@@ -335,6 +337,7 @@ function drawPhotos() {
             if (loadedCount === totalPhotos) {
                 console.log("All photos loaded, drawing stickers");
                 drawStickers();
+                drawFooter(); // Draw footer even if some photos fail
             }
         };
         
@@ -345,9 +348,16 @@ function drawPhotos() {
             // Still attempt to draw stickers even if some photos fail
             if (loadedCount === totalPhotos) {
                 drawStickers();
+                drawFooter(); // Draw footer even if some photos fail
             }
         };
     });
+    footerInterval = setTimeout(function() {
+        if (loadedCount < totalPhotos) {
+            console.log("Timeout: Some images didn't load, drawing footer anyway");
+            drawFooter();
+        }
+    }, 5000);
 }
 
 // Function to draw a rounded rectangle
@@ -677,6 +687,41 @@ window.addEventListener('load', function() {
     }
 });
 console.log("Canvas element exists:", document.getElementById('editCanvas') !== null);
+function drawFooter() {
+    if (!editCtx) return;
+    
+    // Get current date and time formatted
+    const now = new Date();
+    const dateString = now.toLocaleDateString();
+    const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: true});
+    
+    // Check background color at the text position
+    const bottomMargin = 150;
+    const mainTextY = editCanvas.height - bottomMargin;
+    const checkX = editCanvas.width / 2;
+    
+    // Get pixel data at the position where text will be drawn
+    const pixelData = editCtx.getImageData(checkX, mainTextY, 1, 1).data;
+    
+    // Calculate brightness (simple average method)
+    const brightness = (pixelData[0] + pixelData[1] + pixelData[2]) / 3;
+    
+    // Set text color based on background brightness
+    // If background is dark, use white text; if light, use black text
+    editCtx.fillStyle = brightness < 128 ? '#FFFFFF' : '#000000';
+    
+    // Set text properties for main text
+    editCtx.font = '500 50px poppins';
+    editCtx.textAlign = 'center';
+    editCtx.textBaseline = 'middle';
+    
+    // Draw the main text
+    editCtx.fillText(`Framex ${dateString} ${timeString}`, editCanvas.width / 2, mainTextY);
+    
+    editCtx.font = 'normal 24px Arial';
+    editCtx.fillText(`© ${now.getFullYear()} Kel`, editCanvas.width / 2, mainTextY + 40);
+}
+let footerInterval;
 window.onload = function () {
     let photos = JSON.parse(sessionStorage.getItem('photos'));
     if (photos && photos.length > 0) {

@@ -1117,7 +1117,8 @@ button:hover .arrow:before {
         
         /* Left section - Camera and controls */
         .left-section {
-            flex: 1.5; /* Increased from 1 to give more space */
+            margin-top: 5rem;
+            flex: 3; /* Increased from 1 to give more space */
             min-width: 600px; /* Increased from 400px */
             display: flex;
             flex-direction: column;
@@ -1128,10 +1129,8 @@ button:hover .arrow:before {
             position: relative;
             max-width: 100%; /* Changed from 700px */
             width: 100%;
-            background-color: #222;
             border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             margin: 0 auto;
             max-height: 80vh; /* Increased from 70vh */
         }
@@ -1256,6 +1255,7 @@ button:hover .arrow:before {
         
         /* Right section - Photo stack */
         .right-section {
+            margin-top: 7rem;
             flex: 2;
             min-width: 150px; /* Adjust if needed */
             display: flex;
@@ -1286,7 +1286,6 @@ button:hover .arrow:before {
 #canvas1, #canvas2, #canvas3, #canvas4 {
     width: 100%;
     height: auto;
-
     object-fit: cover;
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
@@ -1297,6 +1296,7 @@ button:hover .arrow:before {
         .nextbtn{
             position: relative;
             right: 100px;
+            text-decoration: none;
             
         }
         /* Footer */
@@ -1334,8 +1334,8 @@ button:hover .arrow:before {
             gap: 5px; /* Ensure equal spacing */
             flex-wrap: wrap;
         }
-        #canvas1, #canvas2, #canvas3, #canvas4, #editorCanvas {
-            width: 30% !important;
+        #canvas1, #canvas2, #canvas3, #canvas4{
+            width: 70% !important;
             height: auto !important;
             aspect-ratio: 12/9 !important;
             object-fit: contain;
