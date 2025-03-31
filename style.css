@@ -1300,19 +1300,6 @@ button:hover .arrow:before {
             text-decoration: none;
             bottom: 80px;            
         }
-        #retakeBtn {
-            background-color: #ff4444;
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-        
-        #retakeBtn:hover {
-            background-color: #cc0000;
-        }
         /* Footer */
         footer {
             color: #777;

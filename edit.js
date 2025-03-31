@@ -63,6 +63,15 @@ function initCanvas() {
     }
     
 }
+window.addEventListener('load', () => {
+    debugSessionStorage(); // From your existing code
+    
+    if (!loadPhotosFromStorage()) {
+        showNoPhotosMessage();
+    } else {
+        initEditor(); // Your existing editor initialization
+    }
+});
 
 
 async function drawSimplePhotos() {

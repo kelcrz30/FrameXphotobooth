@@ -563,6 +563,7 @@ contrastSlider.addEventListener("input", function() {
 });
 
 // Updated storage function with detailed compression
+// Updated storePhotosInSession function
 function storePhotosInSession(photos) {
     if (!Array.isArray(photos) || photos.length === 0) {
         console.error("❌ Invalid photos array provided to storePhotosInSession.");
@@ -629,10 +630,6 @@ function storePhotosInSession(photos) {
 
             if (capturedPhotos.length === maxPhotos) {
                 storePhotosInSession(capturedPhotos);
-            
-                setTimeout(() => {
-                    document.getElementById("nextPageBtn").style.display = "block"; // Show the button after 2 seconds
-                }, 2000); // 2000ms = 2 seconds delay
             }
         };
     }
