@@ -224,7 +224,7 @@ function setupFilterDropdown() {
         "grayscale(100%)": "B&W",
         "sepia(100%)": "Sepia",
         "contrast(1.4) brightness(0.9)": "Vintage",
-        "blur(2px) brightness(1.2)": "Soft",
+        "blur(3px) brightness(1.2)": "Soft",
         "contrast(1.5) brightness(0.7)": "Noir",
         "saturate(2) brightness(1.1)": "Vivid"
     };
@@ -315,9 +315,9 @@ function applyFilter(ctx, canvas, img) {
         // Combine all filters
         
         // Add any other filter from dropdown if not "none"
-        if (currentFilter !== "none" && !currentFilter.includes("brightness") && !currentFilter.includes("contrast")) {
-        filterString += " " + currentFilter;
-    }
+        if (currentFilter !== "none") {
+    filterString += " " + currentFilter;
+}
         
         console.log("Applying filter to canvas:", filterString);
         
