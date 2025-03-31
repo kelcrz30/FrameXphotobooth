@@ -427,46 +427,58 @@ function capturePhoto() {
         img.onload = function () {
             // Clear canvas before applying filter
             ctx.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
-        
+
             // Apply the current filter
             applyFilter(ctx, tempCanvas, img);
-        
+
             // Store high-quality data
             const photoData = tempCanvas.toDataURL("image/jpeg", 0.95);
             capturedPhotos.push(photoData);
-        
+
             // Update canvases with photo
             canvasList.forEach((canvas, index) => {
                 if (canvas && capturedPhotos[index]) {
                     // Use same dimensions for consistent display
                     canvas.width = tempCanvas.width;
                     canvas.height = tempCanvas.height;
-        
+
                     const targetCtx = canvas.getContext("2d");
                     targetCtx.imageSmoothingEnabled = true;
                     targetCtx.imageSmoothingQuality = 'high';
-        
+
                     let displayImg = new Image();
                     displayImg.src = capturedPhotos[index];
-        
+
                     displayImg.onload = () => {
                         targetCtx.drawImage(displayImg, 0, 0, canvas.width, canvas.height);
                         canvas.style.display = "block";
-        
-                        // Ensure the last image has been fully processed
-                        if (index === maxPhotos - 1) {
+                    
+                        // Delay the button only after the last photo is fully displayed
+                        if (index === maxPhotos - 1) { 
                             console.log("✅ Last canvas displayed. Waiting before showing button...");
-        
-                            setTimeout(() => {
-                                console.log("🚀 Showing Next Page button.");
-                                document.getElementById("nextPageBtn").style.display = "block";
-                            }, 800); // Adjust delay time as needed
+                    
+                            requestAnimationFrame(() => { // Ensures canvas update is complete
+                                setTimeout(() => {
+                                    console.log("🚀 Showing Next Page button.");
+                                    document.getElementById("nextPageBtn").style.display = "block";
+                                }, 3000); // Adjust delay time (in milliseconds)
+                            });
                         }
                     };
                 }
             });
+
+            // Update photo counter
+            counterText.textContent = `Photos Taken: ${capturedPhotos.length} / ${maxPhotos}`;
+
+            // Show "Next page" button only if all photos are taken
+            if (capturedPhotos.length === maxPhotos) {
+                document.getElementById("nextPageBtn").style.display = "block";
+                storePhotosInSession(capturedPhotos);
+            } else {
+                document.getElementById("nextPageBtn").style.display = "none"; // Ensure it remains hidden
+            }
         };
-        
     }
 }
 
@@ -563,7 +575,6 @@ contrastSlider.addEventListener("input", function() {
 });
 
 // Updated storage function with detailed compression
-// Updated storePhotosInSession function
 function storePhotosInSession(photos) {
     if (!Array.isArray(photos) || photos.length === 0) {
         console.error("❌ Invalid photos array provided to storePhotosInSession.");
@@ -630,6 +641,10 @@ function storePhotosInSession(photos) {
 
             if (capturedPhotos.length === maxPhotos) {
                 storePhotosInSession(capturedPhotos);
+            
+                setTimeout(() => {
+                    document.getElementById("nextPageBtn").style.display = "block"; // Show the button after 2 seconds
+                }, 2000); // 2000ms = 2 seconds delay
             }
         };
     }
