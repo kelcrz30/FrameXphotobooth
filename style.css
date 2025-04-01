@@ -1192,8 +1192,19 @@ button:hover .arrow:before {
             align-items: center; /* Center content horizontally */
             text-align: center; /* Center text inside */
         }
-        
-        
+
+        .button-element{
+            display: flex;
+            flex-direction: row;
+            gap: 2rem;
+        }
+        .control-btn{
+            padding:21px;
+            background-color: none !important;
+            padding-left: 10px;
+            padding-right: 10px;
+            border-radius: 8px !important;
+        }
         #captureBtn {
             display: flex;
             align-self: flex-start;
@@ -1212,6 +1223,7 @@ button:hover .arrow:before {
             width: 10rem;
             margin-bottom: 1rem;
         }
+        
         
         #captureBtn:hover {
             background-color: #616060;
@@ -1232,7 +1244,9 @@ button:hover .arrow:before {
             gap: 1rem; /* Space between checkbox and dropdown */
             flex-wrap: wrap; /* Prevents overlap on smaller screens */
         }
-        
+        #uploadBtn {
+            display: none;
+          }
        
         
         /* Filter select */
@@ -1375,6 +1389,82 @@ button:hover .arrow:before {
             z-index: 10;
             display: none; /* Hidden by default */
         }
+       /* Default styles for larger screens */
+.tab-container {
+    max-width: 100%;
+    margin: 0 auto;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    position: fixed;
+    left: 50%; /* Center the tab container horizontally */
+    transform: translateX(-50%); /* Adjust the centering */
+}
+
+.tab-buttons {
+    display: flex; /* Use flexbox for the buttons */
+    justify-content: center;
+    margin-bottom: 20px;
+    border-radius: 30px;
+    overflow: hidden;
+    background-color: transparent;
+    flex-wrap: wrap; /* Allow wrapping if necessary */
+}
+
+.tab-button {
+    background-color: transparent;
+    border: none;
+    padding: 10px 25px;
+    margin: 0 5px; /* Added some margin between the buttons */
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+    color: #fff;
+    min-width: 80px;
+}
+
+.tab-button.active {
+    background-color: #000;
+    color: white;
+    border-radius: 30px;
+}
+
+.tab-button:not(.active) {
+    background-color: transparent;
+    color: rgb(0, 0, 0);
+}
+
+/* Responsive Styles for smaller screens */
+@media (max-width: 768px) {
+    .tab-container {
+        position: static; /* Remove the fixed position */
+        left: 0; /* Reset left positioning */
+        transform: none; /* Remove centering */
+    }
+
+    .tab-buttons {
+        justify-content: center; /* Ensure the buttons are centered */
+        flex-wrap: wrap; /* Allow buttons to wrap to next line if needed */
+        width: 100%; /* Ensure buttons take up full width */
+    }
+
+    .tab-button {
+        width: auto; /* Allow buttons to maintain their size */
+        min-width: 80px; /* Keep the minimum width of the buttons */
+        padding: 10px 20px; /* Adjust padding */
+        font-size: 12px; /* Slightly reduce the font size */
+        margin: 5px; /* Maintain spacing between buttons */
+    }
+}
+
+/* Further adjustments for very small screens (phones in portrait mode) */
+@media (max-width: 480px) {
+    .tab-button {
+        font-size: 10px; /* Reduce font size for smaller screens */
+        padding: 8px 15px; /* Adjust padding for very small screens */
+    }
+}
+
+          
         
         /* Ensure material icons and SVG are centered */
         .icon-container .material-symbols-outlined,

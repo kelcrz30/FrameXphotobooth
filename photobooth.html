@@ -11,29 +11,47 @@
     <link href="https://fonts.googleapis.com/css2?family=Kreon:wght@300..700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=light_mode" />
-    
 </head>
 <body class="photobooth">
     <div class="boot">
-        
         <main class="content-container">
             
+            
+            <!-- Tab buttons -->
+              <div class="tab-container">
+                <div class="tab-buttons">
+                  <button class="tab-button active" id="cameraTab" onclick="switchTab('camera')">Camera</button>
+                  <button class="tab-button" id="uploadTab" onclick="switchTab('upload')">Upload</button>
+                  </div>
+                </div>
+                
+            
             <div class="left-section">
-                <div class="video-container">
+                <div class="video-container" id="cameraTabContent">
                     <div id="countdownText"></div>  <!-- Move this inside video-container -->
                     <label for="cameraSelect">Select Camera:</label>
-                    
                     <select id="cameraSelect"></select>
                     <video id="video" playsinline="true" autoplay muted webkit-playsinline="true" style="width: 100%; height: auto; background: #000;"></video>
                     <div id="ios-prompt" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(235, 0, 0, 0.7); color: rgb(131, 84, 84); padding: 15px; border-radius: 10px; text-align: center;">
                         Tap to activate camera
-                      </div>
-                      
-  
+                    </div>
                 </div>
+
+                <div class="upload-container" id="uploadTabContent">
+                    <!-- Upload content goes here -->
+                    <div id="upload-placeholder">
+                        <div style="font-size: 24px; margin-bottom: 15px;">📷 Click "Upload Photo" to select images</div>
+                        <div id="upload-preview" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;"></div>
+                    </div>
+                </div>
+                
                 <div class="controls">
+                   <div class="button-element">
                     <button id="captureBtn">Capture</button>
-                    <button id="uploadBtn" class="control-btn">Upload Photo</button>
+                    <div class="uploadbtn1"></div>
+                    
+                 
+                </div> 
 
                     <div class="checkbox-wrapper-12">
                        <div class="filter-container">
@@ -73,10 +91,7 @@
 </div> 
 <!-- Brightness Toggle -->
 
-
-
-
-<p id="countdownDisplay"></p>
+         <p id="countdownDisplay"></p>
                         
                         <svg version="1.1" xmlns="http://www.w3.org/2000/svg">
                           <defs>
@@ -114,7 +129,139 @@
             </h3>
         </footer>
     </div>
+
     <script src="darkmode.js"></script>
-<script src="app.js" defer></script>
+    <script src="app.js" defer></script>
+
+    <script>
+        
+        function switchTab(tabName) {
+    // Hide all tab contents
+    document.getElementById('cameraTabContent').style.display = 'none';
+    document.getElementById('uploadTabContent').style.display = 'none';
+    
+    // Show/hide controls based on tab
+    const controls = document.querySelector('.controls');
+    
+    if (tabName === 'camera') {
+        document.getElementById('cameraTabContent').style.display = 'block';
+        
+        // Show camera controls
+        if (controls) controls.style.display = 'block';
+        
+        // Reset video element display
+        const videoElement = document.getElementById('video');
+        if (videoElement) {
+            videoElement.style.display = 'block';
+        }
+        
+        // Make sure the upload button is visible in camera tab
+        const uploadBtn = document.getElementById('uploadBtn');
+        if (uploadBtn) {
+            uploadBtn.style.display = 'block';
+            uploadBtn.textContent = 'Upload Photo';
+        }
+        
+        // Reset upload mode if needed
+        if (typeof isUploadMode !== 'undefined') {
+            isUploadMode = false;
+        }
+        
+        // Re-enable capture button
+        const captureBtn = document.getElementById('captureBtn');
+        if (captureBtn) {
+            captureBtn.disabled = false;
+        }
+    } else if (tabName === 'upload') {
+        document.getElementById('uploadTabContent').style.display = 'block';
+        
+        // Hide camera controls
+        if (controls) controls.style.display = 'none';
+        
+        // Create "Choose Files" button if it doesn't exist
+        let chooseFilesBtn = document.getElementById('chooseFilesBtn');
+        if (!chooseFilesBtn) {
+            chooseFilesBtn = document.createElement('button');
+            chooseFilesBtn.id = 'chooseFilesBtn';
+            chooseFilesBtn.className = 'btn';
+            chooseFilesBtn.textContent = 'Choose Photos';
+            chooseFilesBtn.onclick = function() {
+                const fileInput = document.getElementById('photoFileInput');
+                if (fileInput) {
+                    fileInput.click();
+                }
+            };
+            
+            const uploadTabContent = document.getElementById('uploadTabContent');
+            if (uploadTabContent) {
+                uploadTabContent.appendChild(chooseFilesBtn);
+            }
+        } else {
+            chooseFilesBtn.style.display = 'block';
+        }
+    }
+    
+    // Update the active tab styling
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.classList.remove('active');
+    });
+    document.getElementById(tabName + 'Tab').classList.add('active');
+}
+
+// Ensure upload button appears properly
+document.addEventListener('DOMContentLoaded', function() {
+    // Set camera tab as default active tab
+    switchTab('camera');
+    
+    // Make sure the upload button is properly initialized
+    const uploadBtn = document.getElementById('uploadBtn');
+    if (!uploadBtn) {
+        console.error('Upload button not found! Creating it now...');
+        
+        // Create the upload button if it doesn't exist
+        const uploadBtn = document.createElement('button');
+        uploadBtn.id = 'uploadBtn';
+        uploadBtn.className = 'btn';
+        uploadBtn.textContent = 'Upload Photo';
+        
+        // Add event listener
+        uploadBtn.addEventListener('click', handleUploadBtnClick);
+        
+        // Find a good place to add the button (adjust as needed)
+        const videoContainer = document.getElementById('cameraTabContent');
+        if (videoContainer) {
+            videoContainer.appendChild(uploadBtn);
+        }
+    }
+    
+    // Make sure the file input exists
+    let photoFileInput = document.getElementById('photoFileInput');
+    if (!photoFileInput) {
+        console.log('Creating file input element');
+        photoFileInput = document.createElement('input');
+        photoFileInput.type = 'file';
+        photoFileInput.multiple = true;
+        photoFileInput.accept = 'image/*';
+        photoFileInput.style.display = 'none';
+        photoFileInput.id = 'photoFileInput';
+        document.body.appendChild(photoFileInput);
+        
+        // Add event listener for file selection
+        photoFileInput.addEventListener('change', handleFileSelection);
+    }
+});
+
+
+// We should also make sure this modified version of handleUploadBtnClick exists
+function handleUploadBtnClick() {
+    const photoFileInput = document.getElementById('photoFileInput');
+    if (photoFileInput) {
+        photoFileInput.value = ''; // Clear any previous selection
+        photoFileInput.click();
+    } else {
+        console.error('Photo file input not found!');
+    }
+}
+    </script>
 </body>
 </html>
