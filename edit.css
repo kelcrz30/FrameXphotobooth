@@ -14,7 +14,7 @@
     font-family: 'Koulen', sans-serif;
     text-align: center;
     margin-bottom: 30px;
-    color: #333;
+    color: #000000;
     font-size: 2rem; /* Slightly larger heading */
 }
 
@@ -66,7 +66,7 @@
     font-family: 'Kreon', serif;
     font-size: 1.5rem;
     margin-bottom: 15px;
-    color: #333;
+    color: #000000;
     border-bottom: 2px solid #eee;
     padding-bottom: 10px;
 }
@@ -89,7 +89,7 @@
 }
 
 .bg-option.selected, .color-option.selected {
-    outline: 3px solid #5271ff;
+    outline: 3px solid #000000;
     border-radius: 8px;
 }
 
@@ -172,7 +172,9 @@
     font-size: 14px;
     transition: all 0.2s;
 }
-
+#downloadBtn{
+    background-color: black;
+}
 .sticker-category:hover {
     background-color: #e0e0e0;
 }
@@ -187,9 +189,49 @@
     display: inline-block; /* Prevents extra spacing */
 }
 
+
 #photoCanvas {
     position: relative; /* Stays below the frame */
     z-index: 1; /* Lower than the frame */
+}
+.footer {
+
+    text-align: center; /* Centers inline elements like text */
+    padding: 20px 0; /* Adds space inside the footer */
+    width: 100%; /* Full width */
+    bottom: 0;
+    left: 0;
+}
+.social-icons {
+    display: flex;
+    justify-content: center; /* Centers icons horizontally */
+    gap: 20px; /* Space between icons */
+    margin-bottom: 10px; /* Space between icons and text */
+}
+.social-icons a {
+    font-size: 20px; /* Bigger icons */
+    color: rgb(0, 0, 0); /* White icons */
+    transition: color 0.3s ease-in-out;
+    text-decoration: none;
+}
+/* Facebook Hover Color */
+.social-icons a:nth-child(1):hover {
+    color: #1877F2; /* Facebook blue */
+}
+
+/* GitHub Hover Color */
+.social-icons a:nth-child(2):hover {
+    color: #777777; /* GitHub dark gray */
+}
+
+/* TikTok Hover Color */
+.social-icons a:nth-child(3):hover {
+    color: #6b020a; /* TikTok pink/red */
+}
+
+.footer-text {
+    font-size: 14px;
+    opacity: 0.7;
 }
 @media (max-width: 1200px) {
     .edit-layout {

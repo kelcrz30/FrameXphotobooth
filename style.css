@@ -1204,10 +1204,11 @@ button:hover .arrow:before {
             padding-left: 10px;
             padding-right: 10px;
             border-radius: 8px !important;
+            justify-content: center;
         }
         #captureBtn {
             display: flex;
-            align-self: flex-start;
+            align-self: center;
             background-color: #000000;
             color: white;
             border: none;
@@ -1222,6 +1223,9 @@ button:hover .arrow:before {
             height: 10px;
             width: 10rem;
             margin-bottom: 1rem;
+            position: relative;
+            top: 0;
+            left: 250px;
         }
         
         
@@ -1246,9 +1250,9 @@ button:hover .arrow:before {
         }
         #uploadBtn {
             display: none;
+
           }
-       
-        
+                
         /* Filter select */
         #filterSelect {
             padding: 8px;
@@ -1310,7 +1314,7 @@ button:hover .arrow:before {
 
         .nextbtn{
             position: relative;
-            right: 40px;
+            right: 10px;
             text-decoration: none;
             bottom: 80px;            
         }
@@ -1406,8 +1410,10 @@ button:hover .arrow:before {
     margin-bottom: 20px;
     border-radius: 30px;
     overflow: hidden;
+    padding: 8px;
     background-color: transparent;
-    flex-wrap: wrap; /* Allow wrapping if necessary */
+
+    background-color: rgb(255, 255, 255);
 }
 
 .tab-button {
@@ -1420,6 +1426,10 @@ button:hover .arrow:before {
     transition: background-color 0.3s;
     color: #fff;
     min-width: 80px;
+    
+}
+#timerSelect{
+    border: 1px solid rgb(0, 0, 0);
 }
 
 .tab-button.active {
@@ -1432,6 +1442,18 @@ button:hover .arrow:before {
     background-color: transparent;
     color: rgb(0, 0, 0);
 }
+
+
+
+/* Canvas container styling to properly position buttons */
+.canvas-container {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+/* ========== Reset All Button Styles ========== */
+
 
 /* Responsive Styles for smaller screens */
 @media (max-width: 768px) {
@@ -1542,17 +1564,31 @@ button:hover .arrow:before {
             position: relative; /* Crucial for dropdown positioning */
             display: inline-block;
         }
+
         /* Responsive design */
         @media (max-width: 1024px) {
+            #canvas1, #canvas2, #canvas3, #canvas4, #editorCanvas {
+                width: 100% !important;
+                height: auto !important;
+                aspect-ratio: 12/9 !important;
+                object-fit: contain;
+                image-rendering: -webkit-optimize-contrast;
+                image-rendering: crisp-edges;
+            }
             .content-container {
                 padding: 1.5rem;
                 gap: 1.5rem;
                 max-height: calc(100vh - 3rem);
             }
+            .photo-stack canvas {
+                width: 100%;
+               
+            }
             
             #countdownText {
                 font-size: 5rem;
             }
+            
         }
         
         @media (max-width: 765px) {

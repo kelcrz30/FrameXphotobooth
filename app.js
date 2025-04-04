@@ -130,7 +130,7 @@ async function startCamera(deviceId = null) {
                     retryButton.style.top = "50%";
                     retryButton.style.left = "50%";
                     retryButton.style.transform = "translate(-50%, -50%)";
-                    retryButton.style.padding = "15px";
+                    retryButton.style.padding = "1px";
                     document.body.appendChild(retryButton);
                     
                     retryButton.addEventListener('click', () => {
@@ -239,10 +239,6 @@ if (!document.getElementById("uploadBtn")) {
     // Calculate how many more photos we can add
     const remainingSlots = maxPhotos - capturedPhotos.filter(Boolean).length;
     
-    if (remainingSlots <= 0) {
-      alert("Maximum number of photos reached.");
-      return;
-    }
     
     // Process only up to remaining slots
     const filesToProcess = Math.min(files.length, remainingSlots);
@@ -399,7 +395,8 @@ if (!document.getElementById("uploadBtn")) {
     }
 });
 
-let isMirrored = false;
+let isMirrored = true;
+video.style.transform = "scaleX(-1)"; // Mirror video by default
 
 function toggleMirror() {
     isMirrored = !isMirrored;
@@ -460,7 +457,7 @@ function setupFilterDropdown() {
         "grayscale(100%)": "B&W",
         "sepia(100%)": "Sepia",
         "contrast(1.4) brightness(0.9)": "Vintage",
-        "blur(3px) brightness(1.2)": "Soft",
+        "blur(1.2px) brightness(1.2)": "Soft",
         "contrast(1.5) brightness(0.7)": "Noir",
         "saturate(2) brightness(1.1)": "Vivid"
     };
@@ -834,10 +831,10 @@ function setupPhotoUpload() {
     uploadContainer.style.justifyContent = "center";
     uploadContainer.style.alignItems = "center";
     uploadContainer.innerHTML = `
-    <div id="upload-placeholder">
-    <div style="font-size: 24px; margin-bottom: 15px;">📷 Click "Upload Photo" to select images</div>
-    <div id="upload-preview" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;"></div>
-    </div>
+        <div id="upload-placeholder">
+            <div style="font-size: 24px; margin-bottom: 15px;">📷 Click "Upload Photo" to select images</div>
+            <div id="upload-preview" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;"></div>
+        </div>
     `;
     
     // Insert the upload container after the video container
@@ -846,69 +843,68 @@ function setupPhotoUpload() {
     
     // Function to toggle between video and upload mode
     function toggleUploadMode(showUpload) {
-    if (showUpload) {
-    videoContainer.style.display = "none";
-    uploadContainer.style.display = "flex";
-    uploadBtn.textContent = "Switch to Camera";
-    captureBtn.disabled = true; // Disable capture button in upload mode
-    } else {
-    videoContainer.style.display = "block";
-    uploadContainer.style.display = "none";
-    uploadBtn.textContent = "Upload Photo";
-    captureBtn.disabled = false; // Enable capture button in camera mode
-    }
+        if (showUpload) {
+            videoContainer.style.display = "none";
+            uploadContainer.style.display = "flex";
+            uploadBtn.textContent = "Switch to Camera";
+            captureBtn.disabled = true; // Disable capture button in upload mode
+        } else {
+            videoContainer.style.display = "block";
+            uploadContainer.style.display = "none";
+            uploadBtn.textContent = "Upload Photo";
+            captureBtn.disabled = false; // Enable capture button in camera mode
+        }
     }
     
     // Handle click on the upload button
     uploadBtn.addEventListener("click", function() {
-    const isInUploadMode = uploadContainer.style.display !== "none";
-    
-    if (isInUploadMode) {
-    // Switch back to camera mode
-    toggleUploadMode(false);
-    } else {
-    // Switch to upload mode
-    toggleUploadMode(true);
-    fileInput.click(); // Open file dialog
-    }
+        const isInUploadMode = uploadContainer.style.display !== "none";
+        
+        if (isInUploadMode) {
+            // Switch back to camera mode
+            toggleUploadMode(false);
+        } else {
+            // Switch to upload mode
+            toggleUploadMode(true);
+            fileInput.click(); // Open file dialog
+        }
     });
     
     // Handle file selection
     fileInput.addEventListener("change", function(event) {
-    const files = event.target.files;
-    if (files.length === 0) return;
-    
-    // Calculate remaining slots
-    const remaining = maxPhotos - capturedPhotos.length;
-    if (remaining <= 0) {
-    alert("Maximum photos reached.");
-    return;
-    }
-    
-    // Limit to 4 photos max
-    const selectedFiles = Array.from(files).slice(0, maxPhotos);
-    const startIndex = capturedPhotos.length;
-    const indices = Array.from({ length: selectedFiles.length }, (_, i) => startIndex + i);
-    
-    
-    // Clear existing photos
-    capturedPhotos = [];
-    
-    // Clear preview area
-    const previewArea = document.getElementById("upload-preview");
-    previewArea.innerHTML = "";
-    
-    // Process each selected file
-    selectedFiles.forEach((file, i) => {
-    const index = indices[i];
-    const reader = new FileReader();
-    reader.onload = function(e) {
-    processUploadedImage(e.target.result, index);
-    };
-    reader.readAsDataURL(file);
+        const files = event.target.files;
+        if (files.length === 0) return;
+
+        // Calculate remaining slots
+        const remaining = maxPhotos - capturedPhotos.length;
+        if (remaining <= 0) {
+            alert("Maximum photos reached.");
+            return;
+        }
+        
+        // Limit to 4 photos max
+        const selectedFiles = Array.from(files).slice(0, maxPhotos);
+        const startIndex = capturedPhotos.length;
+        const indices = Array.from({ length: selectedFiles.length }, (_, i) => startIndex + i);
+        
+        
+        // Clear existing photos
+        capturedPhotos = [];
+        
+        // Clear preview area
+        const previewArea = document.getElementById("upload-preview");
+        previewArea.innerHTML = "";
+        
+        // Process each selected file
+        selectedFiles.forEach((file, i) => {
+            const index = indices[i];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                processUploadedImage(e.target.result, index);
+            };
+            reader.readAsDataURL(file);
+        });
     });
-    });
-    
     
     // Function to process the uploaded image
     function processUploadedImage(dataUrl, index) {
