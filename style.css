@@ -1207,26 +1207,21 @@ button:hover .arrow:before {
             justify-content: center;
         }
         #captureBtn {
-            display: flex;
-            align-self: center;
+            display: block; /* Ensures it takes full width of the container */
+            margin: auto; /* Centers it horizontally */
             background-color: #000000;
             color: white;
             border: none;
-            padding: 25px;
+            padding: 15px 20px; /* Better padding */
             text-align: center;
-            justify-content: center;
             border-radius: 8px;
             font-family: sans-serif;
             font-size: 13px;
             cursor: pointer;
             transition: all 0.3s ease;
-            height: 10px;
-            width: 10rem;
-            margin-bottom: 1rem;
-            position: relative;
-            top: 0;
-            left: 250px;
+            width: 10rem; /* Fixed width */
         }
+        
         
         
         #captureBtn:hover {
@@ -1308,7 +1303,7 @@ button:hover .arrow:before {
     object-fit: cover;
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
-    background-color: #f0f0f0;
+
 }
         /* Navigation button */
 
@@ -1451,6 +1446,9 @@ button:hover .arrow:before {
     display: inline-block;
     margin-bottom: 10px;
 }
+/* contact form */
+
+
 
 /* ========== Reset All Button Styles ========== */
 
