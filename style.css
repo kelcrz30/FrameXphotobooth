@@ -40,7 +40,7 @@ html, body {
     width: 100%;
     margin: 0;
     padding: 0;
-    overflow-y: hidden !important;
+    overflow-y: hidden !important; /* Disable vertical scrolling globally */
     font-family: "Poppins", sans-serif;
     background: #f5f5f5; /* Light gray background */
 }
@@ -138,7 +138,7 @@ body {
     align-items: center;
     gap: 1rem;
     margin-top: 2rem;
-    margin-bottom: 25rem;
+    margin-bottom: 2rem;
     z-index: 10;
 }
 
@@ -237,7 +237,7 @@ body {
     display: flex;
     flex-direction: center;
     text-align: center;
-    margin-top: 450px;
+
     justify-content: center;
     margin-bottom: 1rem; /* Add some space below the title */
     align-items: center;
@@ -657,14 +657,13 @@ button:hover .arrow:before {
 @media (max-width: 1024px) {
     .title {
         position: relative;
-        top: 150px;
         font-size: 130px;
-        margin-top: 20rem;
+        margin-top: 50rem;
         margin-bottom: 2rem;
     }
     .description{
         position: relative;
-        top: 30px;
+        bottom: 35px;
         margin-bottom: 2rem;
     }
     .logo{
@@ -675,7 +674,7 @@ button:hover .arrow:before {
     }
     .button-container{
         position: relative;
-        top: 80px;
+        top: 40px;
     }
 
     .carousel-container{
@@ -730,22 +729,18 @@ button:hover .arrow:before {
         align-items: center;
         justify-content: center;
         padding: 20px;
-        margin-bottom: 650px;
+
     }
 
     .title {
         position: relative;
-        margin-top: 200px; /* Use margin instead of top */
         font-size: clamp(7rem, 4vw, 40px); /* Responsive font size */
-        margin-top: 4rem;
-        margin-bottom: 0;
         padding: 10px;
         text-align: center; /* Center the title */
+        margin-top: 10rem;
     }
     .description{
         position: relative;
-        top: 100px;
-        margin-bottom: 3rem;
     }
     .bottom-section {
         width: 100%;
@@ -754,8 +749,9 @@ button:hover .arrow:before {
         align-items: center;
         justify-content: center;
         padding: 20px;
-        margin-bottom: 400px;
+        margin-bottom: 50px;
     }
+    
     /* Button Styling */
     button {
         position: relative;
@@ -764,15 +760,14 @@ button:hover .arrow:before {
     }
     .button-container{
         position: relative;
-        top: 100px;
+        top: 40px;
     }
 }
 
 
 @media screen and (max-width: 480px) {
-    body {
-        overflow-x: hidden; /* Prevent horizontal scroll */
-        overflow-y: auto;   /* Allow vertical scrolling */
+    html, body {
+        overflow-y: auto !important; /* Enable vertical scrolling on phones */
     }
 
     .container {
@@ -780,7 +775,7 @@ button:hover .arrow:before {
         top: 0;
         left: 0;
         width: 100%;
-        height: auto; /* Update to auto to accommodate content height */
+        height: auto; /* Accommodate content height */
         display: flex;
         flex-direction: column;
     }
@@ -791,24 +786,18 @@ button:hover .arrow:before {
         font-size: 15px;
         left: 20px;
     }
-
-    /* Title Styling */
-    .title {
+.title {
         position: relative;
-        margin-top: 150px;
         font-size: clamp(5rem, 4vw, 40px); /* Responsive font size */
-        margin-top: 4rem;
-        margin-bottom: 1rem;
         padding: 10px;
         text-align: center; /* Center the title */
+        margin-top: 10rem;
     }
+    /* Title Styling */
+    
 
     /* Description Styling */
-    .description {
-        position: relative;
-        top: 50px;
-        text-align: center; /* Center the description */
-    }
+    
 
     /* Bottom Section Layout */
     .bottom-section {
@@ -817,8 +806,8 @@ button:hover .arrow:before {
         flex-direction: row;
         align-items: center;
         justify-content: center;
-        margin-bottom: 400px;
-        height: auto;
+        padding: 20px;
+        margin-bottom: 50px;
     }
     /* Button Styling */
     button {
@@ -838,22 +827,11 @@ button:hover .arrow:before {
 
     /* Carousel Container */
     .carousel-container {
-        position: relative;
-        margin-top: 10px;
-        width: 100%; /* Full width */
-        display: flex;
-        justify-content: center; /* Center carousel */
-        margin-bottom: 1rem;
+       margin-bottom: 2rem;
     }
 
     /* Content Container */
-    .content {
-        flex-grow: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
+
 
     /* Dark Mode Toggle */
     .toggle-switch {
@@ -882,21 +860,20 @@ button:hover .arrow:before {
 
 
 @media screen and (max-width: 375px) {
-    .logo{
-        margin-top: 2rem;
-        font-size: 15px;
-        left: 20px;
-    }
-    .bottom-section{
-        margin-bottom: 60vh;
-        position: relative;
-    }
+
+   
     .title {
         font-size: clamp(4rem, 4vw, 40px);
-        margin-top: 10rem;
+
         margin-bottom: 0;
         padding: 10px;
+        position: relative;
+        margin-top: 35rem;
+        margin-bottom: 1rem;
+        padding: 10px;
+        text-align: center; /* Center the title */
     }
+    
     .carousel-container{
         height: 300px;
         width: 500px;
