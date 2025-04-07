@@ -770,14 +770,9 @@ button:hover .arrow:before {
 
 
 @media screen and (max-width: 480px) {
-    body {
-        position: relative;
-        min-height: 100vh;
-        margin: 0;
-        padding: 0;
-    }
+
     .container {
-        position: absolute;
+        position: relative;
         top: 0;
         left: 0;
         width: 100%;
@@ -827,9 +822,14 @@ button:hover .arrow:before {
         padding: 15px 14px;
         font-size: 12px;
     }
-    .button-container{
+    .button-container {
         position: relative;
-        top: 100px;
+        top: 50px; /* Reduced from 100px */
+        margin-bottom: 20px; /* Reduced from 60px */
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
     }
 
     /* Carousel Container */
@@ -868,10 +868,11 @@ button:hover .arrow:before {
         text-decoration: none;
         font-size: 0.9rem;
     }
-    .footer-text{
-        font-size: 100px;
-        position: fixed;
+    .footer-text {
+        font-size: 12px; /* Changed from 100px which is way too large */
+        position: relative; /* Changed from fixed */
         text-align: center;
+        margin-top: 20px;
     }
 }
 
