@@ -709,7 +709,7 @@ button:hover .arrow:before {
     }
     .footer-text{
         font-size: 100px;
-        position: fixed;
+        position:relative;
         text-align: center;
         margin-top: 2rem;
     }
@@ -735,7 +735,7 @@ button:hover .arrow:before {
 
     .title {
         position: relative;
-        top: 200px; /* Adjust vertical positioning */
+        margin-top: 200px; /* Use margin instead of top */
         font-size: clamp(7rem, 4vw, 40px); /* Responsive font size */
         margin-top: 4rem;
         margin-bottom: 0;
@@ -770,14 +770,17 @@ button:hover .arrow:before {
 
 
 @media screen and (max-width: 480px) {
+    body {
+        overflow-x: hidden; /* Prevent horizontal scroll */
+        overflow-y: auto;   /* Allow vertical scrolling */
+    }
 
     .container {
-        overflow-y: scroll;
         position: relative;
         top: 0;
         left: 0;
         width: 100%;
-        height: 100%;
+        height: auto; /* Update to auto to accommodate content height */
         display: flex;
         flex-direction: column;
     }
@@ -792,7 +795,7 @@ button:hover .arrow:before {
     /* Title Styling */
     .title {
         position: relative;
-        top: 150px; /* Adjust vertical positioning */
+        margin-top: 150px;
         font-size: clamp(5rem, 4vw, 40px); /* Responsive font size */
         margin-top: 4rem;
         margin-bottom: 1rem;
@@ -873,7 +876,7 @@ button:hover .arrow:before {
         font-size: 12px; /* Changed from 100px which is way too large */
         position: relative; /* Changed from fixed */
         text-align: center;
-        margin-top: px;
+  
     }
 }
 
