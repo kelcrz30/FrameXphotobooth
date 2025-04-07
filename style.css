@@ -817,8 +817,8 @@ button:hover .arrow:before {
         flex-direction: row;
         align-items: center;
         justify-content: center;
-        padding: 20px;
         margin-bottom: 400px;
+        height: auto;
     }
     /* Button Styling */
     button {
@@ -828,7 +828,7 @@ button:hover .arrow:before {
     }
     .button-container {
         position: relative;
-        top: 50px; /* Reduced from 100px */
+        margin-top: 10px;
         margin-bottom: 20px; /* Reduced from 60px */
         width: 100%;
         display: flex;
@@ -839,11 +839,11 @@ button:hover .arrow:before {
     /* Carousel Container */
     .carousel-container {
         position: relative;
-        top: 80px;
+        margin-top: 10px;
         width: 100%; /* Full width */
         display: flex;
         justify-content: center; /* Center carousel */
-        margin-bottom: 4rem;
+        margin-bottom: 1rem;
     }
 
     /* Content Container */
