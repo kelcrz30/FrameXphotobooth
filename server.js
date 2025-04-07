@@ -52,11 +52,10 @@ const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS  // Use an App Password if you have 2FA enabled
+    pass: process.env.EMAIL_PASS
   },
-  tls: {
-    rejectUnauthorized: false  // Try this for debugging only, remove in production
-  }
+  secure: true, // Use SSL
+  port: 465 // Gmail's secure SMTP port
 });
 
 // Validation middleware
@@ -80,6 +79,7 @@ const validateContactForm = (req, res, next) => {
 };
 
 // Contact form endpoint
+// Contact form endpoint
 app.post('/api/contact', validateContactForm, async (req, res) => {
   try {
     const { name, email, message } = req.body;
@@ -92,6 +92,7 @@ app.post('/api/contact', validateContactForm, async (req, res) => {
     });
     
     await newMessage.save();
+    console.log('Message saved to MongoDB');
     
     // 2. Send email notification
     const mailOptions = {
@@ -105,16 +106,19 @@ app.post('/api/contact', validateContactForm, async (req, res) => {
       `
     };
     
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.error('Email error details:', error);
-        // Log more information about the error
-      } else {
-        console.log('Email sent:', info.response);
-      }
-    });
-    
-    res.status(200).json({ message: 'Your message has been received!' });
+    // Using Promise-based approach for better error handling
+    try {
+      const info = await transporter.sendMail(mailOptions);
+      console.log('Email sent successfully:', info.response);
+      res.status(200).json({ message: 'Your message has been saved and email notification sent!' });
+    } catch (emailError) {
+      console.error('Failed to send email:', emailError);
+      // Still return success since we saved to DB, but note the email issue
+      res.status(200).json({ 
+        message: 'Your message has been saved but email notification failed',
+        emailError: emailError.message
+      });
+    }
     
   } catch (error) {
     console.error('Server error:', error);

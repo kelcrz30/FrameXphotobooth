@@ -48,7 +48,6 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
 }
 @keyframes float-frames {
     0% {
@@ -138,7 +137,7 @@ body {
     flex-direction: row;
     align-items: center;
     gap: 1rem;
-    margin-top: 10rem;
+    margin-top: 2rem;
     margin-bottom: 25rem;
     z-index: 10;
 }
@@ -218,19 +217,16 @@ body {
 }
 
 .content {
-    position: relative; 
-    bottom: auto; 
-    left: auto; 
-    width: 90%;
-    max-width: 1200px;
-    margin: 0 auto;
-    z-index: 5;
-    animation: fadeIn 1s ease-in;
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    top: 2rem;
+    justify-content: center;
+    width: 100%;
+    z-index: 5;
+    animation: fadeIn 1s ease-in;
 }
+
 
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
@@ -241,14 +237,15 @@ body {
     display: flex;
     flex-direction: center;
     text-align: center;
-    margin-top: 350px;
+    margin-top: 450px;
     justify-content: center;
+    margin-bottom: 1rem; /* Add some space below the title */
     align-items: center;
     animation: slideIn 1.2s ease-out;
     font-family: Almost;
-    margin-bottom: 0;
+    position: relative; /* Ensure relative positioning */
+    margin-bottom: 30px; /* Make space for description below */
 }
-
 @keyframes slideIn {
     from { transform: translateX(-40px); opacity: 0; }
     to { transform: translateX(0); opacity: 1; }
@@ -263,10 +260,12 @@ body {
     width: 100%;
     max-width: 100%;
     overflow: hidden; 
-    /* Replace animation */
+    position: relative; /* Ensure proper stacking */
     animation: fadeIn 1s ease-out;
     position: relative;
     top: 90px;
+    display: block; /* Ensure block display */
+    z-index: 1; /* Keep title at base layer */
 }
 .footer-text{
     position: relative;
@@ -283,15 +282,26 @@ body {
 
 
 .description {
-    font-size: 15px;
-    width: 100%;
+    position: relative; 
+    top: auto; /* Remove any top positioning */
+    left: auto; 
+    transform: none; 
+    margin-top: 50px; 
+    margin-bottom: 5px; /* Add space between description and button */
     text-align: center;
-    font-family: almost;
-    position: fixed;
-    top: 400px;
-
-    
-    animation: fadeInUp 1.5s ease-in 0.5s both;
+    width: 100%;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    z-index: 2; /* Ensure it's above the title */
+    padding: 5px 10px; /* Add some padding */
+    border-radius: 4px; /* Optional: rounded corners */
+}
+.description p {
+    margin: 0 !important;
+    padding: 0 !important;
+    color: #000 !important;
+    font-weight: bold !important;
 }
 
 @keyframes fadeInUp {
@@ -517,7 +527,7 @@ button {
 
 .button-container {
     position: absolute;
-    top: 52%;
+    top: 60%;
     left: 50%;
     transform: translate(-50%, -50%);
     display: flex;
@@ -529,7 +539,7 @@ button {
    
 }
 
-/* Ensure button adapts to screen sizes */
+/* ready button */
 button {
     --primary-color: #000;
     --secondary-color: #fff;
@@ -548,10 +558,8 @@ button {
     gap: 0.6em;
     font-weight: bold;
     cursor: pointer;
-
     animation: pulse 2s infinite;
 }
-
 
 .cssbuttons-io-button{
     position: relative;
@@ -614,7 +622,7 @@ button:hover .arrow:before {
     overflow: hidden;
     position: relative;
     height: 300px; /* Adjust as needed */
-    top: 250px;
+    top: 150px;
 }
 
 .carousel {
@@ -652,10 +660,12 @@ button:hover .arrow:before {
         top: 150px;
         font-size: 130px;
         margin-top: 20rem;
+        margin-bottom: 2rem;
     }
     .description{
         position: relative;
-        top: 150px;
+        top: 30px;
+        margin-bottom: 2rem;
     }
     .logo{
         margin-top: 2rem;
@@ -665,10 +675,44 @@ button:hover .arrow:before {
     }
     .button-container{
         position: relative;
-        top: 250px;
+        top: 80px;
     }
 
-    
+    .carousel-container{
+        position: relative;
+        top: 40px;
+        margin-bottom: 2rem;
+        
+    }
+    .bottom-section {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        position: relative;
+        bottom: 150px;
+
+    }
+    .about-section {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+
+    }
+
+    .about-section a {
+        
+        text-decoration: none;
+        font-size: 0.9rem;
+    }
+    .footer-text{
+        font-size: 100px;
+        position: fixed;
+        text-align: center;
+        margin-top: 2rem;
+    }
     .content {
         bottom: 150px;
     }
@@ -678,15 +722,7 @@ button:hover .arrow:before {
 
 
 @media screen and (max-width: 768px) {
-    body {
-        overflow: auto; /* Enable scrolling */
-        -webkit-overflow-scrolling: touch; /* Smooth scrolling for iOS */
-    }
-    .logo{
-        margin-top: 1rem;
-        font-size: 15px;
-        left: 20px;
-    }
+
     .bottom-section {
         width: 100%;
         display: flex;
@@ -708,35 +744,27 @@ button:hover .arrow:before {
     }
     .description{
         position: relative;
-        top: 180px;
+        top: 100px;
+        margin-bottom: 3rem;
     }
-    .toggle-switch{
-        right: 10px;
+    .bottom-section {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        margin-bottom: 400px;
+    }
+    /* Button Styling */
+    button {
+        position: relative;
+        padding: 15px 14px;
+        font-size: 12px;
     }
     .button-container{
         position: relative;
-        top: 230px;
-        border-radius: 20px;
-    }
-    .content {
-        bottom: 80px; /* Reduced bottom margin */
-        left: 10px; /* Less left margin */
-        width: calc(100% - 20px); /* Account for margins */
-    }
-    
-    
-    .description {
-        max-width: 90%;
-        text-align: center;
-        justify-content: center;
-        margin: auto;
-        font-size: 14px;
-    }
-
-    button {
-        padding: 10px 16px;
-        font-size: 14px;
-        border-radius: 6px;
+        top: 100px;
     }
 }
 
@@ -768,10 +796,10 @@ button:hover .arrow:before {
     /* Title Styling */
     .title {
         position: relative;
-        top: 200px; /* Adjust vertical positioning */
+        top: 150px; /* Adjust vertical positioning */
         font-size: clamp(5rem, 4vw, 40px); /* Responsive font size */
         margin-top: 4rem;
-        margin-bottom: 0;
+        margin-bottom: 1rem;
         padding: 10px;
         text-align: center; /* Center the title */
     }
@@ -779,9 +807,8 @@ button:hover .arrow:before {
     /* Description Styling */
     .description {
         position: relative;
-        top: 190px;
+        top: 50px;
         text-align: center; /* Center the description */
-        padding-top: 1px;
     }
 
     /* Bottom Section Layout */
@@ -792,7 +819,7 @@ button:hover .arrow:before {
         align-items: center;
         justify-content: center;
         padding: 20px;
-        margin-bottom: 650px;
+        margin-bottom: 400px;
     }
     /* Button Styling */
     button {
@@ -802,16 +829,17 @@ button:hover .arrow:before {
     }
     .button-container{
         position: relative;
-        top: 280px;
+        top: 100px;
     }
 
     /* Carousel Container */
     .carousel-container {
         position: relative;
-        top: 310px;
+        top: 80px;
         width: 100%; /* Full width */
         display: flex;
         justify-content: center; /* Center carousel */
+        margin-bottom: 4rem;
     }
 
     /* Content Container */
