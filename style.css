@@ -772,6 +772,7 @@ button:hover .arrow:before {
 @media screen and (max-width: 480px) {
 
     .container {
+        overflow-y: scroll;
         position: relative;
         top: 0;
         left: 0;
@@ -872,7 +873,7 @@ button:hover .arrow:before {
         font-size: 12px; /* Changed from 100px which is way too large */
         position: relative; /* Changed from fixed */
         text-align: center;
-        margin-top: 20px;
+        margin-top: px;
     }
 }
 
