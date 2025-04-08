@@ -13,7 +13,7 @@ const finalCtx = finalCanvas ? finalCanvas.getContext("2d") : null; // Only if e
 const cameraSelect = document.getElementById("cameraSelect");
 let timerValue = parseInt(document.getElementById('timerSelect').value);
 let countdownDisplay = document.getElementById('countdownDisplay');
-const filterSelect = document.getElementById("filterSelect"); // This is now the button
+const filterSelect = document.getElementById("filterSelect"); 
 const brightnessSlider = document.getElementById("brightness");
 const contrastSlider = document.getElementById("contrast");
 const mirrorToggle = document.getElementById("mirrorToggle");
@@ -144,8 +144,6 @@ async function startCamera(deviceId = null) {
         console.log("Camera started successfully with stream:", stream);
     } catch (error) {
         console.error("Error accessing the camera:", error);
-        
-        // Detailed iOS error handling
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         if (isIOS) {
             console.error("iOS specific camera error:", error.name, error.message);
@@ -164,9 +162,6 @@ async function startCamera(deviceId = null) {
         }
     }
 }
-
-  
-  // Create a file input element
   const fileInput = document.createElement("input");
   fileInput.type = "file";
   fileInput.multiple = true;
@@ -175,34 +170,24 @@ async function startCamera(deviceId = null) {
   fileInput.id = "photoFileInput";
   document.body.appendChild(fileInput);
   
-  // Function to handle the upload button click
   function handleUploadBtnClick() {
     const photoFileInput = document.getElementById("photoFileInput");
     const uploadBtn = document.getElementById("uploadBtn");
     const videoElement = document.getElementById("video");
 
     if (!isUploadMode) {
-        // Switch to upload mode
         isUploadMode = true;
         videoElement.style.display = "none";
         uploadBtn.textContent = "Switch to Camera";
-
-        // Open file dialog
         photoFileInput.click();
         
-        // Add the "Select More" button
+
     } else {
-        // Switching back to camera mode
         isUploadMode = false;
         videoElement.style.display = "block";
         uploadBtn.textContent = "Upload Photo";
-
-        // Remove the "Select More" button
-        
     }
-  }
-
-  // Handle file selection
+  } 
    function handleUploadBtnClick() {
     const photoFileInput = document.getElementById("photoFileInput");
     const videoElement = document.getElementById("video");
@@ -1255,11 +1240,6 @@ if (captureBtn) {
     console.error("Capture button not found!");
 }
 
-mirrorToggle.addEventListener("change", () => {
-    const isChecked = mirrorToggle.checked;
-    video.style.transform = isChecked ? "scaleX(-1)" : "scaleX(1)"; // Toggle mirroring
-    console.log("Mirror state toggled:", isChecked); // Debugging
-});
 
 // 🎥 Populate Camera Selection Dropdown
 async function getCameras() {

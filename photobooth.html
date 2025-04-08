@@ -130,7 +130,53 @@
 
     <script>
         
-        
+        document.addEventListener("DOMContentLoaded", () => {
+    setupFilterDropdown();
+});
+
+function setupFilterDropdown() {
+    const filterSelect = document.getElementById("filterSelect");
+    if (!filterSelect) {
+        console.warn("Filter button not found");
+        return;
+    }
+
+    const dropdown = document.createElement('div');
+    dropdown.id = 'filterDropdown';
+    dropdown.style.position = 'absolute';
+    dropdown.style.display = 'none';
+    dropdown.style.background = '#fff';
+    dropdown.style.border = '1px solid #ccc';
+    dropdown.style.padding = '5px';
+    dropdown.style.zIndex = '1000';
+
+    const filters = ['None', 'Grayscale', 'Sepia', 'Invert'];
+    filters.forEach(filter => {
+        const option = document.createElement('div');
+        option.textContent = filter;
+        option.style.cursor = 'pointer';
+        option.onclick = () => {
+            console.log("Filter selected:", filter);
+            dropdown.style.display = 'none';
+            // Apply filter logic here
+        };
+        dropdown.appendChild(option);
+    });
+
+    document.body.appendChild(dropdown);
+
+    filterSelect.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const rect = filterSelect.getBoundingClientRect();
+        dropdown.style.top = `${rect.bottom + window.scrollY}px`;
+        dropdown.style.left = `${rect.left + window.scrollX}px`;
+        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+    });
+
+    document.addEventListener('click', () => {
+        dropdown.style.display = 'none';
+    });
+}
         function switchTab(tabName) {
     // Hide all tab contents
     document.getElementById('cameraTabContent').style.display = 'none';
@@ -207,7 +253,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Make sure the upload button is properly initialized
     const uploadBtn = document.getElementById('uploadBtn');
     if (!uploadBtn) {
-        console.error('Upload button not found! Creating it now...');
+
         
         // Create the upload button if it doesn't exist
         const uploadBtn = document.createElement('button');
