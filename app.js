@@ -164,17 +164,7 @@ async function startCamera(deviceId = null) {
         }
     }
 }
-if (!document.getElementById("uploadBtn")) {
-    // Create the button if it doesn't exist
-    const uploadBtn = document.createElement("button");
-    uploadBtn.id = "uploadBtn";
-    uploadBtn.className = "control-btn";
-    uploadBtn.textContent = "Upload Photo";
-    
-    // Insert it near other controls
-    const controlsContainer = document.querySelector(".camera-controls") || document.body;
-    controlsContainer.appendChild(uploadBtn);
-  }
+
   
   // Create a file input element
   const fileInput = document.createElement("input");

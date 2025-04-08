@@ -17,19 +17,20 @@
         <main class="content-container">
             
             
-            <!-- Tab buttons -->
-              <div class="tab-container">
+            <div class="tab-container">
                 <div class="tab-buttons">
                   <button class="tab-button active" id="cameraTab" onclick="switchTab('camera')">Camera</button>
                   <button class="tab-button" id="uploadTab" onclick="switchTab('upload')">Upload</button>
                   </div>
                 </div>
+              
                 
             
             <div class="left-section">
+                
                 <div class="video-container" id="cameraTabContent">
                     <div id="countdownText"></div>  <!-- Move this inside video-container -->
-                    <label for="cameraSelect">Select Camera:</label>
+                    <label class="select-camera" for="cameraSelect">Select Camera:</label>
                     <select id="cameraSelect"></select>
                     <video id="video" playsinline="true" autoplay muted webkit-playsinline="true" style="width: 100%; height: auto; background: #000;"></video>
                 </div>
@@ -80,7 +81,7 @@
                             </button>
                         </div>
                         
-                    <label for="timerSelect" style="font-family: Arial, sans-serif;">Timer:</label>
+                    <label class="selectTimer" for="timerSelect" style="font-family: Arial, sans-serif;">Timer:</label>
                     <select id="timerSelect">
                         <option value="0">No Timer</option>
                         <option value="3">3s</option>
@@ -121,11 +122,7 @@
             </div>
         </main>
         
-        <footer>
-            <h3 class="footer-text">
-                MADE WITH LOVE © 2025 BY NYKEL DAVE VILLEGGAS
-            </h3>
-        </footer>
+
     </div>
 
     <script src="darkmode.js"></script>
@@ -147,19 +144,13 @@
         
         // Show camera controls
         if (controls) controls.style.display = 'block';
-        
-        // Reset video element display
+
         const videoElement = document.getElementById('video');
         if (videoElement) {
             videoElement.style.display = 'block';
         }
-        
-        // Make sure the upload button is visible in camera tab
         const uploadBtn = document.getElementById('uploadBtn');
-        if (uploadBtn) {
-            uploadBtn.style.display = 'block';
-            uploadBtn.textContent = 'Upload Photo';
-        }
+        
         
         // Reset upload mode if needed
         if (typeof isUploadMode !== 'undefined') {

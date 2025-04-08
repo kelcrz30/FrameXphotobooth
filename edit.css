@@ -1,14 +1,20 @@
+body.dark-mode {
+    background-color: black;
+    color: white;
+  }
 .editpage {
     background-color: #f0f0f0;
     font-family: 'League Spartan', sans-serif;
     padding: 20px;
 }
+
 .edit-container {
     max-width: 1000px;
     margin: 0 auto;
     padding: 10px;
     gap: 100px;
 }
+
 
 .edit-container h1 {
     font-family: 'Koulen', sans-serif;
@@ -17,7 +23,9 @@
     color: #000000;
     font-size: 2rem; /* Slightly larger heading */
 }
-
+.dark-mode .edit-container h1 {
+   color: rgb(255, 255, 255);
+}
 .edit-layout {
     display: flex;
     flex-wrap: wrap;
@@ -232,6 +240,9 @@
 .footer-text {
     font-size: 14px;
     opacity: 0.7;
+}
+.dark-mode span{
+    color: black;
 }
 @media (max-width: 1200px) {
     .edit-layout {

@@ -40,7 +40,7 @@ html, body {
     width: 100%;
     margin: 0;
     padding: 0;
-    overflow-y: hidden !important; /* Disable vertical scrolling globally */
+    overflow-y: auto !important; 
     font-family: "Poppins", sans-serif;
     background: #f5f5f5; /* Light gray background */
 }
@@ -171,8 +171,12 @@ body {
     display: none; /* Initially hide the slider */
     width: 150px;
     margin-left: 10px;
+    color: black;
 }
-
+.dark-mode .brightness{
+    color: black;
+    background-color: black;
+}
 .icon-container {
     display: flex;
     align-items: center;
@@ -766,9 +770,7 @@ button:hover .arrow:before {
 
 
 @media screen and (max-width: 480px) {
-    html, body {
-        overflow-y: auto !important; /* Enable vertical scrolling on phones */
-    }
+
 
     .container {
         position: relative;
@@ -807,15 +809,19 @@ button:hover .arrow:before {
     /* Button Styling */
     .button-container {
         position: relative;
-        margin-bottom: 20px; /* Reduced from 60px */
+        margin-bottom: 40px; /* Reduced from 60px */
         width: 100%;
         display: flex;
         justify-content: center;
         gap: 10px;
     }
+    #myButton{
+        position: relative;
+        bottom: 40px;
+    }
     .carousel-container {
        position: relative;
-       top: -20px;
+       top: -45px;
     }
 
     /* Content Container */
@@ -887,7 +893,97 @@ button:hover .arrow:before {
     50% { transform: translateY(-20px); opacity: 1; }
     100% { transform: translateY(0px); opacity: 0.8; }
 }
+/* Landscape-specific styles */
+@media screen and (orientation: landscape) and (max-height: 768px) {
+    .container {
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+    
+    .title {
+        font-size: clamp(5rem, 15vw, 8rem);
+        margin-top: 2rem;
+        top: 0;
+    }
+    
+    .description {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .button-container {
+        position: relative;
+        top: 0;
+        margin: 1rem 0;
+    }
+    
+    .carousel-container {
+        height: 200px;
+        top: 0;
+        margin: 1rem 0;
+    }
+    
+    .bottom-section {
+        position: relative;
+        bottom: 0;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .footer-text {
+        font-size: 0.8rem;
+        margin-top: 1rem;
+    }
+    
+    /* Adjust floating frames for landscape */
+    .floating-frame {
+        width: 80px !important;
+        height: 100px !important;
+        animation-duration: 6s !important;
+    }
+}
 
+/* For very small landscape screens (like mobile landscape) */
+@media screen and (orientation: landscape) and (max-height: 500px) {
+    .title {
+        font-size: clamp(8rem, 10vw, 5rem);
+        margin-top: 30rem;
+    }
+    
+    .description {
+        position: relative;
+        bottom: 80px;
+        font-size: 0.9rem;
+    }
+    
+    .carousel-container {
+        height: 150px;
+        position: relative;
+        top: -40px;
+    }
+    
+    button {
+        padding: 0.8em 1.2em;
+        font-size: 0.9rem;
+        position: relative;
+    }
+    
+    .bottom-section {
+        position: relative;
+        gap: 0.5rem;
+        top: -70px;
+    }
+    
+
+    .about-section a {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+    
+    .footer-text {
+        font-size: 0.7rem;
+    }
+}
 /* Responsive Styles */
 
 /*PAGE 1 END*/
@@ -1051,23 +1147,32 @@ button:hover .arrow:before {
         padding: 1rem 0;
     }
     
+    
     .instruction-text p {
         font-size: 0.9rem;
     }
 }
-
-/* Mobile Landscape */
-@media screen and (max-height: 500px) and (orientation: landscape) {
+@media screen and (orientation: landscape) and (max-height: 500px) {
     .element-text {
-        min-height: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 10vh;
         padding: 1rem;
+        margin-top: 20rem;
+        margin-bottom: 20rem;
+        max-height: 10px;
     }
-    
-    .instruction-text {
-        margin: 1rem auto;
-        padding: 1.5rem;
+    h1{
+        padding-top: 4rem;
+    }
+    .instruction-text{
+        font-size: 16px  ;
     }
 }
+
+
 
 
 /* PHOTOBOOTH PAGE*/
@@ -1213,6 +1318,7 @@ button:hover .arrow:before {
             cursor: pointer;
             transition: all 0.3s ease;
             width: 10rem; /* Fixed width */
+            margin-bottom: 1rem;
         }
         
         
@@ -1257,6 +1363,10 @@ button:hover .arrow:before {
             padding: 0.5rem;
             border-radius: 4px;
             background-color: #f5f5f5;
+            margin-top: 2rem;
+        }
+        .dark-mode #counterText{
+            background-color: black;
         }
         
         /* Right section - Photo stack */
@@ -1304,7 +1414,7 @@ button:hover .arrow:before {
             position: relative;
             right: 10px;
             text-decoration: none;
-            bottom: 80px;            
+            margin-bottom: 10rem;         
         }
         /* Footer */
         footer {
@@ -1370,18 +1480,21 @@ button:hover .arrow:before {
             align-items: center;
         }
         
-        /* Styling for both brightness and contrast sliders */
         #brightness, #contrast {
             position: absolute;
-            top: 100%; /* Position below the icon */
+            top: 100%; 
             left: 50%;
             transform: translateX(-50%);
             width: 80px;
-            margin-top: 5px; /* Space below the icon */
+            margin-top: 5px; 
             z-index: 10;
-            display: none; /* Hidden by default */
+            display: none; 
         }
-       /* Default styles for larger screens */
+        .dark-mode  #brightness #contrast{
+            background-color: black;
+            color: black;
+        }
+
 .tab-container {
     max-width: 100%;
     margin: 0 auto;
@@ -1419,13 +1532,20 @@ button:hover .arrow:before {
 #timerSelect{
     border: 1px solid rgb(0, 0, 0);
 }
-
+.dark-mode .selectTimer{
+    color: black;
+}
+.dark-mode .icon-container{
+    color: black;
+}
 .tab-button.active {
     background-color: #000;
     color: white;
     border-radius: 30px;
+} 
+.dark-mode .select-camera{
+    color: rgb(255, 255, 255) !important;
 }
-
 .tab-button:not(.active) {
     background-color: transparent;
     color: rgb(0, 0, 0);
@@ -1576,20 +1696,25 @@ button:hover .arrow:before {
                
             }
             
+            
             #countdownText {
                 font-size: 5rem;
             }
             
         }
         
-        @media (max-width: 765px) {
-            #canvas1, #canvas2, #canvas3, #canvas4, #editorCanvas {
-                width: 100% !important;
+        @media (max-width: 768px) {
+            #canvas1, #canvas2, #canvas3, #canvas4{
+                width: 80% !important;
                 height: auto !important;
                 aspect-ratio: 12/9 !important;
                 object-fit: contain;
                 image-rendering: -webkit-optimize-contrast;
                 image-rendering: crisp-edges;
+            }
+            .tab-container{
+                margin-top: 1rem;
+                margin-bottom: 0;
             }
             .content-container {
                 flex-direction: column;
@@ -1613,6 +1738,8 @@ button:hover .arrow:before {
                 flex-wrap: wrap;
                 justify-content: center;
                 overflow-y: visible;
+                position: relative;
+                bottom: 50px;
             }
             
             .photo-stack canvas {
@@ -1632,9 +1759,11 @@ button:hover .arrow:before {
             }
             
             #video {
-                
-                max-height: 100vh;
-             
+                aspect-ratio: 12/9;
+                object-fit: cover;
+                width: 100%;
+                height: auto;
+                max-height: 100vh !important; /* Slightly shorter on mobile */
             }
         }
         
@@ -1642,17 +1771,13 @@ button:hover .arrow:before {
             body, html {
                 overflow-x: hidden;
             }
-            #canvas1, 
-            #canvas2, 
-            #canvas3, 
-            #canvas4,
-            #editorCanvas {
-                height: 40vh !important;  /* Adjust this value as needed */
-                max-height: 300px;        /* Optional: set a maximum height */
-                object-fit: cover;
-                aspect-ratio: 12/9;       /* Changed from 1/1 to 16/9 */
+            #canvas1, #canvas2, #canvas3, #canvas4, #editorCanvas {
+                width: 100% !important;
+                height: auto !important;
+                aspect-ratio: 12/9 !important;
+                max-height: none;
             }
-        }
+        
             
             .content-container {
                 padding: 1.5rem;
@@ -1694,7 +1819,7 @@ button:hover .arrow:before {
                 bottom: 0;
                 font-size: 10px;
             }
-        
+        }
         
         @media (max-width: 480px) {
             #canvas1, #canvas2, #canvas3, #canvas4, #editorCanvas {
@@ -1730,7 +1855,7 @@ button:hover .arrow:before {
             .nextbtn{
                 position: relative;
                 align-items: center;
-                right: 10rem;
+                right: 180px;
             }
             
             #video {
@@ -1788,3 +1913,76 @@ button:hover .arrow:before {
             }
         }
     } 
+    @media screen and (orientation: landscape) and (max-height: 768px) {
+        #canvas1, #canvas2, #canvas3, #canvas4{
+            width: 90% !important;
+            height: auto !important;
+            aspect-ratio: 12/9 !important;
+            object-fit: contain;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }
+        .tab-container{
+            margin-top: 1rem;
+            margin-bottom: 0;
+            position: static;
+            justify-content: center;
+            align-items: center;
+        }
+        .content-container {
+            flex-direction: column;
+            padding: 1rem;
+            gap: 1rem;
+            overflow-y: auto;
+            height: 3px;
+            aspect-ratio: 12/9;
+        }
+        
+        .left-section, .right-section {
+            min-width: 100%;
+            width: 100%;
+            max-height: none;
+            overflow-y: visible;
+        }
+        
+        .photo-stack {
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+            overflow-y: visible;
+            position: relative;
+            bottom: 50px;
+        }
+        
+        .photo-stack canvas {
+            width: 100%;
+           
+        }
+        #captureBtn {
+            font-size: 1rem;
+            padding: 20px;
+        }
+        .nextbtn{
+            position: relative;
+            right: 20rem;
+        }
+        #countdownText {
+            font-size: 4rem;
+        }
+        
+        #video {
+            aspect-ratio: 4/3;
+            max-height: 80vh;
+            width: auto;
+            max-width: 100%;
+            margin: 0 auto;
+          }
+    }
+    
+    
+    
+    /* For very small landscape screens (like mobile landscape) */
+    @media screen and (orientation: landscape) and (max-height: 500px) {
+       
+    }
