@@ -426,7 +426,7 @@ function toggleSlider(id) {
 }
 let currentFilter = "none"; // Track selected filter
 function setupFilterDropdown() {
-    console.log('Initializing dropdown...'); // Add this first line
+    console.log('Initializing dropdown...');
     const filterOptions = {
         "none": "No Filter",
         "grayscale(100%)": "B&W",
@@ -437,13 +437,13 @@ function setupFilterDropdown() {
         "saturate(2) brightness(1.1)": "Vivid"
     };
     
-
     const dropdown = document.createElement('div');
-    console.log('Dropdown element created:', dropdown); 
+    console.log('Dropdown element created:', dropdown);
+    
     dropdown.id = "filterDropdown";
     dropdown.className = "filter-dropdown";
     dropdown.style.display = "none";
-
+    
     Object.entries(filterOptions).forEach(([value, text]) => {
         const option = document.createElement('button');
         option.className = "filter-option";
@@ -451,15 +451,28 @@ function setupFilterDropdown() {
         option.dataset.filter = value;
         dropdown.appendChild(option);
     });
-
-    document.body.appendChild(dropdown);
-
+    
+    // Append dropdown to the filter-control container instead of body
+    document.querySelector('.filter-control').appendChild(dropdown);
+    
     // Toggle dropdown
+    const filterSelect = document.getElementById('filterSelect');
     filterSelect.addEventListener('click', (e) => {
         e.stopPropagation();
         dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        
+        // Position dropdown directly below button
+        positionDropdown();
     });
-
+    
+    // Position dropdown function
+    function positionDropdown() {
+        const buttonRect = filterSelect.getBoundingClientRect();
+        dropdown.style.top = buttonRect.height + 'px';
+        dropdown.style.left = '0';
+        dropdown.style.right = 'auto';
+    }
+    
     // Handle filter selection
     dropdown.addEventListener('click', (e) => {
         if (e.target.classList.contains('filter-option')) {
@@ -468,7 +481,7 @@ function setupFilterDropdown() {
             dropdown.style.display = 'none';
         }
     });
-
+    
     // Close dropdown when clicking outside
     document.addEventListener('click', (e) => {
         if (!filterSelect.contains(e.target) && !dropdown.contains(e.target)) {
@@ -483,8 +496,11 @@ function applyFilter(ctx, canvas, img) {
     const contrastValue = contrastSlider.value;
     let filterString = `brightness(${brightnessValue}%) contrast(${contrastValue}%)`;
     
-    // Clear canvas
+    ctx.filter = currentFilter; 
+    
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
     
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     
@@ -530,7 +546,8 @@ function applyFilter(ctx, canvas, img) {
         console.log("Applying filter to canvas:", filterString);
         
         ctx.filter = filterString;
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
     }
 }
 // Function to update video filter
@@ -540,7 +557,7 @@ function updateFilters() {
     const contrast = contrastSlider.value;
     
     // Update video display
-    video.style.filter = `brightness(${brightness}%) contrast(${contrast}%)`;
+    video.style.filter = `brightness(${brightness}%) contrast(${contrast}%) ${currentFilter}`;
     
     // Important: Update the currentFilter value to include brightness/contrast
     // Preserve any existing filter while adding brightness/contrast
@@ -557,7 +574,7 @@ function updateFilters() {
         filters.push(`contrast(${contrast}%)`);
         
         // Combine filters
-        currentFilter = filters.join(') ') + ')';
+        currentFilter = `brightness(${brightness}%) contrast(${contrast}%) ${filterSelect.value}`;
     }
     
     // Update any already captured photos with new filter
@@ -576,28 +593,21 @@ brightnessSlider.addEventListener("input", updateFilters);
 contrastSlider.addEventListener("input", updateFilters);
 function capturePhoto() {
     if (capturedPhotos.length < maxPhotos) {
-        // Get actual video dimensions
         const videoWidth = video.videoWidth;
         const videoHeight = video.videoHeight;
-
         const tempCanvas = document.createElement("canvas");
         const ctx = tempCanvas.getContext("2d");
-
-        // Set fixed 12:9 aspect ratio
-        tempCanvas.width = 1200;  // Width 12 units
-        tempCanvas.height = 900;  // Height 9 units
-
-        // Improved capture with high-quality settings
+        
+        tempCanvas.width = 1200; 
+        tempCanvas.height = 900; 
+        
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = 'high';
-
-        // Apply mirroring if needed
         if (isMirrored) {
             ctx.translate(tempCanvas.width, 0);
             ctx.scale(-1, 1);
         }
 
-        // Calculate scaling to properly fit video into 12:9 canvas without stretching
         const videoAspectRatio = videoWidth / videoHeight;
         const canvasAspectRatio = tempCanvas.width / tempCanvas.height;
         
@@ -1210,10 +1220,9 @@ window.addEventListener("load", () => {
             
             startButton.addEventListener('click', () => {
                 getCameras();
-                startButton.remove(); // Remove the button after starting
+                startButton.remove(); 
             });
         } else {
-            // For non-iOS devices, start immediately
             getCameras();
         }
     } else {
@@ -1223,7 +1232,6 @@ window.addEventListener("load", () => {
 
 function applyFilterToVideo(filter) {
     video.style.filter = filter;
-    // Update canvases when filter changes
     canvasList.forEach((canvas, index) => {
         if (canvas && capturedPhotos[index]) {
             const ctx = canvas.getContext("2d");

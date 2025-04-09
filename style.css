@@ -1303,6 +1303,7 @@ button:hover .arrow:before {
             padding-right: 10px;
             border-radius: 8px !important;
             justify-content: center;
+            
         }
         #captureBtn {
             display: block; /* Ensures it takes full width of the container */
@@ -1341,6 +1342,9 @@ button:hover .arrow:before {
             justify-content: center;
             gap: 1rem; /* Space between checkbox and dropdown */
             flex-wrap: wrap; /* Prevents overlap on smaller screens */
+            border-top: 2px solid #636262;  /* Darker gray */
+            margin-top: 1rem;
+            margin-bottom: 0;
         }
         #uploadBtn {
             display: none;
@@ -1413,9 +1417,10 @@ button:hover .arrow:before {
 
         .nextbtn{
             position: relative;
-            right: 10px;
+            right: 27px;
             text-decoration: none;
             margin-bottom: 10rem;         
+            
         }
         /* Footer */
         footer {
@@ -1638,16 +1643,16 @@ button:hover .arrow:before {
         }
         .filter-dropdown {
             position: absolute;
-            top: 500px;       /* Positions dropdown below parent */
-            right: 66%;         /* Aligns with left edge of parent */
-            background: #ffffff; /* Changed from black to white */
+            top: 100%;         /* Position right below the button */
+            left: 0;           /* Align with left edge of parent */
+            background: #ffffff;
             border: 1px solid #ddd;
             border-radius: 4px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             z-index: 1000;
-            margin-top: 8px;  /* Space between button and dropdown */
-            min-width: 500px; /* Minimum width */
-            display: none;    /* Hidden by default */
+            margin: 0;   /* Space between button and dropdown */
+            min-width: 100px;  /* Minimum width */
+            display: none;     /* Hidden by default */
         }
         
         .filter-option {
@@ -1730,6 +1735,7 @@ button:hover .arrow:before {
             }
             
             .left-section, .right-section {
+                
                 min-width: 100%;
                 width: 100%;
                 max-height: none;
@@ -1744,7 +1750,7 @@ button:hover .arrow:before {
                 position: relative;
                 bottom: 50px;
             }
-            
+       
             .photo-stack canvas {
                 width: 100%;
                
