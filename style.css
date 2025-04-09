@@ -1740,7 +1740,6 @@ button:hover .arrow:before {
                 justify-content: center;
                 align-items: center;
                 flex-wrap: wrap;
-                justify-content: center;
                 overflow-y: visible;
                 position: relative;
                 bottom: 50px;
@@ -1807,7 +1806,7 @@ button:hover .arrow:before {
             }
             .controls {
                 display: flex;
-                flex-direction: center;
+                flex-direction: row;
                 justify-content: center;
                 align-items: center;
                 gap: 0.8rem;
@@ -1818,7 +1817,7 @@ button:hover .arrow:before {
             
             #captureBtn {
                 font-size: 1rem;
-                padding: 20 10 20 10;
+                padding: 20px 10px;
                 align-self: center;
             }
             
@@ -1867,7 +1866,7 @@ button:hover .arrow:before {
             .nextbtn{
                 position: relative;
                 align-items: center;
-                right: 180px;
+                right: 9rem;
             }
             
             #video {
@@ -1918,13 +1917,13 @@ button:hover .arrow:before {
                 bottom: 50px;
                 right: 7rem;
             }          
-        @supports (-webkit-touch-callout: none) {
-            #video, #canvas1, #canvas2, #canvas3, #canvas4 {
-                -webkit-transform: scaleX(1);
-                transform: scaleX(1);
+            @supports (-webkit-touch-callout: none) {
+                #video, #canvas1, #canvas2, #canvas3, #canvas4 {
+                    -webkit-transform: scaleX(1);
+                    transform: scaleX(1);
+                }
             }
         }
-    } 
     @media screen and (orientation: landscape) and (max-height: 768px) {
         #canvas1, #canvas2, #canvas3, #canvas4{
             width: 90% !important;
@@ -1946,7 +1945,6 @@ button:hover .arrow:before {
             padding: 1rem;
             gap: 1rem;
 
-            height: 3px;
             aspect-ratio: 12/9;
         }
         

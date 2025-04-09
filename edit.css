@@ -244,6 +244,30 @@ body.dark-mode {
 .dark-mode span{
     color: black;
 }
+.color-picker h3{
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 4rem;
+}
+.color-picker span{
+    font-size: 10px;
+}
+.custom-color {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .pcr-button {
+    width: 80px !important;
+    height: 60px !important;
+    cursor: pointer !important;
+    margin-bottom: 7px;
+}
+#color-picker-trigger{
+   margin-bottom: 10rem !important;
+}
 @media (max-width: 1200px) {
     .edit-layout {
         flex-direction: column;

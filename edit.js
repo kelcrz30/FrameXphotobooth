@@ -73,6 +73,34 @@ window.addEventListener('load', () => {
     }
 });
 
+  const pickr = Pickr.create({
+    el: '#color-picker-trigger',
+    theme: 'classic', // or 'monolith', 'nano'
+    default: 'beige',
+
+    components: {
+      preview: true,
+      opacity: true,
+      hue: true,
+
+      interaction: {
+        hex: true,
+        rgba: true,
+        input: true,
+        clear: true,
+        save: true
+      }
+    }
+  });
+
+  pickr.on('save', (color) => {
+    const selectedColor = color.toHEXA().toString();
+    // Change this line to update the canvas background instead of .photo-strip
+    currentColor = selectedColor;
+    renderCanvas(); // Re-render canvas with the new background color
+    pickr.hide();
+  });
+
 
 async function drawSimplePhotos() {
     // Clear previous interval if exists
