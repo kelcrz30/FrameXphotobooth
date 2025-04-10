@@ -516,14 +516,12 @@ function downloadPhoto() {
                         title: 'My Framex Photo',
                         files: [file]
                     }).catch(err => {
-                        // Fallback if share fails
-                        alert("To save your photo: tap the image, then tap the share icon and select 'Save Image'");
+                        // Fallback if share fails - just open in new tab
                         window.open(dataURL);
                     });
                 });
         } else {
             // Fallback for iOS without sharing API
-            alert("To save your photo: tap and hold the image in the new tab, then select 'Save Image'");
             window.open(dataURL);
         }
         
