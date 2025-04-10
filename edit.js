@@ -490,11 +490,67 @@ function setBackgroundColor(color) {
 function downloadPhoto() {
     if (!editCanvas) return;
     
-    // Use PNG for highest quality
-    const link = document.createElement('a');
-    link.download = 'framex-photobooth.png';
-    link.href = editCanvas.toDataURL('image/png', 1.0);
-    link.click();
+    // Create data URL
+    const dataURL = editCanvas.toDataURL('image/png', 1.0);
+    
+    // Check if it's iOS or mobile Safari
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    
+    if (isIOS || isSafari) {
+        // For iOS devices, open image in new tab and show instructions
+        const newTab = window.open();
+        if (newTab) {
+            newTab.document.write(`
+                <html>
+                <head>
+                    <title>Save Your Photo</title>
+                    <meta name="viewport" content="width=device-width, initial-scale=1">
+                    <style>
+                        body { 
+                            font-family: Arial, sans-serif; 
+                            text-align: center; 
+                            margin: 0; 
+                            padding: 20px;  
+                            background: #f5f5f5;
+                        }
+                        img { 
+                            max-width: 100%; 
+                            margin-bottom: 20px; 
+                            border: 1px solid #ccc;
+                        }
+                        .instructions {
+                            background: #fff;
+                            border-radius: 8px;
+                            padding: 15px;
+                            margin-bottom: 20px;
+                            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                        }
+                        h2 { color: #333; }
+                        p { color: #666; line-height: 1.5; }
+                    </style>
+                </head>
+                <body>
+                    <div class="instructions">
+                        <h2>Save Your Photo</h2>
+                        <p>Touch and hold the image below, then tap "Save Image" or "Add to Photos"</p>
+                    </div>
+                    <img src="${dataURL}" alt="Your photo">
+                </body>
+                </html>
+            `);
+            newTab.document.close();
+        } else {
+            // If popup blocked, fallback to direct display
+            window.location.href = dataURL;
+        }
+    } else {
+        // For desktop browsers, use the download attribute
+        const link = document.createElement('a');
+        link.download = 'framex-photobooth.png';
+        link.href = dataURL;
+        link.click();
+    }
 }
 
 // Go back to photobooth
