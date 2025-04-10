@@ -490,52 +490,24 @@ function setBackgroundColor(color) {
 function downloadPhoto() {
     if (!editCanvas) return;
     
-    // Create high-quality PNG data URL
+    // Use PNG for highest quality
     const dataURL = editCanvas.toDataURL('image/png', 1.0);
     
-    // Check for iOS or Safari
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    // Check if running on iOS
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     
-    if (isIOS || isSafari) {
-        // For Safari, open the image in a new tab
-        window.open(dataURL, '_blank');
+    if (isIOS) {
+        // For iOS, open the image in a new tab
+        window.open(dataURL);
         
-        // Show a brief tooltip/message near the download button
-        const downloadBtn = document.getElementById('downloadBtn');
-        if (downloadBtn) {
-            const tooltip = document.createElement('div');
-            tooltip.textContent = "Image opened in new tab. Press and hold to save.";
-            tooltip.style.position = 'absolute';
-            tooltip.style.backgroundColor = 'rgba(0,0,0,0.8)';
-            tooltip.style.color = 'white';
-            tooltip.style.padding = '8px 12px';
-            tooltip.style.borderRadius = '5px';
-            tooltip.style.fontSize = '14px';
-            tooltip.style.zIndex = '1000';
-            tooltip.style.maxWidth = '250px';
-            tooltip.style.textAlign = 'center';
-            
-            // Position near the download button
-            const rect = downloadBtn.getBoundingClientRect();
-            tooltip.style.top = (rect.bottom + 10) + 'px';
-            tooltip.style.left = (rect.left + rect.width/2 - 125) + 'px'; // Center it
-            
-            document.body.appendChild(tooltip);
-            
-            // Remove tooltip after 5 seconds
-            setTimeout(() => {
-                document.body.removeChild(tooltip);
-            }, 5000);
-        }
+        // Show instructions to the user
+        alert("To save your photo: tap and hold the image, then select 'Save Image'");
     } else {
-        // For desktop browsers, use standard download approach
+        // For other platforms, use the download attribute
         const link = document.createElement('a');
         link.download = 'framex-photobooth.png';
         link.href = dataURL;
-        document.body.appendChild(link); // Needed for Firefox
         link.click();
-        document.body.removeChild(link);
     }
 }
 // Go back to photobooth
