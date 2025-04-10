@@ -490,21 +490,29 @@ function setupFilterDropdown() {
     });
 }
 
+// Replace video CSS filters with canvas-based processing
 function applyFilter(ctx, canvas, img) {
-    // Get current values
-    const brightnessValue = brightnessSlider.value;
-    const contrastValue = contrastSlider.value;
-    
-    // Always use the same filter application method
-    let filterString = `brightness(${brightnessValue}%) contrast(${contrastValue}%)`;
-    
-    if (currentFilter !== "none") {
-        filterString += " " + currentFilter;
-    }
+    // iOS compatible filter application
+    const brightness = brightnessSlider.value/100;
+    const contrast = contrastSlider.value/100;
     
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.filter = filterString;
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, 0, 0);
+    
+    // Manual brightness/contrast adjustment
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+    
+    for (let i = 0; i < data.length; i += 4) {
+        // Red
+        data[i] = ((data[i] - 128) * contrast + 128) * brightness;
+        // Green
+        data[i+1] = ((data[i+1] - 128) * contrast + 128) * brightness;
+        // Blue
+        data[i+2] = ((data[i+2] - 128) * contrast + 128) * brightness;
+    }
+    
+    ctx.putImageData(imageData, 0, 0);
 }
 document.addEventListener('DOMContentLoaded', function() {
     // Setup the dropdown filters properly
@@ -542,9 +550,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
-
-// Function to update video filter
-// Function to update video filter
+function handleCameraStart() {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    if (isIOS) {
+        // Show a permanent "Enable Camera" button
+        document.getElementById('ios-start-btn').style.display = 'block';
+    } else {
+        startCamera();
+    }
+}
 function updateFilters() {
     const brightness = brightnessSlider.value;
     const contrast = contrastSlider.value;

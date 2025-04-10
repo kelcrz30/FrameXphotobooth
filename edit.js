@@ -340,7 +340,7 @@ function drawPhotos() {
     photoData.forEach((photo, index) => {
         const img = new Image();
         img.crossOrigin = "Anonymous"; // Handle cross-origin issues
-        
+        img.src = photo;
 
         img.onload = function () {
             const aspectRatio = img.width / img.height;
@@ -386,7 +386,6 @@ function drawPhotos() {
                 drawFooter(); // Draw footer even if some photos fail
             }
         };
-        img.src = photo;
     });
     footerInterval = setTimeout(function() {
         if (loadedCount < totalPhotos) {
