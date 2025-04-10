@@ -491,60 +491,20 @@ function setupFilterDropdown() {
 }
 
 function applyFilter(ctx, canvas, img) {
-    // Get current values directly from the sliders
+    // Get current values
     const brightnessValue = brightnessSlider.value;
     const contrastValue = contrastSlider.value;
+    
+    // Always use the same filter application method
     let filterString = `brightness(${brightnessValue}%) contrast(${contrastValue}%)`;
     
-    // Clear canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    
-    if (isMobile) {
-        // Draw the image first without filters
-        ctx.filter = "none";
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        
-        try {
-            // Manual filter application for mobile
-            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            const data = imageData.data;
-            
-            // Apply brightness and contrast manually
-            const factor = contrastValue / 100;
-            const brightnessAdjust = brightnessValue / 100;
-            
-            for (let i = 0; i < data.length; i += 4) {
-                // Apply brightness
-                data[i] = Math.min(255, Math.max(0, data[i] * brightnessAdjust));
-                data[i + 1] = Math.min(255, Math.max(0, data[i + 1] * brightnessAdjust));
-                data[i + 2] = Math.min(255, Math.max(0, data[i + 2] * brightnessAdjust));
-                
-                // Apply contrast
-                data[i] = Math.min(255, Math.max(0, (((data[i] / 255) - 0.5) * factor + 0.5) * 255));
-                data[i + 1] = Math.min(255, Math.max(0, (((data[i + 1] / 255) - 0.5) * factor + 0.5) * 255));
-                data[i + 2] = Math.min(255, Math.max(0, (((data[i + 2] / 255) - 0.5) * factor + 0.5) * 255));
-            }
-            
-            ctx.putImageData(imageData, 0, 0);
-        } catch (error) {
-            console.error("Error applying filter manually:", error);
-        }
-    } else {
-        // For non-mobile, apply filters through canvas API
-        // Combine all filters
-        
-        // Add any other filter from dropdown if not "none"
-        if (currentFilter !== "none") {
-    filterString += " " + currentFilter;
-}
-        
-        console.log("Applying filter to canvas:", filterString);
-        
-        ctx.filter = filterString;
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    if (currentFilter !== "none") {
+        filterString += " " + currentFilter;
     }
+    
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.filter = filterString;
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 }
 document.addEventListener('DOMContentLoaded', function() {
     // Setup the dropdown filters properly
