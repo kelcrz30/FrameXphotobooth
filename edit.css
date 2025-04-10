@@ -77,7 +77,32 @@ body.dark-mode {
     color: #000000;
     border-bottom: 2px solid #eee;
     padding-bottom: 10px;
+    color: black;
 }
+.date-toggle-container {
+    margin: 15px 0;
+    padding: 8px;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    text-align: center;
+    margin-bottom: 80px;
+  }
+  
+  .toggle-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  
+  .toggle-text {
+    margin-left: 8px;
+    font-size: 14px;
+  }
+  
+  #dateToggle {
+    cursor: pointer;
+  }
 
 .background-options, .color-options {
     display: flex;

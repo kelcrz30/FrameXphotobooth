@@ -1854,12 +1854,8 @@ button:hover .arrow:before {
                 font-size: 3rem;
             }
             
-            
-            .content-container {
-                gap: 1rem;
-            }
             #captureBtn{
-                padding: 25px;
+                padding: 13px;
             }
             
             .controls {
@@ -1872,8 +1868,10 @@ button:hover .arrow:before {
             .nextbtn{
                 position: relative;
                 align-items: center;
+                bottom: 4rem;
                 right: 9rem;
             }
+            
             
             #video {
                 aspect-ratio: 12/9;

@@ -716,7 +716,18 @@ window.addEventListener('load', function() {
     } else {
         console.error("Background options not found");
     }
-    
+    const dateToggle = document.getElementById('dateToggle');
+    if (dateToggle) {
+        dateToggle.checked = showDate; // Set initial state
+        dateToggle.addEventListener('change', function() {
+            showDate = this.checked;
+            renderCanvas();
+            console.log("Date visibility toggled:", showDate);
+        });
+        console.log("Date toggle listener added");
+    } else {
+        console.error("Date toggle checkbox not found");
+    }
     // Background color selection
     if (colorOptions && colorOptions.length > 0) {
         console.log("Found", colorOptions.length, "color options");
@@ -764,6 +775,7 @@ window.addEventListener('load', function() {
     }
 });
 console.log("Canvas element exists:", document.getElementById('editCanvas') !== null);
+let showDate = true; // Default to showing the date
 function drawFooter() {
     if (!editCtx) return;
     
@@ -788,15 +800,23 @@ function drawFooter() {
     editCtx.fillStyle = brightness < 128 ? '#FFFFFF' : '#000000';
     
     // Set text properties for main text
-    editCtx.font = '500 50px poppins';
+    editCtx.font = '500 50px Raleway';
     editCtx.textAlign = 'center';
     editCtx.textBaseline = 'middle';
     
-    // Draw the main text
-    editCtx.fillText(`Framex ${dateString} ${timeString}`, editCanvas.width / 2, mainTextY);
+    // Draw the main text, with or without date based on showDate setting
+    if (showDate) {
+        editCtx.fillText(`Framex ${dateString} ${timeString}`, editCanvas.width / 2, mainTextY);
+    } else {
+        editCtx.fillText(`Framex Photobooth`, editCanvas.width / 2, mainTextY);
+    }
     
     editCtx.font = 'normal 24px Arial';
     editCtx.fillText(`© ${now.getFullYear()} Kel`, editCanvas.width / 2, mainTextY + 40);
+}
+function toggleDateVisibility() {
+    showDate = !showDate;
+    renderCanvas(); // Re-render the canvas to update the footer
 }
 let footerInterval;
 window.onload = function () {
