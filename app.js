@@ -496,11 +496,8 @@ function applyFilter(ctx, canvas, img) {
     const contrastValue = contrastSlider.value;
     let filterString = `brightness(${brightnessValue}%) contrast(${contrastValue}%)`;
     
-    ctx.filter = currentFilter; 
-    
-
+    // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
     
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     
@@ -546,10 +543,46 @@ function applyFilter(ctx, canvas, img) {
         console.log("Applying filter to canvas:", filterString);
         
         ctx.filter = filterString;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
     }
 }
+document.addEventListener('DOMContentLoaded', function() {
+    // Setup the dropdown filters properly
+    setupFilterDropdown();
+    
+    // Fix the filter option event handlers
+    const dropdown = document.getElementById('filterDropdown');
+    if (dropdown) {
+        dropdown.addEventListener('click', (e) => {
+            if (e.target.classList.contains('filter-option')) {
+                const filterValue = e.target.dataset.filter;
+                console.log("Selected filter:", filterValue);
+                
+                // Store just the selected preset filter, excluding brightness/contrast
+                currentFilter = filterValue;
+                
+                // Update the video preview
+                updateFilters();
+                
+                // Update all canvases with new filter
+                canvasList.forEach((canvas, index) => {
+                    if (canvas && capturedPhotos[index]) {
+                        const targetCtx = canvas.getContext("2d");
+                        let img = new Image();
+                        img.src = capturedPhotos[index];
+                        
+                        img.onload = () => {
+                            applyFilter(targetCtx, canvas, img);
+                        };
+                    }
+                });
+                
+                dropdown.style.display = 'none';
+            }
+        });
+    }
+});
+
 // Function to update video filter
 // Function to update video filter
 function updateFilters() {
@@ -557,7 +590,7 @@ function updateFilters() {
     const contrast = contrastSlider.value;
     
     // Update video display
-    video.style.filter = `brightness(${brightness}%) contrast(${contrast}%) ${currentFilter}`;
+    video.style.filter = `brightness(${brightness}%) contrast(${contrast}%) ${currentFilter === "none" ? "" : currentFilter}`;
     
     // Important: Update the currentFilter value to include brightness/contrast
     // Preserve any existing filter while adding brightness/contrast
