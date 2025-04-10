@@ -490,69 +490,54 @@ function setBackgroundColor(color) {
 function downloadPhoto() {
     if (!editCanvas) return;
     
-    // Create data URL
+    // Create high-quality PNG data URL
     const dataURL = editCanvas.toDataURL('image/png', 1.0);
     
-    // Check if it's iOS or mobile Safari
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    // Check for iOS or Safari
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
     const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
     
     if (isIOS || isSafari) {
-        // For iOS devices, open image in new tab and show instructions
-        const newTab = window.open();
-        if (newTab) {
-            newTab.document.write(`
-                <html>
-                <head>
-                    <title>Save Your Photo</title>
-                    <meta name="viewport" content="width=device-width, initial-scale=1">
-                    <style>
-                        body { 
-                            font-family: Arial, sans-serif; 
-                            text-align: center; 
-                            margin: 0; 
-                            padding: 20px;  
-                            background: #f5f5f5;
-                        }
-                        img { 
-                            max-width: 100%; 
-                            margin-bottom: 20px; 
-                            border: 1px solid #ccc;
-                        }
-                        .instructions {
-                            background: #fff;
-                            border-radius: 8px;
-                            padding: 15px;
-                            margin-bottom: 20px;
-                            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-                        }
-                        h2 { color: #333; }
-                        p { color: #666; line-height: 1.5; }
-                    </style>
-                </head>
-                <body>
-                    <div class="instructions">
-                        <h2>Save Your Photo</h2>
-                        <p>Touch and hold the image below, then tap "Save Image" or "Add to Photos"</p>
-                    </div>
-                    <img src="${dataURL}" alt="Your photo">
-                </body>
-                </html>
-            `);
-            newTab.document.close();
-        } else {
-            // If popup blocked, fallback to direct display
-            window.location.href = dataURL;
+        // For Safari, open the image in a new tab
+        window.open(dataURL, '_blank');
+        
+        // Show a brief tooltip/message near the download button
+        const downloadBtn = document.getElementById('downloadBtn');
+        if (downloadBtn) {
+            const tooltip = document.createElement('div');
+            tooltip.textContent = "Image opened in new tab. Press and hold to save.";
+            tooltip.style.position = 'absolute';
+            tooltip.style.backgroundColor = 'rgba(0,0,0,0.8)';
+            tooltip.style.color = 'white';
+            tooltip.style.padding = '8px 12px';
+            tooltip.style.borderRadius = '5px';
+            tooltip.style.fontSize = '14px';
+            tooltip.style.zIndex = '1000';
+            tooltip.style.maxWidth = '250px';
+            tooltip.style.textAlign = 'center';
+            
+            // Position near the download button
+            const rect = downloadBtn.getBoundingClientRect();
+            tooltip.style.top = (rect.bottom + 10) + 'px';
+            tooltip.style.left = (rect.left + rect.width/2 - 125) + 'px'; // Center it
+            
+            document.body.appendChild(tooltip);
+            
+            // Remove tooltip after 5 seconds
+            setTimeout(() => {
+                document.body.removeChild(tooltip);
+            }, 5000);
         }
     } else {
-        // For desktop browsers, use the download attribute
+        // For desktop browsers, use standard download approach
         const link = document.createElement('a');
         link.download = 'framex-photobooth.png';
         link.href = dataURL;
+        document.body.appendChild(link); // Needed for Firefox
         link.click();
+        document.body.removeChild(link);
     }
 }
-
 // Go back to photobooth
 function goBack() {
     window.location.href = 'photobooth.html';
