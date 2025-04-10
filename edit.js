@@ -68,9 +68,7 @@ window.addEventListener('load', () => {
     
     if (!loadPhotosFromStorage()) {
         showNoPhotosMessage();
-    } else {
-        initEditor(); // Your existing editor initialization
-    }
+    } 
 });
 
   const pickr = Pickr.create({
@@ -486,7 +484,6 @@ function setBackgroundColor(color) {
     renderCanvas();
 }
 
-// Download the edited photo
 function downloadPhoto() {
     if (!editCanvas) return;
     
@@ -497,11 +494,43 @@ function downloadPhoto() {
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     
     if (isIOS) {
-        // For iOS, open the image in a new tab
-        window.open(dataURL);
+        // Create a temporary anchor element
+        const link = document.createElement('a');
+        link.href = dataURL;
         
-        // Show instructions to the user
-        alert("To save your photo: tap and hold the image, then select 'Save Image'");
+        // Set the download attribute (even though iOS might ignore it)
+        link.download = 'framex-photobooth.png';
+        
+        // Add the link to the DOM (required for iOS)
+        document.body.appendChild(link);
+        
+        // Create a "share" experience for iOS
+        if (navigator.share) {
+            // Convert data URL to blob for sharing
+            fetch(dataURL)
+                .then(res => res.blob())
+                .then(blob => {
+                    const file = new File([blob], 'framex-photobooth.png', { type: 'image/png' });
+                    
+                    navigator.share({
+                        title: 'My Framex Photo',
+                        files: [file]
+                    }).catch(err => {
+                        // Fallback if share fails
+                        alert("To save your photo: tap the image, then tap the share icon and select 'Save Image'");
+                        window.open(dataURL);
+                    });
+                });
+        } else {
+            // Fallback for iOS without sharing API
+            alert("To save your photo: tap and hold the image in the new tab, then select 'Save Image'");
+            window.open(dataURL);
+        }
+        
+        // Remove the temporary link
+        setTimeout(() => {
+            document.body.removeChild(link);
+        }, 100);
     } else {
         // For other platforms, use the download attribute
         const link = document.createElement('a');
