@@ -1509,7 +1509,7 @@ button:hover .arrow:before {
     margin: 0 auto;
     text-align: center;
     font-family: Arial, sans-serif;
-    position: fixed;
+
     left: 50%; /* Center the tab container horizontally */
     transform: translateX(-50%); /* Adjust the centering */
 }
@@ -1940,7 +1940,7 @@ button:hover .arrow:before {
         .tab-container{
             margin-top: 1rem;
             margin-bottom: 0;
-            position: static;
+            margin-right: 220px;
             justify-content: center;
             align-items: center;
         }

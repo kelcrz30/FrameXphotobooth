@@ -800,7 +800,7 @@ function drawFooter() {
     editCtx.fillStyle = brightness < 128 ? '#FFFFFF' : '#000000';
     
     // Set text properties for main text
-    editCtx.font = '500 50px Raleway';
+    editCtx.font = 'normal 30px Arial';
     editCtx.textAlign = 'center';
     editCtx.textBaseline = 'middle';
     

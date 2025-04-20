@@ -429,12 +429,12 @@ function setupFilterDropdown() {
     console.log('Initializing dropdown...');
     const filterOptions = {
         "none": "No Filter",
-        "grayscale(100%)": "B&W",
-        "sepia(100%)": "Sepia",
-        "contrast(1.4) brightness(0.9)": "Vintage",
-        "blur(1.2px) brightness(1.2)": "Soft",
-        "contrast(1.5) brightness(0.7)": "Noir",
-        "saturate(2) brightness(1.1)": "Vivid"
+        "grayscale": "B&W",
+        "sepia": "Sepia",
+        "vintage": "Vintage",
+        "soft": "Soft",
+        "noir": "Noir",
+        "vivid": "Vivid"
     };
     
     const dropdown = document.createElement('div');
@@ -489,53 +489,89 @@ function setupFilterDropdown() {
         }
     });
 }
-
 // Replace video CSS filters with canvas-based processing
 function applyFilter(ctx, canvas, img) {
-    // iOS compatible filter application
+    // Get values from sliders
     const brightness = brightnessSlider.value / 100;
     const contrast = contrastSlider.value / 100;
     
+    // Clear and draw the original image
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(img, 0, 0);
     
-    // Manual brightness/contrast adjustment
+    // Get image data for pixel manipulation
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const data = imageData.data;
     
+    // Apply effects based on selected filter
     for (let i = 0; i < data.length; i += 4) {
-        // Apply brightness and contrast
-        data[i] = ((data[i] - 128) * contrast + 128) * brightness;   // Red
-        data[i + 1] = ((data[i + 1] - 128) * contrast + 128) * brightness; // Green
-        data[i + 2] = ((data[i + 2] - 128) * contrast + 128) * brightness; // Blue
+        // Original RGB values
+        let r = data[i];
+        let g = data[i + 1];
+        let b = data[i + 2];
+        
+        // Apply brightness and contrast to all filters
+        r = ((r - 128) * contrast + 128) * brightness;
+        g = ((g - 128) * contrast + 128) * brightness;
+        b = ((b - 128) * contrast + 128) * brightness;
+        
+        // Apply selected filter effects
+        if (currentFilter.includes('grayscale')) {
+            // Convert to grayscale
+            const gray = 0.299 * r + 0.587 * g + 0.114 * b;
+            r = g = b = gray;
+        } else if (currentFilter.includes('sepia')) {
+            // Apply sepia
+            const newR = Math.min(255, (r * 0.393) + (g * 0.769) + (b * 0.189));
+            const newG = Math.min(255, (r * 0.349) + (g * 0.686) + (b * 0.168));
+            const newB = Math.min(255, (r * 0.272) + (g * 0.534) + (b * 0.131));
+            r = newR;
+            g = newG;
+            b = newB;
+        } else if (currentFilter.includes('contrast(1.4)') || currentFilter.includes('vintage')) {
+            // Vintage effect (enhanced contrast + slight sepia)
+            r = Math.min(255, r * 1.1);
+            g = Math.min(255, g * 1.0);
+            b = Math.min(255, b * 0.9);
+        } else if (currentFilter.includes('blur') || currentFilter.includes('soft')) {
+            // Soft effect - simplified blur effect
+            // We'll apply a slight brightening and reduce contrast
+            r = Math.min(255, r * 1.1);
+            g = Math.min(255, g * 1.1);
+            b = Math.min(255, b * 1.1);
+            
+            // For a real blur effect, we would need to sample neighboring pixels
+            // This is a simplified approximation
+        } else if (currentFilter.includes('contrast(1.5)') || currentFilter.includes('noir')) {
+            // Noir effect (high contrast B&W)
+            const gray = 0.299 * r + 0.587 * g + 0.114 * b;
+            const contrast = 1.5;
+            r = g = b = Math.min(255, ((gray - 128) * contrast) + 128);
+        } else if (currentFilter.includes('saturate') || currentFilter.includes('vivid')) {
+            // Vivid effect (saturated colors)
+            // Calculate luminance to preserve brightness
+            const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
+            
+            // Calculate color difference from gray
+            const dr = r - luminance;
+            const dg = g - luminance;
+            const db = b - luminance;
+            
+            // Increase saturation by amplifying difference from gray
+            const saturationFactor = 1.8; // Adjust as needed
+            r = Math.max(0, Math.min(255, luminance + dr * saturationFactor));
+            g = Math.max(0, Math.min(255, luminance + dg * saturationFactor));
+            b = Math.max(0, Math.min(255, luminance + db * saturationFactor));
+        }
+        
+        // Assign modified values back to imageData
+        data[i] = Math.max(0, Math.min(255, r));     // Red
+        data[i + 1] = Math.max(0, Math.min(255, g)); // Green
+        data[i + 2] = Math.max(0, Math.min(255, b)); // Blue
+        // Alpha channel remains unchanged
     }
     
-    // Apply currentFilter effects
-    if (currentFilter.includes('grayscale')) {
-        // Convert to grayscale
-        for (let i = 0; i < data.length; i += 4) {
-            const gray = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
-            data[i] = gray;
-            data[i + 1] = gray;
-            data[i + 2] = gray;
-        }
-    } else if (currentFilter.includes('sepia')) {
-        // Apply sepia
-        for (let i = 0; i < data.length; i += 4) {
-            const r = data[i];
-            const g = data[i + 1];
-            const b = data[i + 2];
-            data[i] = Math.min(255, (r * 0.393) + (g * 0.769) + (b * 0.189));     // Red
-            data[i + 1] = Math.min(255, (r * 0.349) + (g * 0.686) + (b * 0.168)); // Green
-            data[i + 2] = Math.min(255, (r * 0.272) + (g * 0.534) + (b * 0.131)); // Blue
-        }
-    } else if (currentFilter.includes('blur')) {
-        // Apply blur (simplified)
-        // Note: Actual blur implementation is complex; consider using a library or alternative method
-        ctx.filter = currentFilter;
-        ctx.drawImage(img, 0, 0);
-    }
-    
+    // Put the modified image data back to the canvas
     ctx.putImageData(imageData, 0, 0);
 }
 document.addEventListener('DOMContentLoaded', function() {
@@ -579,38 +615,22 @@ function updateFilters() {
     const brightness = brightnessSlider.value;
     const contrast = contrastSlider.value;
     
-    // Update video display
-    video.style.filter = `brightness(${brightness}%) contrast(${contrast}%) ${currentFilter === "none" ? "" : currentFilter}`;
+    // Apply current filter to video preview
+    applyFilterToVideo(currentFilter);
     
-    // Important: Update the currentFilter value to include brightness/contrast
-    // Preserve any existing filter while adding brightness/contrast
-    if (currentFilter === "none") {
-        currentFilter = `brightness(${brightness}%) contrast(${contrast}%)`;
-    } else {
-        // Extract existing filters that aren't brightness/contrast
-        let filters = currentFilter.split(') ').filter(f => 
-            !f.startsWith('brightness') && !f.startsWith('contrast')
-        );
-        
-        // Add updated brightness/contrast
-        filters.push(`brightness(${brightness}%)`);
-        filters.push(`contrast(${contrast}%)`);
-        
-        // Combine filters
-        currentFilter = `brightness(${brightness}%) contrast(${contrast}%) ${filterSelect.value}`;
-    }
-    
-    // Update any already captured photos with new filter
+    // Update all canvases with new filter values
     canvasList.forEach((canvas, index) => {
         if (canvas && capturedPhotos[index]) {
-            const ctx = canvas.getContext("2d");
+            const targetCtx = canvas.getContext("2d");
             let img = new Image();
             img.src = capturedPhotos[index];
-            img.onload = () => applyFilter(ctx, canvas, img);
+            
+            img.onload = () => {
+                applyFilter(targetCtx, canvas, img);
+            };
         }
     });
 }
-
 // Event listeners to update filters in real time
 brightnessSlider.addEventListener("input", updateFilters);
 contrastSlider.addEventListener("input", updateFilters);
@@ -1254,7 +1274,40 @@ window.addEventListener("load", () => {
 });
 
 function applyFilterToVideo(filter) {
-    video.style.filter = filter;
+    // Map our filter names to CSS filter properties for the video preview
+    let cssFilter = '';
+    
+    // Add brightness and contrast from sliders
+    const brightness = brightnessSlider.value;
+    const contrast = contrastSlider.value;
+    cssFilter = `brightness(${brightness}%) contrast(${contrast}%)`;
+    
+    // Add filter-specific effects
+    switch(filter) {
+        case 'grayscale':
+            cssFilter += ' grayscale(100%)';
+            break;
+        case 'sepia':
+            cssFilter += ' sepia(100%)';
+            break;
+        case 'vintage':
+            cssFilter += ' sepia(30%) contrast(110%)';
+            break;
+        case 'soft':
+            cssFilter += ' brightness(110%) blur(1px)';
+            break;
+        case 'noir':
+            cssFilter += ' grayscale(100%) contrast(150%) brightness(80%)';
+            break;
+        case 'vivid':
+            cssFilter += ' saturate(180%) contrast(110%)';
+            break;
+    }
+    
+    // Apply to video
+    video.style.filter = cssFilter;
+    
+    // Update any already captured photos with the new filter
     canvasList.forEach((canvas, index) => {
         if (canvas && capturedPhotos[index]) {
             const ctx = canvas.getContext("2d");
@@ -1264,7 +1317,6 @@ function applyFilterToVideo(filter) {
         }
     });
 }
-
 if (captureBtn) {
     captureBtn.addEventListener("click", startAutoCapture);
 } else {

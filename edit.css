@@ -302,7 +302,7 @@ body.dark-mode {
     .edit-canvas-container, 
     .edit-controls {
         max-width: 100%;
-        width: 100%;
+        width: 90%;
     }
 
     #editCanvas {
@@ -337,6 +337,11 @@ body.dark-mode {
     .color-option {
         width: 60px;
     }
+    .edit-canvas-container, 
+    .edit-controls {
+        max-width: 100%;
+        width: 90%;
+    }
 }
 
 /* Additional responsive tweaks for smaller screens */
@@ -348,6 +353,11 @@ body.dark-mode {
     .bg-option, 
     .color-option {
         width: 50px;
+    }
+    .edit-canvas-container, 
+    .edit-controls {
+        max-width: 100%;
+        width: 90%;
     }
 
     .edit-buttons {
