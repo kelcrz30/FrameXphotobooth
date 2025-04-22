@@ -49,6 +49,7 @@ body {
     display: flex;
     flex-direction: column;
 }
+
 @keyframes float-frames {
     0% {
         transform: translateY(0) rotate(0deg);
@@ -636,6 +637,8 @@ button:hover .arrow:before {
     animation: scroll 10s linear infinite;
 }
 
+
+
 @keyframes scroll {
     0% {
         transform: translateX(0);
@@ -1176,20 +1179,7 @@ button:hover .arrow:before {
 
 
 /* PHOTOBOOTH PAGE*/
-    * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'League Spartan', sans-serif;
-            background-color: #f0f2f5;
-            color: #000000;
-            line-height: 1.6;
-            overflow-y: scroll;
-        }
-
+    
         
         .photobooth {
             display: flex;
@@ -1215,7 +1205,7 @@ button:hover .arrow:before {
         
         /* Left section - Camera and controls */
         .left-section {
-            margin-top: 5rem;
+            margin-top: 1rem;
             flex: 3; /* Increased from 1 to give more space */
             min-width: 600px; /* Increased from 400px */
             display: flex;
@@ -1224,6 +1214,9 @@ button:hover .arrow:before {
         }
         
         .video-container {
+            padding-top: 3px;
+            border-radius: 20%;
+            background-color: white;
             position: relative;
             max-width: 100%; /* Changed from 700px */
             width: 100%;
@@ -1298,7 +1291,7 @@ button:hover .arrow:before {
         }
         .control-btn{
             padding:21px;
-            background-color: none !important;
+            background-color: transparent !important;
             padding-left: 10px;
             padding-right: 10px;
             border-radius: 8px !important;
@@ -1342,15 +1335,84 @@ button:hover .arrow:before {
             justify-content: center;
             gap: 1rem; /* Space between checkbox and dropdown */
             flex-wrap: wrap; /* Prevents overlap on smaller screens */
-            border-top: 2px solid #636262;  /* Darker gray */
+
             margin-top: 1rem;
-            margin-bottom: 0;
+            margin-bottom: 1rem;
+            
+        }
+        .cbx {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            margin: 0 5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        /* Hover effect */
+        .cbx:hover {
+            background-color: #e9e9e9;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         #uploadBtn {
             display: none;
 
           }
-                
+ 
+/* Make all buttons in filter container the same size */
+.filter-container .cbx, 
+.filter-container .icon-container, 
+.filter-container .control-container, 
+.filter-container .filter-control, 
+#filterSelect, 
+.filter-button {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    margin: 0 5px;
+    cursor: pointer;
+    position: relative;
+    
+    /* Disable all animations and transitions */
+    animation: none !important;
+    transform: none !important;
+    transition: none !important;
+    -webkit-animation: none !important;
+    -moz-animation: none !important;
+}
+
+/* Consistent hover effect for all buttons */
+.filter-container .cbx:hover,
+.filter-container .icon-container:hover,
+.filter-container .control-container:hover,
+.filter-container .filter-control:hover,
+#filterSelect:hover,
+.filter-container button:hover {
+    background-color: #e9e9e9;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    
+    /* Ensure no animations on hover */
+    animation: none !important;
+    transform: none !important;
+    transition: none !important;
+}
+
+
+#filterSelect:hover{
+    background-color: #e9e9e9;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+      
         /* Filter select */
         #filterSelect {
             padding: 8px;
@@ -1450,14 +1512,7 @@ button:hover .arrow:before {
             z-index: 1000;
             cursor: pointer;
         }
-        .filter-container {
-            display: flex;
-            align-items: center;
-            gap: 5px; /* Ensure equal spacing */
-            flex-wrap: wrap;
-            max-height: 400px;
-            z-index: 1;
-        }
+
         #canvas1, #canvas2, #canvas3, #canvas4{
             width: 70% !important;
             height: auto !important;
@@ -1473,21 +1528,8 @@ button:hover .arrow:before {
             gap: 10px;
             border: 20px;
         }
-        
-        .cbx, .icon-container, .control-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            width: 32px;
-            height: 32px;
-            cursor: pointer;
-        }
-        
-        .icon-container, .control-container {
-            flex-direction: column;
-            align-items: center;
-        }
+
+
         
         #brightness, #contrast {
             position: absolute;
@@ -1503,15 +1545,18 @@ button:hover .arrow:before {
             background-color: black;
             color: black;
         }
+        
 
 .tab-container {
     max-width: 100%;
-    margin: 0 auto;
     text-align: center;
     font-family: Arial, sans-serif;
+    margin-top: 1rem;
+    justify-content: center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 
-    left: 50%; /* Center the tab container horizontally */
-    transform: translateX(-50%); /* Adjust the centering */
 }
 
 .tab-buttons {
@@ -1552,6 +1597,18 @@ button:hover .arrow:before {
     color: white;
     border-radius: 30px;
 } 
+.select-camera{
+    background-color: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    margin-bottom: 2rem;
+    border-radius: 10px;
+    font-size: 15px;
+    font-family: Arial, Helvetica, sans-serif;
+    border-radius: 5%;
+    position: relative;
+
+}
+
 .dark-mode .select-camera{
     color: rgb(255, 255, 255) !important;
 }
@@ -1577,38 +1634,25 @@ button:hover .arrow:before {
 
 /* Responsive Styles for smaller screens */
 @media (max-width: 768px) {
-    .tab-container {
-        position: static; /* Remove the fixed position */
-        left: 0; /* Reset left positioning */
-        transform: none; /* Remove centering */
-    }
 
-    .tab-buttons {
-        justify-content: center; /* Ensure the buttons are centered */
-        flex-wrap: wrap; /* Allow buttons to wrap to next line if needed */
-        width: 100%; /* Ensure buttons take up full width */
-    }
 
     .tab-button {
-        width: auto; /* Allow buttons to maintain their size */
-        min-width: 80px; /* Keep the minimum width of the buttons */
-        padding: 10px 20px; /* Adjust padding */
-        font-size: 12px; /* Slightly reduce the font size */
-        margin: 5px; /* Maintain spacing between buttons */
+        width: auto; 
+        min-width: 80px; 
+        padding: 10px 20px; 
+        font-size: 12px; 
+        margin: 5px;
     }
 }
 
-/* Further adjustments for very small screens (phones in portrait mode) */
+
 @media (max-width: 480px) {
     .tab-button {
-        font-size: 10px; /* Reduce font size for smaller screens */
-        padding: 8px 15px; /* Adjust padding for very small screens */
+        font-size: 10px; 
+        padding: 8px 15px; 
     }
+   
 }
-
-          
-        
-        /* Ensure material icons and SVG are centered */
         .icon-container .material-symbols-outlined,
         .control-container svg {
             display: flex;
@@ -1625,7 +1669,7 @@ button:hover .arrow:before {
             transform: translateX(-50%);
         }
         svg, .material-symbols-outlined {
-            width: 24px;
+            width: 50px;
             height: 24px;
             vertical-align: middle;
         }
@@ -1670,20 +1714,33 @@ button:hover .arrow:before {
         .filter-option:hover {
             background-color: #f5f5f5;
         }
-        .filter-control .filter-button {
-            background-color: transparent !important; /* ✅ Correct property value */
-            border: none !important;
-            padding: 0 !important; /* Remove default button padding */
+
+        
+
+        
+        /* Hover effect (copied from .cbx) */
+
+        #filterSelect {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            animation: none !important;
+            transition: none !important;
+            cursor: pointer;
+            
         }
+
         .filter-option.active {
             background-color: #e0e0e0;
         }
         
         /* REQUIRED PARENT CONTAINER STYLES */
-        .filter-control {
-            position: relative; /* Crucial for dropdown positioning */
-            display: inline-block;
-        }
+
 
         /* Responsive design */
         @media (max-width: 1024px) {
@@ -1792,7 +1849,6 @@ button:hover .arrow:before {
             }
         
             .tab-container {
-                position: static; /* Remove the fixed position */
 
                 transform: none; /* Remove centering */
             }
@@ -1845,6 +1901,17 @@ button:hover .arrow:before {
                 aspect-ratio: 12/9 !important;
                 max-height: none;
             }
+            .filter-container .cbx, 
+            .filter-container .icon-container, 
+            .filter-container .control-container, 
+            .filter-container .filter-control, 
+            #filterSelect, 
+            .filter-button {
+                width: 35px !important;
+                height: 35px !important;
+                margin: 0 2px;
+            }
+            
             .photo-stack canvas {
                 width: 100% !important;
                 max-width: 100%;
@@ -1865,6 +1932,7 @@ button:hover .arrow:before {
                 align-items: center;
                 gap: 0.8rem;
             }
+            
             .nextbtn{
                 position: relative;
                 align-items: center;
@@ -1884,7 +1952,7 @@ button:hover .arrow:before {
             
             /* Make the app scrollable on small screens */
             .boot {
-                overflow-y: auto;
+      
                 min-height: 100vh;
             }
             .footer-text {
@@ -1936,6 +2004,9 @@ button:hover .arrow:before {
             object-fit: contain;
             image-rendering: -webkit-optimize-contrast;
             image-rendering: crisp-edges;
+        }
+        .captureBtn{
+           padding: 2px !important;
         }
         .tab-container{
             margin-top: 1rem;

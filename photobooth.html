@@ -14,14 +14,15 @@
     
 </head>
 <body class="photobooth">
+    <div class="tab-container">
+        <div class="tab-buttons">
+          <button class="tab-button active" id="cameraTab" onclick="switchTab('camera')">Camera</button>
+          <button class="tab-button" id="uploadTab" onclick="switchTab('upload')">Upload</button>
+          </div>
+        </div>
     <div class="boot">
-        <div class="tab-container">
-            <div class="tab-buttons">
-              <button class="tab-button active" id="cameraTab" onclick="switchTab('camera')">Camera</button>
-              <button class="tab-button" id="uploadTab" onclick="switchTab('upload')">Upload</button>
-              </div>
-            </div>
         <main class="content-container">
+            
             <div class="left-section">
                 <div class="video-container" id="cameraTabContent">
                     <div id="countdownText"></div>  <!-- Move this inside video-container -->
