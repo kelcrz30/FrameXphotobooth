@@ -24,6 +24,7 @@
     src: url(Heavitas.ttf);
 }
 
+
 * {
     margin: 0;
     padding: 0;
@@ -1110,8 +1111,7 @@ button:hover .arrow:before {
 
 .btn1 {
     margin-top: auto;
-
-    width: 100%;
+    width: 21%;
     display: flex;
     justify-content: center;
 }
@@ -1147,7 +1147,8 @@ button:hover .arrow:before {
     }
     
     .btn1 {
-        padding: 1rem 0;
+        padding: 1rem;
+        margin-top: 2rem;
     }
     
     
@@ -1597,20 +1598,22 @@ button:hover .arrow:before {
     color: white;
     border-radius: 30px;
 } 
-.select-camera{
-    background-color: #f5f5f5;
-    border: 1px solid #e0e0e0;
-    margin-bottom: 2rem;
-    border-radius: 10px;
+.select-camera {
+    background-color: #ffffff;
+    border: 1px solid #d0d0d0;
+    border-radius: 8px;
+    padding: 2px 16px;
     font-size: 15px;
-    font-family: Arial, Helvetica, sans-serif;
-    border-radius: 5%;
+    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    display: inline-block;
     position: relative;
-
+    transition: box-shadow 0.2s ease-in-out;
+    cursor: pointer;
 }
 
 .dark-mode .select-camera{
-    color: rgb(255, 255, 255) !important;
+    color: rgb(0, 0, 0) !important;
 }
 .tab-button:not(.active) {
     background-color: transparent;

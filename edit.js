@@ -781,36 +781,43 @@ function drawFooter() {
     
     // Get current date and time formatted
     const now = new Date();
-    const dateString = now.toLocaleDateString();
-    const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: true});
+    const dateString = now.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+    });
+    const timeString = now.toLocaleTimeString('en-US', {
+        hour: '2-digit', 
+        minute: '2-digit', 
+        hour12: true
+    });
     
     // Check background color at the text position
     const bottomMargin = 150;
     const mainTextY = editCanvas.height - bottomMargin;
     const checkX = editCanvas.width / 2;
-    
-    // Get pixel data at the position where text will be drawn
     const pixelData = editCtx.getImageData(checkX, mainTextY, 1, 1).data;
-    
-    // Calculate brightness (simple average method)
     const brightness = (pixelData[0] + pixelData[1] + pixelData[2]) / 3;
     
     // Set text color based on background brightness
-    // If background is dark, use white text; if light, use black text
     editCtx.fillStyle = brightness < 128 ? '#FFFFFF' : '#000000';
     
-    // Set text properties for main text
-    editCtx.font = 'normal 30px Arial';
+    // Configure text properties
+    editCtx.font = 'normal 35px Arial';
     editCtx.textAlign = 'center';
     editCtx.textBaseline = 'middle';
+
+    // Date display logic
+    const getMainFooterText = () => {
+        return showDate 
+            ? `Framex  ${dateString}  ${timeString}`
+            : 'Framex Photobooth';
+    };
+
+    // Draw main text
+    editCtx.fillText(getMainFooterText(), editCanvas.width / 2, mainTextY);
     
-    // Draw the main text, with or without date based on showDate setting
-    if (showDate) {
-        editCtx.fillText(`Framex ${dateString} ${timeString}`, editCanvas.width / 2, mainTextY);
-    } else {
-        editCtx.fillText(`Framex Photobooth`, editCanvas.width / 2, mainTextY);
-    }
-    
+    // Keep existing copyright text
     editCtx.font = 'normal 24px Arial';
     editCtx.fillText(`© ${now.getFullYear()} Kel`, editCanvas.width / 2, mainTextY + 40);
 }

@@ -13,6 +13,10 @@ body {
     min-height: 100vh;
     padding: 20px;
 }
+body.dark-mode {
+    background-color: black;
+    color: white;
+  }
 
 .container {
     background: white;

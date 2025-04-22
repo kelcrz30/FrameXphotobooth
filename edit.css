@@ -1,3 +1,9 @@
+@font-face{
+    font-family: vortigra;
+    src: url(Vortigra.otf);
+}
+
+
 body.dark-mode {
     background-color: black;
     color: white;

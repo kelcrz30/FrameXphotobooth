@@ -16,6 +16,10 @@ body {
     color: #333;
     line-height: 1.6;
 }
+body.dark-mode {
+    background-color: black;
+    color: white;
+  }
 
 .about-container {
     background: white;
